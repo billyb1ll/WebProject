@@ -18,6 +18,10 @@ To start the frontend development server, follow these steps:
     ```bash
     cd front
     ```
+2. Install the frontend dependencies:
+    ```bash
+    npm install
+    ```
 
 2. Start the frontend development server:
     ```bash
