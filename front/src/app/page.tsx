@@ -1,6 +1,16 @@
 "use client";
-import Image from "next/image";
+
 import { useEffect, useState } from "react";
+import {
+	Box,
+	Button,
+	Flex,
+	Input,
+	Image,
+	Text,
+	useBreakpointValue,
+} from "@chakra-ui/react";
+import Navbar from "./menu";
 
 export default function Home() {
 	const [message, setMessage] = useState("");
@@ -27,22 +37,50 @@ export default function Home() {
 	};
 
 	return (
-		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-				<h1 className="text-4xl font-bold text-center sm:text-left hover:cursor-pointer hover:bg-gradient-to-r from-red-700 via-blue-300 to-slate-600 inline-block hover:text-transparent bg-clip-text">
-					Web App
-				</h1>
+		<Box
+			bg="white"
+			minH="100vh"
+			display="flex"
+			flexDirection="column"
+			alignItems="center">
+			<Navbar />
+			<Flex
+				flexDirection="column"
+				alignItems="center"
+				justifyContent="center"
+				flexGrow="1"
+				maxW="container.md"
+				mx="auto"
+				pt="24">
+				<Image src="/google-logo.png" alt="Google Logo" width="192px" mb="8" />
+
 				{/* Input field and button */}
-				<div className="flex flex-row gap-5 items-center sm:items-start">
-					<input
+				<Flex
+					flexDirection={useBreakpointValue({ base: "column", sm: "row" })}
+					gap="5"
+					alignItems="center"
+					width="full"
+					px="4">
+					<Input
 						type="text"
+						id="inputMSG"
 						value={input}
 						onChange={(e) => setInput(e.target.value)}
-						className="border rounded px-5 py-1 focus:border-red-600 p-7"
-						placeholder="Enter text"
+						borderRadius="full"
+						px="5"
+						py="3"
+						borderColor="blue.600"
+						width={useBreakpointValue({ base: "full", sm: "auto" })}
+						placeholder="Search Google or type a URL"
 					/>
-					<button
-						className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
+					<Button
+						id="sendMSG"
+						bg="blue.500"
+						color="white"
+						borderRadius="full"
+						px="5"
+						py="3"
+						_hover={{ bg: "blue.800" }}
 						onClick={() => {
 							if (input.trim() !== "") {
 								handleSubmit();
@@ -50,16 +88,14 @@ export default function Home() {
 								alert("Input cannot be empty");
 							}
 						}}>
-						<span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-							Send
-						</span>
-					</button>
-				</div>
+						Search
+					</Button>
+				</Flex>
 				{/* Display the fetched message */}
-				<div className="text-center sm:text-left">
-					<p>{message}</p>
-				</div>
-			</main>
-		</div>
+				<Box textAlign="center" mt="8" width="full" px="4">
+					<Text>{message}</Text>
+				</Box>
+			</Flex>
+		</Box>
 	);
 }

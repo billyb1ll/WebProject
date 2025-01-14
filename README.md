@@ -49,7 +49,7 @@ To set up and start the backend server using Express, follow these steps:
     npm start
     ```
 
-The backend server will start and listen on the port specified in your configuration (usually `http://localhost:3005/`).
+The backend server will start and listen on the port specified in your configuration (usually `http://localhost:4000/`).
 
 ### Full Setup
 
