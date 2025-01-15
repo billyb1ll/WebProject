@@ -1,30 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-	Box,
-	Button,
-	Flex,
-	Input,
-	Image,
-	Text,
-	useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Flex, AlertTitle, AlertDescription } from "@chakra-ui/react";
+import { Alert } from "@/components/ui/alert";
+import { CloseButton } from "@/components/ui/close-button";
+
 import Navbar from "./menu";
+import HomePage from "./homepage";
+import InputForm from "./inputForm";
+import MessageDisplay from "./messageDisplay";
 
 export default function Home() {
 	const [message, setMessage] = useState("");
 	const [input, setInput] = useState("");
+	const [showAlert, setShowAlert] = useState(false);
 
 	useEffect(() => {
-		fetch("http://localhost:3005")
+		fetch(process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005")
 			.then((response) => response.text())
 			.then((data) => setMessage(data))
 			.catch((error) => console.error("Error fetching data:", error));
 	}, []);
 
 	const handleSubmit = () => {
-		fetch("http://localhost:3005", {
+		if (input.trim() === "") {
+			setShowAlert(true);
+			return;
+		}
+
+		fetch(process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -37,65 +41,78 @@ export default function Home() {
 	};
 
 	return (
-		<Box
-			bg="white"
-			minH="100vh"
-			display="flex"
-			flexDirection="column"
-			alignItems="center">
-			<Navbar />
-			<Flex
+		<>
+			<Box
+				bg="white"
+				minH="100vh"
+				display="flex"
 				flexDirection="column"
-				alignItems="center"
-				justifyContent="center"
-				flexGrow="1"
-				maxW="container.md"
-				mx="auto"
-				pt="24">
-				<Image src="/google-logo.png" alt="Google Logo" width="192px" mb="8" />
+				alignItems="center">
+				<Navbar />
+				<MainContent
+					input={input}
+					setInput={setInput}
+					showAlert={showAlert}
+					setShowAlert={setShowAlert}
+					handleSubmit={handleSubmit}
+					message={message}
+				/>
+			</Box>
+		</>
+	);
+}
 
-				{/* Input field and button */}
-				<Flex
-					flexDirection={useBreakpointValue({ base: "column", sm: "row" })}
-					gap="5"
-					alignItems="center"
-					width="full"
-					px="4">
-					<Input
-						type="text"
-						id="inputMSG"
-						value={input}
-						onChange={(e) => setInput(e.target.value)}
-						borderRadius="full"
-						px="5"
-						py="3"
-						borderColor="blue.600"
-						width={useBreakpointValue({ base: "full", sm: "auto" })}
-						placeholder="Search Google or type a URL"
+function MainContent({
+	input,
+	setInput,
+	showAlert,
+	setShowAlert,
+	handleSubmit,
+	message,
+}: {
+	input: string;
+	setInput: React.Dispatch<React.SetStateAction<string>>;
+	showAlert: boolean;
+	setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
+	handleSubmit: () => void;
+	message: string;
+}) {
+	return (
+		<Flex
+			flexDirection="column"
+			alignItems="center"
+			justifyContent="center"
+			flexGrow="1"
+			maxW="container.md"
+			mx="auto"
+			pt="24">
+			{/* HomePage content */}
+			<Box mb="8">
+				<HomePage />
+			</Box>
+			{/* Input form */}
+			<InputForm
+				input={input}
+				setInput={setInput}
+				handleSubmit={handleSubmit}
+				showAlert={showAlert}
+				setShowAlert={setShowAlert}
+			/>
+			{/* Display the fetched message */}
+			<MessageDisplay message={message} />
+			{/* Alert for empty input */}
+			{showAlert && (
+				<Alert status="error" mt="4">
+					<AlertTitle mr={2}>Invalid Fields</AlertTitle>
+					<AlertDescription>Input cannot be empty.</AlertDescription>
+					<CloseButton
+						position="absolute"
+						right="8px"
+						top="8px"
+						onClick={() => setShowAlert(false)}
 					/>
-					<Button
-						id="sendMSG"
-						bg="blue.500"
-						color="white"
-						borderRadius="full"
-						px="5"
-						py="3"
-						_hover={{ bg: "blue.800" }}
-						onClick={() => {
-							if (input.trim() !== "") {
-								handleSubmit();
-							} else {
-								alert("Input cannot be empty");
-							}
-						}}>
-						Search
-					</Button>
-				</Flex>
-				{/* Display the fetched message */}
-				<Box textAlign="center" mt="8" width="full" px="4">
-					<Text>{message}</Text>
-				</Box>
-			</Flex>
-		</Box>
+				</Alert>
+			)}
+		</Flex>
 	);
 }
