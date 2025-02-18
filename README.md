@@ -1,11 +1,13 @@
 # WebProject
+This is a project of ITCS223_Introduction to Web Development with NextJs ChakraUi Tailwind and Node.js to develop.
+> If you have any questions, feel free to ask me.
+Thank you
 
-# main doc
-```
-https://docs.google.com/document/d/1mg0J3ReF6Z2LsygozndjwxP2y2jzHakqPWRlvfqpqvE/edit?usp=sharing
-```
+## Main doc
 
-## Installation
+[Link to doc](https://docs.google.com/document/d/1mg0J3ReF6Z2LsygozndjwxP2y2jzHakqPWRlvfqpqvE/edit?usp=sharing)
+
+## Installation (setup)
 
 To install the project dependencies for both frontend and backend, run:
 
