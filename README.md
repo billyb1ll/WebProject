@@ -2,7 +2,7 @@
 
 # main doc
 ```
-https://docs.google.com/document/d/1mg0J3ReF6Z2LsygozndjwxP2y2jzHakqPWRlvfqpqvE/edit?usp=sharing webpro docs
+https://docs.google.com/document/d/1mg0J3ReF6Z2LsygozndjwxP2y2jzHakqPWRlvfqpqvE/edit?usp=sharing
 ```
 
 ## Installation
