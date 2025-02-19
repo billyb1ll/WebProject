@@ -7,6 +7,7 @@ Thank you
 ## Main doc
 
 [Link to doc](https://docs.google.com/document/d/1mg0J3ReF6Z2LsygozndjwxP2y2jzHakqPWRlvfqpqvE/edit?usp=sharing)
+[Link to API Doc](https://bump.sh/billy/doc/back-api) Private
 
 ## Installation (setup)
 
