@@ -1,19 +1,95 @@
 openapi: 3.0.0
 info:
-  title: Sample API
-  description: A sample API to demonstrate OpenAPI structure
+  title: WebProject API
+  description: API documentation for WebProject endpoints
   version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development server
 paths:
-  /hello:
+  /:
     get:
-      summary: Returns a greeting
+      summary: Get homepage greeting
+      description: Returns a simple hello world message
       responses:
         '200':
           description: Successful response
           content:
+            text/plain:
+              schema:
+                type: string
+                example: "Hello World"
+    post:
+      summary: Post data to homepage
+      description: Accepts input and returns an echo response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                input:
+                  type: string
+                  example: "test message"
+      responses:
+        '200':
+          description: Echo response
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Received: test message"
+  /users:
+    get:
+      summary: Get all users
+      description: Returns a list of all users
+      responses:
+        '200':
+          description: List of users
+          content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      description: Returns a single user by their ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The user ID
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "User not found"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
