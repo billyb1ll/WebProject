@@ -7,7 +7,7 @@ interface MessageDisplayProps {
 export default function MessageDisplay({ message }: MessageDisplayProps) {
 	return (
 		<Box textAlign="center" mt="8" width="full" px="4">
-				<Text color="gray.600">{message}</Text>
+			<Text color="gray.600" className="animate__animated animate__fadeIn">{message}</Text>
 		</Box>
 	);
 }

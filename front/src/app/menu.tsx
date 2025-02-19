@@ -53,6 +53,9 @@ export default function Navbar() {
 								<Text fontSize="md" color="gray.600">
 									Logged in as: {user.name}
 								</Text>
+								<Link href="/" fontSize="xl" fontWeight="bold" color="blue.600">
+									Ratamoth W
+								</Link>
 							</>
 						)}
 
@@ -63,7 +66,11 @@ export default function Navbar() {
 								</Text>
 								<Input
 									id="userId"
+									type="password"
+									maxLength={1}
 									placeholder="Enter user ID"
+									rounded="full"
+									padding="5"
 									value={userId}
 									onChange={(e) => setUserId(e.target.value)}
 									width="150px"
@@ -73,29 +80,27 @@ export default function Navbar() {
 								</Button>
 							</>
 						)}
-						<Link href="/" fontSize="xl" fontWeight="bold" color="blue.600">
-							Google
-						</Link>
 					</Flex>
-					<Flex align="center" gap={4}>
-						<Link href="/about" _hover={{ color: "gray.600" }}>
-							About
-						</Link>
-						<Link href="/store" _hover={{ color: "gray.600" }}>
-							Store
-						</Link>
-						<Link href="/gmail" _hover={{ color: "gray.600" }}>
-							Gmail
-						</Link>
-						<Link href="/images" _hover={{ color: "gray.600" }}>
-							Images
-						</Link>
-						{user.name && (
-							<Button onClick={handleLogout} colorScheme="red">
+
+					{user.name && (
+						<Flex align="center" gap={4}>
+							<Link href="/about" _hover={{ color: "gray.600" }}>
+								About
+							</Link>
+							<Link href="/store" _hover={{ color: "gray.600" }}>
+								Store
+							</Link>
+							<Link href="/gmail" _hover={{ color: "gray.600" }}>
+								Gmail
+							</Link>
+							<Link href="/images" _hover={{ color: "gray.600" }}>
+								Images
+							</Link>
+							<Button onClick={handleLogout} colorScheme="red" size="sm">
 								Logout
 							</Button>
-						)}
-					</Flex>
+						</Flex>
+					)}
 				</Flex>
 			</Box>
 		</>

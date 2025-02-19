@@ -22,7 +22,7 @@ router.get('/:id', function (req, res, next) {
   if (user) {
     res.json(user);
   } else {
-    res.status(404).send('User not found');
+    res.status(404).send('User not found'); 
   }
 });
 

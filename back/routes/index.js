@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const { input } = req.body;
   res.send(`Received: ${input}`);
-  console.log(`Received: ${input}`);
+  console.log(`Received: ${input}`);  
 
 });
 

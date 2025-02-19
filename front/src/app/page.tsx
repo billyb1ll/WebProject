@@ -98,11 +98,10 @@ function MainContent({
 				showAlert={showAlert}
 				setShowAlert={setShowAlert}
 			/>
-			{/* Display the fetched message */}
-			<MessageDisplay message={message} />
+
 			{/* Alert for empty input */}
 			{showAlert && (
-				<Alert status="error" mt="4">
+				<Alert status="error" mt="2">
 					<AlertTitle mr={2}>Invalid Fields</AlertTitle>
 					<AlertDescription>Input cannot be empty.</AlertDescription>
 					<CloseButton
@@ -113,6 +112,8 @@ function MainContent({
 					/>
 				</Alert>
 			)}
+			{/* Display the fetched message */}
+			<MessageDisplay message={message} />
 		</Flex>
 	);
 }
