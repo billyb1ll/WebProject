@@ -5,22 +5,36 @@ info:
     # Introduction
     This API provides user management and authentication services.
     
+    ## Authentication
+    This API uses JWT tokens for authentication. Include the token in the Authorization header:
+    `Authorization: Bearer <your_token>`
+    
+    ## Rate Limiting
+    - 100 requests per minute for authenticated users
+    - 20 requests per minute for unauthenticated users
+    
+    ## Versioning
+    API versioning is handled through the `Accept` header:
+    `Accept: application/vnd.webproject.v1+json`
+    
+    ## Error Handling
+    All errors follow RFC7807 - Problem Details for HTTP APIs
+    
     ## Features
     - User Management (CRUD operations)
     - Authentication
-    - Input validation
-    
-    ## Error Codes
-    - 200: Success
-    - 201: Created
-    - 400: Bad Request
-    - 401: Unauthorized
-    - 404: Not Found
-    - 500: Server Error
+    - Rate Limiting
+    - API Versioning
+    - Comprehensive Error Handling
   version: 1.0.0
   contact:
     name: API Support
     email: support@example.com
+    url: https://github.com/your-repo/issues
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
 servers:
   - url: http://localhost:3000
     description: Development server
@@ -28,6 +42,7 @@ servers:
 security:
   - bearerAuth: []
   - apiKeyAuth: []
+  - basicAuth: []
 
 paths:
   /:
@@ -185,6 +200,44 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundError'
 
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      operationId: loginUser
+      security: []  # No auth required for login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "strongpass123"
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    $ref: '#/components/schemas/User'
+
 components:
   securitySchemes:
     bearerAuth:
@@ -195,6 +248,9 @@ components:
       type: apiKey
       in: header
       name: X-API-Key
+    basicAuth:
+      type: http
+      scheme: basic
 
   schemas:
     User:
