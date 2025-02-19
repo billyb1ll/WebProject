@@ -1,16 +1,18 @@
 name: Check & deploy API documentation
-permissions:
-  contents: read
-  pull-requests: write
+
 on:
   push:
     branches:
       - main
-      - master
+
   pull_request:
     branches:
       - main
-      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   deploy-doc:
     if: ${{ github.event_name == 'push' }}
@@ -18,26 +20,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Deploy API documentation
         uses: bump-sh/github-action@v1
         with:
-          doc: billy
+          doc: c337f580-3914-4cf9-bf1e-ee0788a6173d
           token: 3EmLYnnfM3zeDuHGkXi8cdxUNq2jgqvU
           file: doc/api-documentation.yml
+
   api-diff:
     if: ${{ github.event_name == 'pull_request' }}
     name: Check API diff on Bump.sh
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Comment pull request with API diff
         uses: bump-sh/github-action@v1
         with:
-          doc: billy
+          doc: c337f580-3914-4cf9-bf1e-ee0788a6173d
           token: 3EmLYnnfM3zeDuHGkXi8cdxUNq2jgqvU
           file: doc/api-documentation.yml
           command: diff
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
