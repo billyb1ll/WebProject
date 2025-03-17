@@ -1,97 +1,122 @@
-# WebProject
-This is a project of ITCS223_Introduction to Web Development with NextJs ChakraUi Tailwind and Node.js to develop.
-> If you have any questions, feel free to ask me.
+# RataMoth Web Project
 
-Thank you
+A full-stack e-commerce application for selling chocolate products with customization options.
 
-## Main doc
+## Project Overview
 
-[Link to doc](https://docs.google.com/document/d/1mg0J3ReF6Z2LsygozndjwxP2y2jzHakqPWRlvfqpqvE/edit?usp=sharing)
+This project is a web application that allows users to browse and purchase chocolate products, including custom chocolate creations. The application includes an admin panel for managing products, orders, and customers.
 
-[Link to API Doc](https://bump.sh/billy/doc/back-api) Private
+## Tech Stack
 
-## Installation (setup)
+### Backend
+- Node.js + Express
+- TypeScript
+- MySQL database
 
-To install the project dependencies for both frontend and backend, run:
+### Frontend
+- React
+- CSS
 
+## Project Structure
+
+```
+WebProject/
+├── server/           # Express backend with TypeScript
+│   ├── src/          # Source code
+│   ├── dist/         # Compiled JavaScript
+│   └── ...
+├── front/            # React frontend
+│   ├── src/          # Source code
+│   ├── public/       # Static files
+│   └── ...
+├── database/         # Database schema and scripts
+│   └── ratamoth_db.sql
+└── doc/              # API documentation
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+)
+- npm or yarn
+- MySQL
+
+### Backend Setup
+
+1. Navigate to the server directory
+```bash
+cd server
+```
+
+2. Install dependencies
 ```bash
 npm install
 ```
 
-## Running the Project
+3. Create a `.env` file based on the example
+```bash
+cp .env.example .env
+```
+
+4. Build the TypeScript code
+```bash
+npm run build
+```
+
+5. Start the development server
+```bash
+npm run dev
+```
+
+The server will be running at http://localhost:3001
+
+### Frontend Setup
+
+1. Navigate to the front directory
+```bash
+cd front
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Start the development server
+```bash
+npm start
+```
+
+The application will be running at http://localhost:3000
+
+### Database Setup
+
+1. Create the database using the provided SQL script
+```bash
+mysql -u root -p < database/ratamoth_db.sql
+```
+
+## Development
+
+### Server
+
+- `npm run build` - Build the TypeScript code
+- `npm start` - Start the production server
+- `npm run dev` - Start the development server
+- `npm run watch` - Start the development server with hot reload
 
 ### Frontend
 
-To start the frontend development server, follow these steps:
+- `npm start` - Start the development server
+- `npm run build` - Build for production
+- `npm test` - Run tests
 
-1. Navigate to the frontend directory:
-    ```bash
-    cd front
-    ```
-2. Install the frontend dependencies:
-    ```bash
-    npm install
-    ```
+## Features
 
-3. Start the frontend development server:
-    ```bash
-    npm run dev
-    ```
-
-This will start the Next.js development server and you can view your project at `http://localhost:3000`.
-
-### Backend
-
-To set up and start the backend server using Express, follow these steps:
-
-1. Navigate to the backend directory:
-    ```bash
-    cd back
-    ```
-
-2. Install the backend dependencies:
-    ```bash
-    npm install
-    ```
-
-3. Start the backend server:
-    ```bash
-    npm start
-    ```
-
-The backend server will start and listen on the port specified in your configuration (usually `http://localhost:3005/`).
-
-### Full Setup
-
-To run both the frontend and backend servers simultaneously, follow these steps:
-
-1. Open two terminal windows or tabs.
-
-2. In the first terminal, navigate to the frontend directory and start the frontend server:
-    ```bash
-    cd front
-    npm run dev
-    ```
-
-3. In the second terminal, navigate to the backend directory and start the backend server:
-    ```bash
-    cd back
-    npm start
-    ```
-
-Now, you should have both the frontend and backend servers running. You can interact with the frontend at `http://localhost:3000` and the backend at `http://localhost:3005`.
-
-### Sending Data to the Backend
-
-To send data from the frontend to the backend and display the response, follow these steps:
-
-1. Open your browser and navigate to `http://localhost:3000`.
-
-2. Enter some text in the input field and click the "Send" button.
-
-3. The backend will receive the data and send a response back to the frontend, which will be displayed on the page.
-
-### Additional Notes
-
-- Ensure that you have [Node.js](https://nodejs.org/) installed on your machine.
-- If you encounter any issues with CORS, make sure that the backend server has CORS enabled as shown in the `app.js` file.
+- Product catalog with categories
+- Custom chocolate creation
+- Admin panel for product management
+- Order processing and tracking
+- Customer management
+- Payment processing
