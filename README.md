@@ -16,6 +16,7 @@ This project is a web application that allows users to browse and purchase choco
 ### Frontend
 - React
 - CSS
+- Tailwind CSS
 
 ## Project Structure
 
@@ -83,7 +84,33 @@ cd front
 npm install
 ```
 
-3. Start the development server
+3. Install Tailwind CSS and its dependencies
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+4. Configure Tailwind CSS by creating a tailwind.config.js file
+```javascript
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+5. Add Tailwind directives to your CSS file (src/index.css)
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+6. Start the development server
 ```bash
 npm start
 ```
