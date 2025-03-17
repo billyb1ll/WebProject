@@ -1,149 +1,170 @@
-# RataMoth Web Project
+# Ratamoth Chocolate E-commerce Platform
 
-A full-stack e-commerce application for selling chocolate products with customization options.
+A full-stack e-commerce application specializing in chocolate products with customization options.
 
 ## Project Overview
 
-This project is a web application that allows users to browse and purchase chocolate products, including custom chocolate creations. The application includes an admin panel for managing products, orders, and customers.
-
-## Tech Stack
-
-### Backend
-- Node.js + Express
-- TypeScript
-- MySQL database
-
-### Frontend
-- React
-- CSS
-- Tailwind CSS
+This web application provides a platform for selling chocolate products online, with features including product browsing, custom chocolate creation, shopping cart functionality, order processing, and admin management.
 
 ## Project Structure
 
 ```
-WebProject/
-├── server/           # Express backend with TypeScript
-│   ├── src/          # Source code
-│   ├── dist/         # Compiled JavaScript
-│   └── ...
-├── front/            # React frontend
-│   ├── src/          # Source code
-│   ├── public/       # Static files
-│   └── ...
-├── database/         # Database schema and scripts
-│   └── ratamoth_db.sql
-└── doc/              # API documentation
+/WebProject/
+├── server/                     # Backend TypeScript server
+│   ├── src/                    # TypeScript source code
+│   │   ├── controllers/        # Request handlers
+│   │   ├── models/             # Database models
+│   │   ├── routes/             # API route definitions
+│   │   ├── middleware/         # Express middleware
+│   │   ├── services/           # Business logic
+│   │   ├── utils/              # Utility functions
+│   │   ├── types/              # TypeScript type definitions
+│   │   ├── config/             # Configuration files
+│   │   └── app.ts              # Express application setup
+│   ├── dist/                   # Compiled JavaScript output
+│   ├── package.json            # Node.js dependencies
+│   ├── tsconfig.json           # TypeScript configuration
+│   └── .env                    # Environment variables (not in version control)
+│
+├── front/                      # React + TypeScript + Vite frontend
+│   ├── src/                    # Source files
+│   │   ├── components/         # Reusable UI components
+│   │   │   ├── common/         # Common components (buttons, inputs, etc.)
+│   │   │   ├── layout/         # Layout components (header, footer, etc.)
+│   │   │   └── product/        # Product-specific components
+│   │   ├── pages/              # Page components
+│   │   │   ├── Home/           # Home page
+│   │   │   ├── Products/       # Products listing page
+│   │   │   ├── CustomDesigner/ # Custom chocolate designer page
+│   │   │   ├── Cart/           # Shopping cart page
+│   │   │   ├── Checkout/       # Checkout page
+│   │   │   └── Admin/          # Admin dashboard pages
+│   │   ├── services/           # API services
+│   │   ├── hooks/              # Custom React hooks
+│   │   ├── store/              # State management
+│   │   ├── utils/              # Utility functions
+│   │   ├── assets/             # Static assets
+│   │   │   ├── images/         # Image files
+│   │   │   ├── styles/         # Global styles
+│   │   │   └── fonts/          # Font files
+│   │   ├── types/              # TypeScript type definitions
+│   │   ├── App.tsx             # Main App component
+│   │   └── main.tsx            # Entry point
+│   ├── public/                 # Public assets
+│   ├── index.html              # HTML entry point
+│   ├── package.json            # Node.js dependencies
+│   ├── tsconfig.json           # TypeScript configuration
+│   ├── vite.config.ts          # Vite configuration
+│   └── .env                    # Environment variables (not in version control)
+│
+├── database/                   # Database schemas and scripts
+│   ├── ratamoth_db.sql         # MySQL database schema
+│   ├── seed_data.sql           # Sample data for development
+│   └── migrations/             # Database migrations
+│
+├── docs/                       # Documentation
+│   ├── api/                    # API documentation
+│   └── design/                 # Design documents and wireframes
+│
+├── .gitignore                  # Git ignore file
+├── docker-compose.yml          # Docker Compose configuration
+├── package.json                # Root package.json for scripts
+└── README.md                   # This file
 ```
 
-## Getting Started
+## Technologies Used
 
-### Prerequisites
-
-- Node.js (v16+)
-- npm or yarn
-- MySQL
-
-### Backend Setup
-
-1. Navigate to the server directory
-```bash
-cd server
-```
-
-2. Install dependencies
-```bash
-npm install
-```
-
-3. Create a `.env` file based on the example
-```bash
-cp .env.example .env
-```
-
-4. Build the TypeScript code
-```bash
-npm run build
-```
-
-5. Start the development server
-```bash
-npm run dev
-```
-
-The server will be running at http://localhost:3001
-
-### Frontend Setup
-
-1. Navigate to the front directory
-```bash
-cd front
-```
-
-2. Install dependencies
-```bash
-npm install
-```
-
-3. Install Tailwind CSS and its dependencies
-```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
-
-4. Configure Tailwind CSS by creating a tailwind.config.js file
-```javascript
-module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
-
-5. Add Tailwind directives to your CSS file (src/index.css)
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-6. Start the development server
-```bash
-npm start
-```
-
-The application will be running at http://localhost:3000
-
-### Database Setup
-
-1. Create the database using the provided SQL script
-```bash
-mysql -u root -p < database/ratamoth_db.sql
-```
-
-## Development
-
-### Server
-
-- `npm run build` - Build the TypeScript code
-- `npm start` - Start the production server
-- `npm run dev` - Start the development server
-- `npm run watch` - Start the development server with hot reload
+### Backend
+- Node.js with TypeScript
+- Express.js (assumed)
+- MySQL database
 
 ### Frontend
+- React with TypeScript
+- Vite build tool
+- Modern ESLint configuration
 
-- `npm start` - Start the development server
-- `npm run build` - Build for production
-- `npm test` - Run tests
+### Database
+- MySQL with tables for:
+  - Products and product images
+  - Admin users
+  - Customers
+  - Orders and order items
+  - Payments
+  - Custom chocolate options
+  - Packaging options
 
 ## Features
 
-- Product catalog with categories
-- Custom chocolate creation
-- Admin panel for product management
-- Order processing and tracking
-- Customer management
+- Product catalog with categories and search
+- Custom chocolate designer
+- Shopping cart and checkout process
+- Order management
+- Admin dashboard for inventory and order management
 - Payment processing
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js (v16+ recommended)
+- MySQL (v8+ recommended)
+- npm or yarn
+
+### Database Setup
+1. Install MySQL if not already installed
+2. Run the database script to create the schema and tables:
+   ```
+   mysql -u your_username -p < database/ratamoth_db.sql
+   ```
+
+### Backend Setup
+1. Navigate to the server directory:
+   ```
+   cd server
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Create a `.env` file with your configuration:
+   ```
+   DB_HOST=localhost
+   DB_USER=your_username
+   DB_PASSWORD=your_password
+   DB_NAME=ratamoth_db
+   PORT=3000
+   ```
+4. Build and start the server:
+   ```
+   npm run build
+   npm start
+   ```
+
+### Frontend Setup
+1. Navigate to the front directory:
+   ```
+   cd front
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Create a `.env` file for API configuration:
+   ```
+   VITE_API_URL=http://localhost:3000/api
+   ```
+4. Start the development server:
+   ```
+   npm run dev
+   ```
+
+## Development
+
+- Backend server runs on: http://localhost:3000
+- Frontend development server runs on: http://localhost:5173
+
+
+## Contributors
+
+[Pakawat Sanboonsri]
+
