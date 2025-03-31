@@ -2,36 +2,23 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import { Button, HStack, Avatar } from "@chakra-ui/react";
 
 function App() {
-	const [count, setCount] = useState(0);
+	const Demo = () => {
+		return (
+			<HStack>
+				<Button>Click me</Button>
+				<Button>Click me</Button>
+				<Avatar.Root>
+					<Avatar.Fallback name="Segun Adebayo" />
+					<Avatar.Image src="https://bit.ly/sage-adebayo" />
+				</Avatar.Root>
+			</HStack>
+		);
+	};
 
-	return (
-		<>
-			<div>
-				<a href="https://vite.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button
-					onClick={() => setCount((count) => count + 1)}
-					className="bg-blue-500 hover:bg-blue-700 text-zinc-500 font-bold py-2 px-4 transition-colors duration-300">
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
-		</>
-	);
+	return Demo();
 }
 
 export default App;

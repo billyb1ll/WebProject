@@ -10,67 +10,77 @@ This web application provides a platform for selling chocolate products online, 
 
 ```
 /WebProject/
-├── server/                     # Backend TypeScript server
-│   ├── src/                    # TypeScript source code
-│   │   ├── controllers/        # Request handlers
-│   │   ├── models/             # Database models
+├── server/                     # Backend Node.js + Express + TypeScript server
+│   ├── src/                    # TypeScript source files
+│   │   ├── controllers/        # Request handlers for business logic
+│   │   │   ├── admin.controller.ts    # Admin-related operations
+│   │   │   └── product.controller.ts  # Product-related operations
 │   │   ├── routes/             # API route definitions
+│   │   │   ├── index.ts        # Main router configuration
+│   │   │   ├── admin.routes.ts # Admin API endpoints
+│   │   │   └── product.routes.ts # Product API endpoints
 │   │   ├── middleware/         # Express middleware
-│   │   ├── services/           # Business logic
-│   │   ├── utils/              # Utility functions
+│   │   │   ├── authMiddleware.ts # Authentication middleware
+│   │   │   └── errorHandler.ts # Global error handling
 │   │   ├── types/              # TypeScript type definitions
-│   │   ├── config/             # Configuration files
-│   │   └── app.ts              # Express application setup
+│   │   │   ├── admin.ts        # Admin interface definitions
+│   │   │   └── product.ts      # Product interface definitions
+│   │   ├── app.ts              # Express application configuration
+│   │   └── index.ts            # Server entry point
 │   ├── dist/                   # Compiled JavaScript output
-│   ├── package.json            # Node.js dependencies
-│   ├── tsconfig.json           # TypeScript configuration
-│   └── .env                    # Environment variables (not in version control)
+│   ├── package.json            # Node.js dependencies and scripts
+│   └── tsconfig.json           # TypeScript configuration
 │
 ├── front/                      # React + TypeScript + Vite frontend
 │   ├── src/                    # Source files
 │   │   ├── components/         # Reusable UI components
-│   │   │   ├── common/         # Common components (buttons, inputs, etc.)
-│   │   │   ├── layout/         # Layout components (header, footer, etc.)
-│   │   │   └── product/        # Product-specific components
-│   │   ├── pages/              # Page components
-│   │   │   ├── Home/           # Home page
-│   │   │   ├── Products/       # Products listing page
-│   │   │   ├── CustomDesigner/ # Custom chocolate designer page
-│   │   │   ├── Cart/           # Shopping cart page
-│   │   │   ├── Checkout/       # Checkout page
-│   │   │   └── Admin/          # Admin dashboard pages
-│   │   ├── services/           # API services
-│   │   ├── hooks/              # Custom React hooks
-│   │   ├── store/              # State management
-│   │   ├── utils/              # Utility functions
+│   │   │   └── ui/             # Core UI components with Chakra UI
+│   │   │       ├── provider.tsx       # Theme provider setup
+│   │   │       ├── color-mode.tsx     # Theme color mode handling
+│   │   │       ├── toaster.tsx        # Toast notification component
+│   │   │       └── tooltip.tsx        # Tooltip component
 │   │   ├── assets/             # Static assets
-│   │   │   ├── images/         # Image files
-│   │   │   ├── styles/         # Global styles
-│   │   │   └── fonts/          # Font files
-│   │   ├── types/              # TypeScript type definitions
 │   │   ├── App.tsx             # Main App component
-│   │   └── main.tsx            # Entry point
-│   ├── public/                 # Public assets
+│   │   └── main.tsx            # Application entry point
+│   ├── public/                 # Static public assets
 │   ├── index.html              # HTML entry point
-│   ├── package.json            # Node.js dependencies
-│   ├── tsconfig.json           # TypeScript configuration
-│   ├── vite.config.ts          # Vite configuration
-│   └── .env                    # Environment variables (not in version control)
+│   ├── package.json            # Node.js dependencies and scripts
+│   ├── vite.config.ts          # Vite bundler configuration
+│   └── tsconfig.json           # TypeScript configuration (split into app/node)
 │
 ├── database/                   # Database schemas and scripts
-│   ├── ratamoth_db.sql         # MySQL database schema
-│   ├── seed_data.sql           # Sample data for development
-│   └── migrations/             # Database migrations
+│   └── ratamoth_db.sql         # MySQL database schema definition
 │
-├── docs/                       # Documentation
-│   ├── api/                    # API documentation
-│   └── design/                 # Design documents and wireframes
+├── .github/                    # GitHub configuration
+│   └── workflows/              # GitHub Actions workflows
+│       └── bump.yml            # API documentation deployment workflow
 │
-├── .gitignore                  # Git ignore file
-├── docker-compose.yml          # Docker Compose configuration
-├── package.json                # Root package.json for scripts
-└── README.md                   # This file
+├── .vscode/                    # VS Code configuration
+│   └── settings.json           # Editor settings and customizations
+│
+├── .gitignore                  # Git ignore patterns
+└── README.md                   # Project documentation
 ```
+
+### Key Components
+
+#### Backend (server/)
+- **controllers/**: Implements business logic for API endpoints
+- **routes/**: Defines API routes and endpoints
+- **middleware/**: Contains Express middleware for authentication, error handling, etc.
+- **types/**: TypeScript interfaces for data models
+
+#### Frontend (front/)
+- **components/ui/**: Core UI components built with Chakra UI
+- **App.tsx**: Main application component
+- **main.tsx**: Entry point that renders the React app
+
+#### Database
+- **ratamoth_db.sql**: Complete database schema with tables for products, orders, customers, etc.
+
+#### DevOps
+- **.github/workflows/**: CI/CD automation for API documentation
+- **.vscode/**: Editor configuration for consistent development experience
 
 ## Technologies Used
 
