@@ -37,7 +37,7 @@ const NAV_ITEMS: Array<NavItem> = [
 ];
 
 export default function Navbar() {
-	const { isOpen, onToggle } = useDisclosure();
+	const { open, onToggle } = useDisclosure();
 
 	return (
 		<Box
@@ -46,7 +46,7 @@ export default function Navbar() {
 			top="0"
 			zIndex={1000}
 			width="100%"
-			className="shadow-md"
+			className="shadow-sm"
 			bg="white">
 			<Flex
 				bg="white"
@@ -71,7 +71,7 @@ export default function Navbar() {
 						variant={"ghost"}
 						aria-label={"Toggle Navigation"}
 						className="focus:outline-none">
-						{isOpen ? <FaTimes size={16} /> : <FaBars size={20} />}
+						{open ? <FaTimes size={16} /> : <FaBars size={20} />}
 					</IconButton>
 				</Flex>
 				<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
@@ -92,7 +92,7 @@ export default function Navbar() {
 									href={navItem.href}
 									fontSize={"sm"}
 									fontWeight={600}
-									color={"#a47864"}
+									color={"#989898"}
 									_hover={{ color: "#604538", textDecoration: "none" }}
 									className="transition-colors duration-200">
 									{navItem.label}
@@ -110,6 +110,9 @@ export default function Navbar() {
 					<Link href={"#"} textDecoration="none">
 						<Button
 							fontSize={"sm"}
+							width={{ base: "full", sm: "auto", md: "10rem" }}
+							minW={{ md: "8rem" }}
+							py={2}
 							fontWeight={400}
 							variant={"ghost"}
 							className="text-gray-600 hover:text-gray-800">
@@ -119,10 +122,13 @@ export default function Navbar() {
 					<Link href={"#"} textDecoration="none">
 						<Button
 							display={{ base: "none", md: "inline-flex" }}
+							width={{ base: "full", sm: "auto", md: "10rem" }}
+							minW={{ md: "8rem" }}
+							py={2}
 							fontSize={"sm"}
 							fontWeight={600}
 							color={"white"}
-							bg={"blue.400"}
+							bg={"#A47864"}
 							_hover={{
 								bg: "blue.500",
 							}}
@@ -133,14 +139,14 @@ export default function Navbar() {
 				</Stack>
 			</Flex>
 
-			<Collapse in={isOpen} animateOpacity>
+			<Collapse in={open} animateOpacity>
 				<Stack bg="white" p={4} display={{ md: "none" }} className="shadow-inner">
 					{NAV_ITEMS.map((navItem) => (
 						<Stack key={navItem.label} gap={4}>
 							<Link
 								py={2}
 								href={navItem.href}
-								color={"#a47864"}
+								color={"#989898"}
 								_hover={{ color: "#604538", bg: "gray.50" }}
 								className="px-3 py-2 rounded-md transition-colors duration-200">
 								{navItem.label}
