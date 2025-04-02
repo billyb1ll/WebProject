@@ -5,12 +5,12 @@ import {
 	Text,
 	IconButton,
 	Stack,
-	Link,
 	Button,
 	useDisclosure,
 } from "@chakra-ui/react";
 import { Collapse } from "@chakra-ui/transition";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 interface NavItem {
 	label: string;
@@ -23,12 +23,8 @@ const NAV_ITEMS: Array<NavItem> = [
 		href: "/",
 	},
 	{
-		label: "Features",
-		href: "/features",
-	},
-	{
-		label: "Pricing",
-		href: "/pricing",
+		label: "Products",
+		href: "/products",
 	},
 	{
 		label: "About",
@@ -36,17 +32,22 @@ const NAV_ITEMS: Array<NavItem> = [
 	},
 ];
 
+// Define brand colors
+const BRAND_COLOR = "#A47864";
+const BRAND_COLOR_DARK = "#604538";
+const INACTIVE_COLOR = "#989898";
+
 export default function Navbar() {
 	const { open, onToggle } = useDisclosure();
 
 	return (
 		<Box
 			as="header"
-			position="sticky"
+			position="fixed"
 			top="0"
 			zIndex={1000}
 			width="100%"
-			className="shadow-sm"
+			boxShadow="sm"
 			bg="white">
 			<Flex
 				bg="white"
@@ -61,42 +62,60 @@ export default function Navbar() {
 				width="100%"
 				maxW="container.2xl"
 				mx="auto"
-				className="transition-all duration-200">
+				justify="space-between"
+				transition="all 0.2s">
 				<Flex
-					flex={{ base: 1, md: "auto" }}
+					flex={{ base: "1", md: "auto" }}
 					ml={{ base: -2 }}
-					display={{ base: "flex", md: "none" }}>
+					display={{ base: "flex", md: "none" }}
+					alignItems="center">
 					<IconButton
 						onClick={onToggle}
+						as={open ? FaTimes : FaBars}
 						variant={"ghost"}
 						aria-label={"Toggle Navigation"}
-						className="focus:outline-none">
-						{open ? <FaTimes size={16} /> : <FaBars size={20} />}
-					</IconButton>
+						color={BRAND_COLOR}
+						_hover={{
+							color: BRAND_COLOR_DARK,
+							bg: "gray.100",
+						}}
+						fontSize="1.25rem"
+						boxSize={open ? 4 : 5}
+					/>
 				</Flex>
-				<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-					<Text
-						textAlign={{ base: "center", md: "left" }}
-						fontWeight="bold"
-						fontSize="xl"
-						className="text-blue-600 hover:text-blue-700">
-						Logo
-					</Text>
+				<Flex
+					flex={{ base: 1 }}
+					justify={{ base: "center", md: "start" }}
+					alignItems="center">
+					<NavLink to="/">
+						<Text
+							textAlign={{ base: "center", md: "left" }}
+							fontWeight="bold"
+							fontSize="xl"
+							color={BRAND_COLOR}
+							_hover={{ color: BRAND_COLOR_DARK }}>
+							Logo
+						</Text>
+					</NavLink>
 
 					<Flex display={{ base: "none", md: "flex" }} ml={10}>
 						<Stack direction={"row"} gap={4} align={"center"}>
 							{NAV_ITEMS.map((navItem) => (
-								<Link
+								<NavLink
 									key={navItem.label}
-									p={3}
-									href={navItem.href}
-									fontSize={"sm"}
-									fontWeight={600}
-									color={"#989898"}
-									_hover={{ color: "#604538", textDecoration: "none" }}
-									className="transition-colors duration-200">
+									to={navItem.href}
+									className={({ isActive }) =>
+										isActive ? "nav-active" : "nav-inactive"
+									}
+									style={({ isActive }) => ({
+										color: isActive ? BRAND_COLOR_DARK : INACTIVE_COLOR,
+										padding: "0.5rem 0.75rem",
+										fontSize: "0.875rem",
+										fontWeight: isActive ? "600" : "400",
+										transition: "color 0.2s",
+									})}>
 									{navItem.label}
-								</Link>
+								</NavLink>
 							))}
 						</Stack>
 					</Flex>
@@ -106,53 +125,96 @@ export default function Navbar() {
 					flex={{ base: 1, md: 0 }}
 					justify={"flex-end"}
 					direction={"row"}
-					gap={6}>
-					<Link href={"#"} textDecoration="none">
+					gap={{ base: 2, md: 6 }}
+					ml={{ base: 2, md: 0 }}>
+					<NavLink to="/login">
 						<Button
 							fontSize={"sm"}
-							width={{ base: "full", sm: "auto", md: "10rem" }}
-							minW={{ md: "8rem" }}
+							width={{ base: "auto", md: "10rem" }}
+							minW={{ base: "5rem", md: "8rem" }}
 							py={2}
 							fontWeight={400}
-							variant={"ghost"}
-							className="text-gray-600 hover:text-gray-800">
+							variant={"outline"}
+							borderColor={BRAND_COLOR}
+							color={BRAND_COLOR}
+							bg={"white"}
+							rounded={"10px"}
+							_hover={{
+								bg: "gray.50",
+								color: BRAND_COLOR_DARK,
+								borderColor: BRAND_COLOR_DARK,
+							}}
+							boxShadow="md"
+							_active={{ transform: "scale(0.98)" }}>
 							Sign In
 						</Button>
-					</Link>
-					<Link href={"#"} textDecoration="none">
+					</NavLink>
+					<NavLink to="/signup">
 						<Button
 							display={{ base: "none", md: "inline-flex" }}
-							width={{ base: "full", sm: "auto", md: "10rem" }}
+							width={{ base: "auto", md: "10rem" }}
 							minW={{ md: "8rem" }}
 							py={2}
+							rounded={"10px"}
 							fontSize={"sm"}
 							fontWeight={600}
 							color={"white"}
-							bg={"#A47864"}
+							bg={BRAND_COLOR}
 							_hover={{
-								bg: "blue.500",
+								bg: BRAND_COLOR_DARK,
 							}}
-							className="shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200">
+							boxShadow="md"
+							_active={{ transform: "scale(0.98)" }}>
 							Sign Up
 						</Button>
-					</Link>
+					</NavLink>
 				</Stack>
 			</Flex>
 
 			<Collapse in={open} animateOpacity>
-				<Stack bg="white" p={4} display={{ md: "none" }} className="shadow-inner">
+				<Stack bg="white" p={4} display={{ md: "none" }} boxShadow="md" gap={3}>
+					<Box borderBottom="1px" borderColor="gray.100" w="100%" />
 					{NAV_ITEMS.map((navItem) => (
-						<Stack key={navItem.label} gap={4}>
-							<Link
-								py={2}
-								href={navItem.href}
-								color={"#989898"}
-								_hover={{ color: "#604538", bg: "gray.50" }}
-								className="px-3 py-2 rounded-md transition-colors duration-200">
-								{navItem.label}
-							</Link>
-						</Stack>
+						<NavLink
+							key={navItem.label}
+							to={navItem.href}
+							onClick={onToggle}
+							className={({ isActive }) =>
+								isActive ? "nav-mobile-active" : "nav-mobile-inactive"
+							}
+							style={({ isActive }) => ({
+								padding: "0.75rem",
+								borderRadius: "0.375rem",
+								transition: "all 0.2s",
+								color: isActive ? BRAND_COLOR_DARK : INACTIVE_COLOR,
+								fontWeight: isActive ? "600" : "400",
+								display: "block",
+								background: isActive ? "rgba(164, 120, 100, 0.1)" : "transparent",
+							})}>
+							{navItem.label}
+						</NavLink>
 					))}
+					<Box mt={2} width="full" textAlign="center">
+						<NavLink
+							to="/signup"
+							onClick={onToggle}
+							style={{
+								display: "block",
+								fontSize: "0.875rem",
+								fontWeight: 600,
+								color: "white",
+								backgroundColor: BRAND_COLOR,
+								padding: "0.625rem 0",
+								borderRadius: "0.375rem",
+								width: "100%",
+								transition: "background-color 0.2s",
+							}}
+							onMouseEnter={(e) =>
+								(e.currentTarget.style.backgroundColor = BRAND_COLOR_DARK)
+							}>
+							Sign Up
+						</NavLink>
+					</Box>
 				</Stack>
 			</Collapse>
 		</Box>

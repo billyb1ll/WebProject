@@ -1,32 +1,32 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { Button, HStack, Avatar } from "@chakra-ui/react";
-import { Box } from "@chakra-ui/react";
 import Navbar from "./components/main/nav";
+import Footer from "./components/main/footer";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
 
 function App() {
+	console.log("App component rendering...");
 
 	return (
-		<>
-			<Navbar />
-			<Box
-				display="flex"
-				justifyContent="center"
-				alignItems="center"
-				height="100vh"
-				backgroundColor="gray.100"
-				padding="20px"
-				className="transition-all duration-200">
-				<div>
-					<a href="https://vitejs.dev" target="_blank">
-						<img src={viteLogo} className="logo" alt="Vite logo" />
-					</a>
-				</div>
-				
-				</Box>
-		</>
+		<BrowserRouter>
+			<header>
+				<Navbar />
+			</header>
+			<main>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/products" element={<Products />} />
+					<Route path="/about" element={<About />} />
+					<Route path="*" element={<NotFound />} />
+				</Routes>
+			</main>
+			<footer>
+				<Footer />
+			</footer>
+		</BrowserRouter>
 	);
 }
 

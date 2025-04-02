@@ -5,6 +5,10 @@ html {
   margin: 0;
   padding: 0;
   width: 100%;
+  height: 100%;
+  background-color: #fff;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
 }
 
 #root {
@@ -12,12 +16,85 @@ html {
   margin: 0;
   padding: 0;
   text-align: left;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
 }
 
-.content-container {
+/* Content container with max-width and center alignment */
+.container {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 1rem;
+}
+
+/* Page container for consistent layout */
+.page-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ensure the main content area fills available space */
+main {
+  flex: 1;
+  width: 100%;
+  display: block;
+  /* Change from flex to block to fix layout issues */
+}
+
+/* Section styling for consistent spacing */
+.section {
+  width: 100%;
+  padding: 2rem 0;
+}
+
+/* Chakra UI container override */
+.chakra-container {
+  display: block !important;
+}
+
+/* Debug outline - uncomment to see component boundaries */
+/* 
+.chakra-container, main, #root {
+  outline: 1px solid red;
+}
+*/
+
+/* Brand color variables */
+:root {
+  --brand-primary: #A47864;
+  --brand-dark: #604538;
+  --brand-inactive: #989898;
+  --brand-bg-light: rgba(164, 120, 100, 0.1);
+}
+
+/* Navigation styles */
+.nav-active:hover,
+.nav-inactive:hover {
+  color: var(--brand-primary) !important;
+}
+
+.nav-mobile-inactive:hover {
+  background-color: var(--brand-bg-light);
+  color: var(--brand-primary) !important;
+}
+
+/* Responsive text sizing */
+h1 {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
 }
 
 .logo {
@@ -26,9 +103,11 @@ html {
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -37,6 +116,7 @@ html {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -55,4 +135,3 @@ html {
 .read-the-docs {
   color: #888;
 }
-

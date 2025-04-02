@@ -10,9 +10,9 @@ This web application provides a platform for selling chocolate products online, 
 
 ```
 /WebProject/
-├── server/                     # Backend Node.js + Express + TypeScript server
-│   ├── src/                    # TypeScript source files
-│   │   ├── controllers/        # Request handlers for business logic
+├── server/                     # Backend server (Node.js + Express + TypeScript)
+│   ├── src/                    # Source files
+│   │   ├── controllers/        # Business logic for API endpoints
 │   │   │   ├── admin.controller.ts    # Admin-related operations
 │   │   │   └── product.controller.ts  # Product-related operations
 │   │   ├── routes/             # API route definitions
@@ -27,26 +27,31 @@ This web application provides a platform for selling chocolate products online, 
 │   │   │   └── product.ts      # Product interface definitions
 │   │   ├── app.ts              # Express application configuration
 │   │   └── index.ts            # Server entry point
-│   ├── dist/                   # Compiled JavaScript output
 │   ├── package.json            # Node.js dependencies and scripts
-│   └── tsconfig.json           # TypeScript configuration
+│   ├── tsconfig.json           # TypeScript configuration
+│   └── dist/                   # Compiled JavaScript output
 │
-├── front/                      # React + TypeScript + Vite frontend
+├── front/                      # Frontend application (React + TypeScript + Vite)
 │   ├── src/                    # Source files
 │   │   ├── components/         # Reusable UI components
+│   │   │   ├── main/           # Main components (e.g., Navbar, Footer)
 │   │   │   └── ui/             # Core UI components with Chakra UI
 │   │   │       ├── provider.tsx       # Theme provider setup
 │   │   │       ├── color-mode.tsx     # Theme color mode handling
 │   │   │       ├── toaster.tsx        # Toast notification component
 │   │   │       └── tooltip.tsx        # Tooltip component
-│   │   ├── assets/             # Static assets
+│   │   ├── pages/              # Page components
+│   │   │   ├── Home.tsx        # Home page
+│   │   │   ├── About.tsx       # About page
+│   │   │   ├── Products.tsx    # Products page
+│   │   │   └── NotFound.tsx    # 404 page
 │   │   ├── App.tsx             # Main App component
 │   │   └── main.tsx            # Application entry point
 │   ├── public/                 # Static public assets
-│   ├── index.html              # HTML entry point
 │   ├── package.json            # Node.js dependencies and scripts
 │   ├── vite.config.ts          # Vite bundler configuration
-│   └── tsconfig.json           # TypeScript configuration (split into app/node)
+│   ├── tsconfig.json           # TypeScript configuration
+│   └── index.html              # HTML entry point
 │
 ├── database/                   # Database schemas and scripts
 │   └── ratamoth_db.sql         # MySQL database schema definition
