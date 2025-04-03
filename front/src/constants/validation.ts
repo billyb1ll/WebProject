@@ -17,4 +17,5 @@ export const VALIDATION = {
 		TERMS_REQUIRED: "You must agree to the terms and conditions",
 		INVALID_EMAIL: "Please enter a valid email address",
 	},
+	EMAIL: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 };

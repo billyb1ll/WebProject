@@ -360,7 +360,7 @@ export default function SignUp() {
 									Already registered?{" "}
 									<Link
 										color={COLORS.BRAND_PRIMARY}
-										href="#"
+										href={ROUTES.LOGIN}
 										_hover={{ fontWeight: "bold", color: COLORS.BRAND_PRIMARY }}>
 										Log in
 									</Link>
