@@ -6,8 +6,8 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import SignUp from "./pages/Signup";
-import Login from "./pages/login";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 
 function App() {
 	return (
