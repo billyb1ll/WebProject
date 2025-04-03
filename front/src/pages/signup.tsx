@@ -14,8 +14,7 @@ import {
 	CloseButton,
 	InputGroup,
 	Heading,
-    NativeSelect,
-    Alert,
+	NativeSelect,
 } from "@chakra-ui/react";
 import { LuUser, LuMail, LuLock } from "react-icons/lu";
 import {
@@ -23,21 +22,20 @@ import {
 	PasswordStrengthMeter,
 } from "@/components/ui/password-input";
 import { Toaster, toaster } from "@/components/ui/toaster";
+import { COLORS } from "@/constants/colors";
+import { ROUTES } from "@/constants/routes";
+import { VALIDATION } from "@/constants/validation";
 
 export default function SignUp() {
 	const navigate = useNavigate();
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [email, setEmail] = useState("");
-	const [emailDomain, setEmailDomain] = useState("@gmail.com");
+	const [emailDomain, setEmailDomain] = useState(VALIDATION.EMAIL_DOMAINS.GMAIL);
 	const [customDomain, setCustomDomain] = useState("");
 	const [password, setPassword] = useState("");
-	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [showCustomDomain, setShowCustomDomain] = useState(false);
-
-	// Define minimum password requirements
-	const MIN_PASSWORD_LENGTH = 8;
-	const MIN_PASSWORD_STRENGTH = 2;
+	const [termsAccepted, setTermsAccepted] = useState(false);
 
 	// Calculate password strength
 	const calculatePasswordStrength = (password: string): number => {
@@ -46,12 +44,12 @@ export default function SignUp() {
 		let strength = 0;
 
 		if (password.length >= 8) strength += 1;
-        if (password.length >= 12) strength += 1;
-        if (new Set(password).size >= 5) {
-            strength += 1; // Unique characters
-        } else {
-            strength -= 1; // Not enough unique characters
-        }
+		if (password.length >= 12) strength += 1;
+		if (new Set(password).size >= 5) {
+			strength += 1; // Unique characters
+		} else {
+			strength -= 1; // Not enough unique characters
+		}
 
 		if (/[A-Z]/.test(password)) strength += 1; // Uppercase
 		if (/[0-9]/.test(password)) strength += 1; // Numbers
@@ -66,7 +64,7 @@ export default function SignUp() {
 	);
 
 	const handleClose = () => {
-		navigate("/");
+		navigate(ROUTES.HOME);
 	};
 
 	interface FormData {
@@ -78,18 +76,17 @@ export default function SignUp() {
 
 	// Validate password meets requirements
 	const validatePassword = (): { isValid: boolean; message: string } => {
-		if (password.length < MIN_PASSWORD_LENGTH) {
+		if (password.length < VALIDATION.PASSWORD.MIN_LENGTH) {
 			return {
 				isValid: false,
-				message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`,
+				message: VALIDATION.ERROR_MESSAGES.PASSWORD_TOO_SHORT,
 			};
 		}
 
-		if (passwordStrength < MIN_PASSWORD_STRENGTH) {
+		if (passwordStrength < VALIDATION.PASSWORD.MIN_STRENGTH) {
 			return {
 				isValid: false,
-				message:
-					"Password is too weak. Include uppercase letters, numbers, or special characters.",
+				message: VALIDATION.ERROR_MESSAGES.PASSWORD_TOO_WEAK,
 			};
 		}
 
@@ -98,11 +95,10 @@ export default function SignUp() {
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
-
 		if (!termsAccepted) {
 			toaster.create({
 				title: "Please check the terms",
-				description: "You must agree to the terms and conditions",
+				description: VALIDATION.ERROR_MESSAGES.TERMS_REQUIRED,
 				type: "error",
 				duration: 3000,
 			});
@@ -145,7 +141,7 @@ export default function SignUp() {
 
 		// Redirect after successful signup
 		setTimeout(() => {
-			navigate("/");
+			navigate(ROUTES.HOME);
 		}, 1300);
 	};
 
@@ -160,7 +156,7 @@ export default function SignUp() {
 				flexDirection="column"
 				justifyContent="center"
 				alignItems="center"
-				background="linear-gradient(to right, #FCE2C2, #C6AB9E, #A17866, #7A4B3A)">
+				background={`linear-gradient(to right, ${COLORS.BRAND_LIGHT}, ${COLORS.BRAND_SECONDARY}, ${COLORS.BRAND_TERTIARY}, ${COLORS.BRAND_QUATERNARY})`}>
 				<Box
 					maxW={{ base: "100%", md: "80%", lg: "70%" }}
 					w={{ base: "100%", md: "37%" }}
@@ -287,17 +283,19 @@ export default function SignUp() {
 														borderLeftRadius={0}
 														onChange={(e) => {
 															const value = e.target.value;
-															if (value === "@custom") {
+															if (value === VALIDATION.EMAIL_DOMAINS.CUSTOM) {
 																setShowCustomDomain(true);
 																setEmailDomain("");
 															} else {
 																setEmailDomain(value);
 															}
 														}}>
-														<option value="@gmail.com">@gmail.com</option>
-														<option value="@yahoo.com">@yahoo.com</option>
-														<option value="@outlook.com">@outlook.com</option>
-														<option value="@custom">Custom...</option>
+														<option value={VALIDATION.EMAIL_DOMAINS.GMAIL}>@gmail.com</option>
+														<option value={VALIDATION.EMAIL_DOMAINS.YAHOO}>@yahoo.com</option>
+														<option value={VALIDATION.EMAIL_DOMAINS.OUTLOOK}>
+															@outlook.com
+														</option>
+														<option value={VALIDATION.EMAIL_DOMAINS.CUSTOM}>Custom...</option>
 													</NativeSelect.Field>
 													<NativeSelect.Indicator />
 												</NativeSelect.Root>
@@ -315,28 +313,31 @@ export default function SignUp() {
 											placeholder="Enter your password"
 											size="lg"
 											value={password}
+											bg={"white"}
 											onChange={(e) => setPassword(e.target.value)}
 										/>
 									</InputGroup>
 									<Field.HelperText fontSize={"x-small"}>
-										Password must be at least 8 characters with uppercase, numbers, or
-										special characters.
+										Password must be at least {VALIDATION.PASSWORD.MIN_LENGTH} characters
+										with uppercase, numbers, or special characters.
 									</Field.HelperText>
 									<PasswordStrengthMeter value={passwordStrength} width={"lg"} />
 								</Field.Root>
+
 								<Checkbox.Root
-									mt={2}
-									required
 									checked={termsAccepted}
-									onCheckedChange={(checked) => setTermsAccepted(!!checked)}>
+									onCheckedChange={(e) => setTermsAccepted(!!e.checked)}>
 									<Checkbox.HiddenInput />
-									<Checkbox.Control />
+									<Checkbox.Control
+										background={COLORS.BRAND_PRIMARY}
+										borderRadius={"6px"}
+									/>
 									<Checkbox.Label>
 										I agree to the{" "}
 										<Link
 											href="#"
-											color={"#A47864"}
-											_hover={{ fontWeight: "bold", color: "#A47864" }}>
+											color={COLORS.BRAND_PRIMARY}
+											_hover={{ fontWeight: "bold", color: COLORS.BRAND_PRIMARY }}>
 											terms and conditions
 										</Link>
 									</Checkbox.Label>
@@ -345,7 +346,7 @@ export default function SignUp() {
 									size="lg"
 									width="100%"
 									mt={4}
-									background={"#A47864"}
+									background={COLORS.BRAND_PRIMARY}
 									boxShadow={"md"}
 									borderRadius={"6px"}
 									type="submit">
@@ -358,9 +359,9 @@ export default function SignUp() {
 									textAlign={"center"}>
 									Already registered?{" "}
 									<Link
-										color="#A47864"
+										color={COLORS.BRAND_PRIMARY}
 										href="#"
-										_hover={{ fontWeight: "bold", color: "#A47864" }}>
+										_hover={{ fontWeight: "bold", color: COLORS.BRAND_PRIMARY }}>
 										Log in
 									</Link>
 								</Heading>

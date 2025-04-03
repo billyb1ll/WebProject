@@ -65,12 +65,19 @@ main {
 }
 */
 
-/* Brand color variables */
+/* Brand color variables - these match the TypeScript constants */
 :root {
   --brand-primary: #A47864;
   --brand-dark: #604538;
-  --brand-inactive: #989898;
-  --brand-bg-light: rgba(164, 120, 100, 0.1);
+  --brand-light: #FCE2C2;
+  --brand-secondary: #C6AB9E;
+  --brand-tertiary: #A17866;
+  --brand-quaternary: #7A4B3A;
+  --inactive: #989898;
+  --text-light: #E8E2D9;
+  --text-primary: #213547;
+  --background-light: #F5F0E8;
+  --background-medium: #E0D9CF;
 }
 
 /* Navigation styles */
@@ -80,7 +87,7 @@ main {
 }
 
 .nav-mobile-inactive:hover {
-  background-color: var(--brand-bg-light);
+  background-color: rgba(164, 120, 100, 0.1);
   color: var(--brand-primary) !important;
 }
 

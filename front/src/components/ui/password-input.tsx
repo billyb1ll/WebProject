@@ -37,13 +37,16 @@ export const PasswordInput = React.forwardRef<
   PasswordInputProps
 >(function PasswordInput(props, ref) {
   const {
-    rootProps,
-    defaultVisible,
-    visible: visibleProp,
-    onVisibleChange,
-    visibilityIcon = { on: <LuEye />, off: <LuEyeOff /> },
-    ...rest
-  } = props
+			rootProps,
+			defaultVisible,
+			visible: visibleProp,
+			onVisibleChange,
+			visibilityIcon = {
+				on: <LuEye />,
+				off: <LuEyeOff />,
+			},
+			...rest
+		} = props;
 
   const [visible, setVisible] = useControllableState({
     value: visibleProp,
@@ -88,6 +91,7 @@ const VisibilityTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
         me="-2"
         aspectRatio="square"
         size="sm"
+        background={"transparent"}
         variant="ghost"
         height="calc(100% - {spacing.2})"
         aria-label="Toggle password visibility"

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { Product } from "../types/product";
+import { MESSAGES } from "../constants/messages";
+import { API } from "../constants/api";
 
 export class ProductController {
 	// Get all products
@@ -11,11 +13,11 @@ export class ProductController {
 				{ id: 2, name: "Custom Box", price: 15.99, category: "Custom" },
 			];
 
-			res.status(200).json({ success: true, data: products });
+			res.status(API.STATUS_CODES.OK).json({ success: true, data: products });
 		} catch (error) {
 			res
-				.status(500)
-				.json({ success: false, message: "Failed to fetch products" });
+				.status(API.STATUS_CODES.SERVER_ERROR)
+				.json({ success: false, message: MESSAGES.PRODUCT.FETCH_ALL_ERROR });
 		}
 	};
 
@@ -24,7 +26,7 @@ export class ProductController {
 		try {
 			const { id } = req.params;
 			// In a real app, fetch from database based on ID
-			res.status(200).json({
+			res.status(API.STATUS_CODES.OK).json({
 				success: true,
 				data: {
 					id: parseInt(id),
@@ -34,7 +36,9 @@ export class ProductController {
 				},
 			});
 		} catch (error) {
-			res.status(500).json({ success: false, message: "Failed to fetch product" });
+			res
+				.status(API.STATUS_CODES.SERVER_ERROR)
+				.json({ success: false, message: MESSAGES.PRODUCT.FETCH_ONE_ERROR });
 		}
 	};
 
@@ -43,11 +47,13 @@ export class ProductController {
 		try {
 			const productData = req.body;
 			// In a real app, save to database
-			res.status(201).json({ success: true, data: { id: 3, ...productData } });
+			res
+				.status(API.STATUS_CODES.CREATED)
+				.json({ success: true, data: { id: 3, ...productData } });
 		} catch (error) {
 			res
-				.status(500)
-				.json({ success: false, message: "Failed to create product" });
+				.status(API.STATUS_CODES.SERVER_ERROR)
+				.json({ success: false, message: MESSAGES.PRODUCT.CREATE_ERROR });
 		}
 	};
 
@@ -58,12 +64,12 @@ export class ProductController {
 			const productData = req.body;
 			// In a real app, update in database
 			res
-				.status(200)
+				.status(API.STATUS_CODES.OK)
 				.json({ success: true, data: { id: parseInt(id), ...productData } });
 		} catch (error) {
 			res
-				.status(500)
-				.json({ success: false, message: "Failed to update product" });
+				.status(API.STATUS_CODES.SERVER_ERROR)
+				.json({ success: false, message: MESSAGES.PRODUCT.UPDATE_ERROR });
 		}
 	};
 
@@ -72,11 +78,14 @@ export class ProductController {
 		try {
 			const { id } = req.params;
 			// In a real app, delete from database
-			res.status(200).json({ success: true, message: `Product ${id} deleted` });
+			res.status(API.STATUS_CODES.OK).json({
+				success: true,
+				message: MESSAGES.PRODUCT.DELETE_SUCCESS.replace("{id}", id),
+			});
 		} catch (error) {
 			res
-				.status(500)
-				.json({ success: false, message: "Failed to delete product" });
+				.status(API.STATUS_CODES.SERVER_ERROR)
+				.json({ success: false, message: MESSAGES.PRODUCT.DELETE_ERROR });
 		}
 	};
 }

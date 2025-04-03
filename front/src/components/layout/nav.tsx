@@ -11,6 +11,8 @@ import {
 import { Collapse } from "@chakra-ui/transition";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import { COLORS } from "../../constants/colors";
+import { ROUTES } from "../../constants/routes";
 
 interface NavItem {
 	label: string;
@@ -20,22 +22,17 @@ interface NavItem {
 const NAV_ITEMS: Array<NavItem> = [
 	{
 		label: "Home",
-		href: "/",
+		href: ROUTES.HOME,
 	},
 	{
 		label: "Products",
-		href: "/products",
+		href: ROUTES.PRODUCTS,
 	},
 	{
 		label: "About",
-		href: "/about",
+		href: ROUTES.ABOUT,
 	},
 ];
-
-// Define brand colors
-const BRAND_COLOR = "#A47864";
-const BRAND_COLOR_DARK = "#604538";
-const INACTIVE_COLOR = "#989898";
 
 export default function Navbar() {
 	const { open, onToggle } = useDisclosure();
@@ -74,9 +71,9 @@ export default function Navbar() {
 						as={open ? FaTimes : FaBars}
 						variant={"ghost"}
 						aria-label={"Toggle Navigation"}
-						color={BRAND_COLOR}
+						color={COLORS.BRAND_PRIMARY}
 						_hover={{
-							color: BRAND_COLOR_DARK,
+							color: COLORS.BRAND_DARK,
 							bg: "gray.100",
 						}}
 						fontSize="1.25rem"
@@ -87,13 +84,13 @@ export default function Navbar() {
 					flex={{ base: 1 }}
 					justify={{ base: "center", md: "start" }}
 					alignItems="center">
-					<NavLink to="/">
+					<NavLink to={ROUTES.HOME}>
 						<Text
 							textAlign={{ base: "center", md: "left" }}
 							fontWeight="bold"
 							fontSize="xl"
-							color={BRAND_COLOR}
-							_hover={{ color: BRAND_COLOR_DARK }}>
+							color={COLORS.BRAND_PRIMARY}
+							_hover={{ color: COLORS.BRAND_DARK }}>
 							Logo
 						</Text>
 					</NavLink>
@@ -108,7 +105,7 @@ export default function Navbar() {
 										isActive ? "nav-active" : "nav-inactive"
 									}
 									style={({ isActive }) => ({
-										color: isActive ? BRAND_COLOR_DARK : INACTIVE_COLOR,
+										color: isActive ? COLORS.BRAND_DARK : COLORS.INACTIVE,
 										padding: "0.5rem 0.75rem",
 										fontSize: "0.875rem",
 										fontWeight: isActive ? "600" : "400",
@@ -127,7 +124,7 @@ export default function Navbar() {
 					direction={"row"}
 					gap={{ base: 2, md: 6 }}
 					ml={{ base: 2, md: 0 }}>
-					<NavLink to="/login">
+					<NavLink to={ROUTES.LOGIN}>
 						<Button
 							fontSize={"sm"}
 							width={{ base: "auto", md: "10rem" }}
@@ -135,21 +132,21 @@ export default function Navbar() {
 							py={2}
 							fontWeight={400}
 							variant={"outline"}
-							borderColor={BRAND_COLOR}
-							color={BRAND_COLOR}
+							borderColor={COLORS.BRAND_PRIMARY}
+							color={COLORS.BRAND_PRIMARY}
 							bg={"white"}
 							rounded={"10px"}
 							_hover={{
 								bg: "gray.50",
-								color: BRAND_COLOR_DARK,
-								borderColor: BRAND_COLOR_DARK,
+								color: COLORS.BRAND_DARK,
+								borderColor: COLORS.BRAND_DARK,
 							}}
 							boxShadow="md"
 							_active={{ transform: "scale(0.98)" }}>
 							Sign In
 						</Button>
 					</NavLink>
-					<NavLink to="/signup">
+					<NavLink to={ROUTES.SIGNUP}>
 						<Button
 							display={{ base: "none", md: "inline-flex" }}
 							width={{ base: "auto", md: "10rem" }}
@@ -159,9 +156,9 @@ export default function Navbar() {
 							fontSize={"sm"}
 							fontWeight={600}
 							color={"white"}
-							bg={BRAND_COLOR}
+							bg={COLORS.BRAND_PRIMARY}
 							_hover={{
-								bg: BRAND_COLOR_DARK,
+								bg: COLORS.BRAND_DARK,
 							}}
 							boxShadow="md"
 							_active={{ transform: "scale(0.98)" }}>
@@ -186,7 +183,7 @@ export default function Navbar() {
 								padding: "0.75rem",
 								borderRadius: "0.375rem",
 								transition: "all 0.2s",
-								color: isActive ? BRAND_COLOR_DARK : INACTIVE_COLOR,
+								color: isActive ? COLORS.BRAND_DARK : COLORS.INACTIVE,
 								fontWeight: isActive ? "600" : "400",
 								display: "block",
 								background: isActive ? "rgba(164, 120, 100, 0.1)" : "transparent",
@@ -196,21 +193,21 @@ export default function Navbar() {
 					))}
 					<Box mt={2} width="full" textAlign="center">
 						<NavLink
-							to="/signup"
+							to={ROUTES.SIGNUP}
 							onClick={onToggle}
 							style={{
 								display: "block",
 								fontSize: "0.875rem",
 								fontWeight: 600,
 								color: "white",
-								backgroundColor: BRAND_COLOR,
+								backgroundColor: COLORS.BRAND_PRIMARY,
 								padding: "0.625rem 0",
 								borderRadius: "0.375rem",
 								width: "100%",
 								transition: "background-color 0.2s",
 							}}
 							onMouseEnter={(e) =>
-								(e.currentTarget.style.backgroundColor = BRAND_COLOR_DARK)
+								(e.currentTarget.style.backgroundColor = COLORS.BRAND_DARK)
 							}>
 							Sign Up
 						</NavLink>

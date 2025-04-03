@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import { Admin } from "../types/admin";
+import { MESSAGES } from "../constants/messages";
+import { API } from "../constants/api";
+import { API as SharedAPI } from "../../../front/src/constants/api";
 
 export class AdminController {
 	// Login admin
@@ -9,16 +12,22 @@ export class AdminController {
 
 			// In a real app, validate credentials against database and use proper auth
 			if (username === "admin" && password === "password") {
-				res.status(200).json({
+				res.status(API.STATUS_CODES.OK).json({
 					success: true,
-					token: "mock-jwt-token",
+					token: SharedAPI.MOCK.JWT_TOKEN,
 					user: { id: 1, username, role: "admin" },
 				});
 			} else {
-				res.status(401).json({ success: false, message: "Invalid credentials" });
+				res.status(API.STATUS_CODES.UNAUTHORIZED).json({
+					success: false,
+					message: MESSAGES.ADMIN.INVALID_CREDENTIALS,
+				});
 			}
 		} catch (error) {
-			res.status(500).json({ success: false, message: "Login failed" });
+			res.status(API.STATUS_CODES.SERVER_ERROR).json({
+				success: false,
+				message: MESSAGES.ERROR.LOGIN,
+			});
 		}
 	};
 
@@ -35,9 +44,12 @@ export class AdminController {
 				role: "admin",
 			};
 
-			res.status(200).json({ success: true, data: admin });
+			res.status(API.STATUS_CODES.OK).json({ success: true, data: admin });
 		} catch (error) {
-			res.status(500).json({ success: false, message: "Failed to fetch profile" });
+			res.status(API.STATUS_CODES.SERVER_ERROR).json({
+				success: false,
+				message: MESSAGES.ADMIN.PROFILE_ERROR,
+			});
 		}
 	};
 
@@ -46,15 +58,15 @@ export class AdminController {
 		try {
 			const profileData = req.body;
 			// In a real app, update in database
-			res.status(200).json({
+			res.status(API.STATUS_CODES.OK).json({
 				success: true,
 				data: { id: 1, ...profileData },
-				message: "Profile updated successfully",
+				message: MESSAGES.ADMIN.UPDATE_SUCCESS,
 			});
 		} catch (error) {
 			res
-				.status(500)
-				.json({ success: false, message: "Failed to update profile" });
+				.status(API.STATUS_CODES.SERVER_ERROR)
+				.json({ success: false, message: MESSAGES.ADMIN.UPDATE_ERROR });
 		}
 	};
 }
