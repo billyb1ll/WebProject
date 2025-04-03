@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Banner from "../components/main/banner";
+import Banner from "../components/layout/banner";
+import Navbar from "../components/layout/nav";
 import {
 	Box,
 	Container,
@@ -11,6 +12,7 @@ import {
 	Image,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import Footer from "../components/layout/footer";
 
 export default function Home() {
 	const [index, setIndex] = useState(0);
@@ -111,6 +113,9 @@ export default function Home() {
 	};
 	return (
 		<>
+			<header>
+				<Navbar />
+			</header>
 			<Banner />
 			<Container
 				maxW="container.xl"
@@ -519,6 +524,9 @@ export default function Home() {
 					</Box>
 				</Box>
 			</Container>
+			<footer>
+				<Footer />
+			</footer>
 		</>
 	);
 }

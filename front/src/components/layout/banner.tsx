@@ -24,11 +24,11 @@ export default function Banner() {
 
 	return (
 		<Box w="100%" position="relative" overflow="hidden">
-			{/* Banner container with aspect ratio matching 1440x555 (2.6:1) */}
 			<Box
 				position="relative"
 				width="100%"
 				paddingBottom="38.54%"
+				aspectRatio={"2.6.1"}
 				overflow="hidden">
 				{/* Images with transition effect */}
 				{BANNER_IMAGES.map((image, index) => (

@@ -13,110 +13,119 @@ This web application provides a platform for selling chocolate products online, 
 ├── server/                     # Backend server (Node.js + Express + TypeScript)
 │   ├── src/                    # Source files
 │   │   ├── controllers/        # Business logic for API endpoints
-│   │   │   ├── admin.controller.ts    # Admin-related operations
-│   │   │   └── product.controller.ts  # Product-related operations
 │   │   ├── routes/             # API route definitions
-│   │   │   ├── index.ts        # Main router configuration
-│   │   │   ├── admin.routes.ts # Admin API endpoints
-│   │   │   └── product.routes.ts # Product API endpoints
 │   │   ├── middleware/         # Express middleware
-│   │   │   ├── authMiddleware.ts # Authentication middleware
-│   │   │   └── errorHandler.ts # Global error handling
 │   │   ├── types/              # TypeScript type definitions
-│   │   │   ├── admin.ts        # Admin interface definitions
-│   │   │   └── product.ts      # Product interface definitions
+│   │   ├── services/           # Business logic services
+│   │   ├── utils/              # Utility functions and helpers
+│   │   ├── config/             # Configuration files
+│   │   ├── models/             # Data models and database schemas
 │   │   ├── app.ts              # Express application configuration
 │   │   └── index.ts            # Server entry point
-│   ├── package.json            # Node.js dependencies and scripts
-│   ├── tsconfig.json           # TypeScript configuration
+│   ├── tests/                  # Backend tests
+│   │   ├── unit/               # Unit tests
+│   │   ├── integration/        # Integration tests
+│   │   └── e2e/                # End-to-end tests
 │   └── dist/                   # Compiled JavaScript output
 │
 ├── front/                      # Frontend application (React + TypeScript + Vite)
 │   ├── src/                    # Source files
+│   │   ├── assets/             # Static assets (images, fonts, etc.)
+│   │   │   ├── images/         # Image files
+│   │   │   ├── fonts/          # Font files
+│   │   │   └── styles/         # Global styles
 │   │   ├── components/         # Reusable UI components
-│   │   │   ├── main/           # Main components (e.g., Navbar, Footer)
-│   │   │   └── ui/             # Core UI components with Chakra UI
-│   │   │       ├── provider.tsx       # Theme provider setup
-│   │   │       ├── color-mode.tsx     # Theme color mode handling
-│   │   │       ├── toaster.tsx        # Toast notification component
-│   │   │       └── tooltip.tsx        # Tooltip component
+│   │   │   ├── layout/         # Layout components (Header, Footer, etc.)
+│   │   │   ├── ui/             # Core UI components with Chakra UI
+│   │   │   ├── common/         # Common components used across pages
+│   │   │   └── features/       # Feature-specific components
+│   │   ├── hooks/              # Custom React hooks
+│   │   ├── contexts/           # React context providers
 │   │   ├── pages/              # Page components
-│   │   │   ├── Home.tsx        # Home page
-│   │   │   ├── About.tsx       # About page
-│   │   │   ├── Products.tsx    # Products page
-│   │   │   └── NotFound.tsx    # 404 page
+│   │   ├── utils/              # Utility functions
+│   │   ├── services/           # API service integrations
+│   │   ├── types/              # TypeScript type definitions
+│   │   ├── constants/          # Application constants
 │   │   ├── App.tsx             # Main App component
 │   │   └── main.tsx            # Application entry point
 │   ├── public/                 # Static public assets
-│   ├── package.json            # Node.js dependencies and scripts
-│   ├── vite.config.ts          # Vite bundler configuration
-│   ├── tsconfig.json           # TypeScript configuration
-│   └── index.html              # HTML entry point
+│   └── tests/                  # Frontend tests
+│
+├── shared/                     # Shared code between frontend and backend
+│   ├── types/                  # Shared TypeScript interfaces
+│   ├── constants/              # Shared constants
+│   └── utils/                  # Shared utilities
 │
 ├── database/                   # Database schemas and scripts
-│   └── ratamoth_db.sql         # MySQL database schema definition
+│   ├── migrations/             # Database migration scripts
+│   ├── seeds/                  # Seed data for development
+│   └── ratamoth_db.sql         # Main database schema
+│
+├── docs/                       # Project documentation
+│   ├── api/                    # API documentation
+│   ├── architecture/           # Architecture diagrams and docs
+│   ├── guides/                 # Developer guides and user manuals
+│   └── images/                 # Documentation images
+│
+├── scripts/                    # Utility scripts for development
+│   ├── setup.sh                # Setup script
+│   ├── build.sh                # Build script
+│   └── deploy.sh               # Deployment script
 │
 ├── .github/                    # GitHub configuration
 │   └── workflows/              # GitHub Actions workflows
-│       └── bump.yml            # API documentation deployment workflow
 │
 ├── .vscode/                    # VS Code configuration
-│   └── settings.json           # Editor settings and customizations
 │
 ├── .gitignore                  # Git ignore patterns
+├── .env.example                # Example environment variables
 └── README.md                   # Project documentation
 ```
 
-### Key Components
+## Key Components
 
-#### Backend (server/)
-- **controllers/**: Implements business logic for API endpoints
-- **routes/**: Defines API routes and endpoints
-- **middleware/**: Contains Express middleware for authentication, error handling, etc.
-- **types/**: TypeScript interfaces for data models
+### Shared Code (/shared)
+The new `shared` directory contains code shared between frontend and backend:
+- **types/**: Common TypeScript interfaces used in both front and back-end
+- **constants/**: Shared constants like API endpoints, error codes, etc.
+- **utils/**: Common utility functions
 
-#### Frontend (front/)
-- **components/ui/**: Core UI components built with Chakra UI
-- **App.tsx**: Main application component
-- **main.tsx**: Entry point that renders the React app
+### Improved Frontend Structure (/front)
+- **assets/**: Organized storage for static assets
+- **components/features/**: Components organized by feature
+- **contexts/**: React context providers for state management
+- **hooks/**: Custom React hooks for reusable logic
+- **services/**: API service integrations
 
-#### Database
-- **ratamoth_db.sql**: Complete database schema with tables for products, orders, customers, etc.
+### Enhanced Backend Structure (/server)
+- **services/**: Business logic extracted from controllers
+- **utils/**: Helper functions and utilities
+- **config/**: Configuration management
+- **models/**: Data models and schemas
 
-#### DevOps
-- **.github/workflows/**: CI/CD automation for API documentation
-- **.vscode/**: Editor configuration for consistent development experience
+### Documentation (/docs)
+Comprehensive documentation including:
+- API documentation
+- Architecture diagrams
+- User and developer guides
 
 ## Technologies Used
 
 ### Backend
 - Node.js with TypeScript
-- Express.js (assumed)
+- Express.js
 - MySQL database
 
 ### Frontend
 - React with TypeScript
 - Vite build tool
-- Modern ESLint configuration
+- Chakra UI for components
+- React Router for navigation
 
-### Database
-- MySQL with tables for:
-  - Products and product images
-  - Admin users
-  - Customers
-  - Orders and order items
-  - Payments
-  - Custom chocolate options
-  - Packaging options
-
-## Features
-
-- Product catalog with categories and search
-- Custom chocolate designer
-- Shopping cart and checkout process
-- Order management
-- Admin dashboard for inventory and order management
-- Payment processing
+### Development Tools
+- Git for version control
+- GitHub Actions for CI/CD
+- VS Code for development
 
 ## Setup Instructions
 
@@ -173,11 +182,22 @@ This web application provides a platform for selling chocolate products online, 
    npm run dev
    ```
 
-## Development
+## Development Guidelines
 
-- Backend server runs on: http://localhost:3000
-- Frontend development server runs on: http://localhost:5173
+### Code Organization
+- Follow the folder structure described above
+- Place shared types in the `/shared/types` directory
+- Organize components by feature when possible
 
+### Naming Conventions
+- Use PascalCase for React components
+- Use camelCase for variables, functions, and file names (except React component files)
+- Use kebab-case for CSS class names and CSS files
+
+### Git Workflow
+- Use feature branches for development
+- Submit pull requests for code reviews
+- Follow conventional commits for commit messages
 
 ## Contributors
 
