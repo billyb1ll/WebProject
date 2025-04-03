@@ -148,6 +148,7 @@ export default function SignUp() {
 	return (
 		<>
 			<Toaster />
+			{/* Main container with gradient background */}
 			<Container
 				maxW="100vw"
 				h="100vh"
@@ -157,6 +158,7 @@ export default function SignUp() {
 				justifyContent="center"
 				alignItems="center"
 				background={`linear-gradient(to right, ${COLORS.BRAND_LIGHT}, ${COLORS.BRAND_SECONDARY}, ${COLORS.BRAND_TERTIARY}, ${COLORS.BRAND_QUATERNARY})`}>
+				{/* Sign-up form card */}
 				<Box
 					maxW={{ base: "100%", md: "80%", lg: "70%" }}
 					w={{ base: "100%", md: "37%" }}
@@ -189,6 +191,7 @@ export default function SignUp() {
 					/>
 
 					<Stack gap={6} width="100%">
+						{/* Form header */}
 						<Box textAlign="center" width="100%">
 							<Text fontSize="2xl" fontWeight="bold" mb={2}>
 								Create Account
@@ -197,8 +200,10 @@ export default function SignUp() {
 								Create your custom chocolate experience today!
 							</Text>
 						</Box>
+						{/* Registration form */}
 						<form onSubmit={handleSubmit} style={{ width: "100%" }}>
 							<Stack gap={6}>
+								{/* First Name field */}
 								<Field.Root required>
 									<Field.Label>
 										First Name
@@ -213,6 +218,7 @@ export default function SignUp() {
 										/>
 									</InputGroup>
 								</Field.Root>
+								{/* Last Name field */}
 								<Field.Root required>
 									<Field.Label>
 										Last Name
@@ -227,6 +233,7 @@ export default function SignUp() {
 										/>
 									</InputGroup>
 								</Field.Root>
+								{/* Email field with domain selection */}
 								<Field.Root required>
 									<Field.Label>
 										Email
@@ -303,6 +310,7 @@ export default function SignUp() {
 										</Box>
 									</Box>
 								</Field.Root>
+								{/* Password field with strength meter */}
 								<Field.Root required>
 									<Field.Label>
 										Password
@@ -324,6 +332,7 @@ export default function SignUp() {
 									<PasswordStrengthMeter value={passwordStrength} width={"lg"} />
 								</Field.Root>
 
+								{/* Terms and conditions checkbox */}
 								<Checkbox.Root
 									checked={termsAccepted}
 									onCheckedChange={(e) => setTermsAccepted(!!e.checked)}>
@@ -342,6 +351,7 @@ export default function SignUp() {
 										</Link>
 									</Checkbox.Label>
 								</Checkbox.Root>
+								{/* Sign-up button */}
 								<Button
 									size="lg"
 									width="100%"
@@ -352,6 +362,7 @@ export default function SignUp() {
 									type="submit">
 									Sign Up
 								</Button>
+								{/* Login link */}
 								<Heading
 									as={"h4"}
 									fontSize={"sm"}

@@ -1,6 +1,6 @@
 "use client";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
 	Box,
 	Button,
@@ -32,10 +32,8 @@ export default function Login() {
 		navigate(ROUTES.HOME);
 	};
 
-	// Validate password meets requirements
-
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
+		e.preventDefault();
 		// Check if email is valid
 		if (!VALIDATION.EMAIL.test(email)) {
 			toaster.create({
@@ -43,11 +41,10 @@ export default function Login() {
 				description: "Please enter a valid email address.",
 				type: "error",
 				duration: 3000,
-            });
-            setTimeout(() => {
-                setEmail("");
-            }
-            , 1300);
+			});
+			setTimeout(() => {
+				setEmail("");
+			}, 1300);
 			return;
 		}
 		if (!termsAccepted) {
@@ -56,11 +53,10 @@ export default function Login() {
 				description: VALIDATION.ERROR_MESSAGES.TERMS_REQUIRED,
 				type: "error",
 				duration: 3000,
-            });
-            setTimeout(() => {
-                setTermsAccepted(false);
-            }
-            , 1300);
+			});
+			setTimeout(() => {
+				setTermsAccepted(false);
+			}, 1300);
 			return;
 		}
 		toaster.create({
@@ -77,6 +73,7 @@ export default function Login() {
 	return (
 		<>
 			<Toaster />
+			{/* Main container with gradient background */}
 			<Container
 				maxW="100vw"
 				h="100vh"
@@ -86,6 +83,7 @@ export default function Login() {
 				justifyContent="center"
 				alignItems="center"
 				background={`linear-gradient(to right, ${COLORS.BRAND_LIGHT}, ${COLORS.BRAND_SECONDARY}, ${COLORS.BRAND_TERTIARY}, ${COLORS.BRAND_QUATERNARY})`}>
+				{/* Login form card */}
 				<Box
 					maxW={{ base: "100%", md: "80%", lg: "70%" }}
 					w={{ base: "100%", md: "37%" }}
@@ -118,6 +116,7 @@ export default function Login() {
 					/>
 
 					<Stack gap={6} width="100%">
+						{/* Form header */}
 						<Box textAlign="center" width="100%">
 							<Text fontSize="2xl" fontWeight="bold" mb={2}>
 								Login
@@ -126,8 +125,10 @@ export default function Login() {
 								Start create your custom chocolate experience today!
 							</Text>
 						</Box>
+						{/* Login form */}
 						<form onSubmit={handleSubmit} style={{ width: "100%" }}>
 							<Stack gap={6}>
+								{/* Email field */}
 								<Field.Root required>
 									<Field.Label>
 										Email
@@ -148,6 +149,7 @@ export default function Login() {
 										</Box>
 									</Box>
 								</Field.Root>
+								{/* Password field */}
 								<Field.Root required>
 									<Field.Label>
 										Password
@@ -164,6 +166,7 @@ export default function Login() {
 									</InputGroup>
 								</Field.Root>
 
+								{/* Terms and conditions checkbox */}
 								<Checkbox.Root
 									checked={termsAccepted}
 									onCheckedChange={(e) => setTermsAccepted(!!e.checked)}>
@@ -182,6 +185,7 @@ export default function Login() {
 										</Link>
 									</Checkbox.Label>
 								</Checkbox.Root>
+								{/* Login button */}
 								<Button
 									size="lg"
 									width="100%"
@@ -192,6 +196,7 @@ export default function Login() {
 									type="submit">
 									Login
 								</Button>
+								{/* Sign-up link */}
 								<Heading
 									as={"h4"}
 									fontSize={"sm"}
@@ -199,8 +204,8 @@ export default function Login() {
 									textAlign={"center"}>
 									Not Have an account?{" "}
 									<Link
-                                        color={COLORS.BRAND_PRIMARY}
-                                        href={ROUTES.SIGNUP}
+										color={COLORS.BRAND_PRIMARY}
+										href={ROUTES.SIGNUP}
 										_hover={{ fontWeight: "bold", color: COLORS.BRAND_PRIMARY }}>
 										Sign Up
 									</Link>

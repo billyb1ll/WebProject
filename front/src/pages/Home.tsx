@@ -113,14 +113,18 @@ export default function Home() {
 	};
 	return (
 		<>
+			{/* Header with navigation */}
 			<header>
 				<Navbar />
 			</header>
+			{/* Hero banner component */}
 			<Banner />
+			{/* Main content container */}
 			<Container
 				maxW="container.xl"
 				py={{ base: 6, md: 10 }}
 				px={{ base: 4, md: 6 }}>
+				{/* Welcome section */}
 				<Box textAlign="center" mb={8} mt={4}>
 					<Heading
 						as="h1"
@@ -186,13 +190,14 @@ export default function Home() {
 					))}
 				</SimpleGrid>
 
-				{/* Hero Section */}
+				{/* Featured Images Section */}
 				<Box
 					display="flex"
 					flexDirection={{ base: "column", md: "row" }}
 					gap={{ base: 4, md: 10 }}
 					mb={10}
 					mt={16}>
+					{/* Large featured image */}
 					<Box
 						flex="1"
 						borderRadius="md"
@@ -213,13 +218,14 @@ export default function Home() {
 							/>
 						</Box>
 					</Box>
+					{/* Secondary featured images */}
 					<Box
 						flex="1"
 						display="flex"
 						flexDirection="column"
 						gap={{ base: 4, md: 10 }}
 						height={{ base: "auto", md: "720px" }}>
-						{/* Top rectangle */}
+						{/* Top secondary image */}
 						<Box
 							bg="#F0EAE3"
 							height={{ base: "120px", md: "49%" }}
@@ -236,7 +242,7 @@ export default function Home() {
 								_hover={{ transform: "scale(1.03)" }}
 							/>
 						</Box>
-						{/* Bottom rectangle */}
+						{/* Bottom secondary image */}
 						<Box
 							bg="#E0D9CF"
 							height={{ base: "120px", md: "49%" }}
@@ -255,6 +261,7 @@ export default function Home() {
 						</Box>
 					</Box>
 				</Box>
+
 				{/* Product Selection Section */}
 				<Box my={16} textAlign="center" px={{ base: 4, md: 0 }}>
 					<Heading
@@ -267,6 +274,7 @@ export default function Home() {
 						OUR SELECTION
 					</Heading>
 
+					{/* Product cards grid */}
 					<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 4, md: 8 }}>
 						{[1, 2, 3].map((item) => (
 							<Box
@@ -290,7 +298,8 @@ export default function Home() {
 										transition="transform 0.5s ease"
 									/>
 								</Box>
-								{/* Product footer */}
+
+								{/* Product footer with price and cart button */}
 								<Box
 									p={4}
 									display="flex"
@@ -324,7 +333,8 @@ export default function Home() {
 						))}
 					</SimpleGrid>
 				</Box>
-				{/* Random Videos Section */}
+
+				{/* Video Showcase Section */}
 				<Box
 					position="relative"
 					my={{ base: 10, md: 20 }}
@@ -335,7 +345,7 @@ export default function Home() {
 					justifyContent="space-between"
 					flexDirection={{ base: "column", md: "row" }}
 					gap={{ base: 4, md: 5 }}>
-					{/* Smaller video on the left */}
+					{/* Video thumbnail - left */}
 					<Box
 						flex={{ base: "1", md: "0.3" }}
 						bg="gray.200"
@@ -355,7 +365,7 @@ export default function Home() {
 						/>
 					</Box>
 
-					{/* Larger video on the right */}
+					{/* Video thumbnail - right */}
 					<Box
 						flex={{ base: "1", md: "0.65" }}
 						bg="gray.200"
@@ -379,7 +389,8 @@ export default function Home() {
 						/>
 					</Box>
 				</Box>
-				{/*INGREDIENTS section */}
+
+				{/* Ingredients Section */}
 				<Box textAlign="center" mb={16}>
 					<Heading
 						as="h2"
@@ -389,6 +400,8 @@ export default function Home() {
 						mb={8}>
 						FINEST INGREDIENTS
 					</Heading>
+
+					{/* Ingredient circles */}
 					<Box
 						display="flex"
 						justifyContent="space-around"
@@ -433,7 +446,7 @@ export default function Home() {
 					position="relative"
 					overflow="hidden"
 					gap={{ base: 6, md: 10 }}>
-					{/* Left Section - Card */}
+					{/* Product information card */}
 					<Box
 						flex={{ base: "1", md: "0.65" }}
 						bg="#FCE2C2"
@@ -462,6 +475,8 @@ export default function Home() {
 							color="black">
 							Indulge in our finest collection of handcrafted chocolates.
 						</Text>
+
+						{/* Decorative background element */}
 						<Box
 							position="absolute"
 							bottom={{ base: "-30px", md: "-150px" }}
@@ -473,7 +488,8 @@ export default function Home() {
 							zIndex={0}
 						/>
 					</Box>
-					{/* Right Section - Image */}
+
+					{/* Product feature image */}
 					<Box
 						flex={{ base: "1", md: "0.4" }}
 						borderRadius="md"
@@ -492,7 +508,10 @@ export default function Home() {
 						/>
 					</Box>
 				</Box>
+
+				{/* Customer Reviews Section */}
 				<Box textAlign="center" py={10} position="relative">
+					{/* Animated review content */}
 					<motion.div
 						key={index}
 						initial={{ opacity: 0, x: 50 }}
@@ -503,6 +522,8 @@ export default function Home() {
 							“ {reviews[index].text} ”
 						</Text>
 					</motion.div>
+
+					{/* Customer avatar and details */}
 					<Box mt={4}>
 						<Avatar.Root>
 							<Avatar.Fallback
@@ -524,6 +545,8 @@ export default function Home() {
 					</Box>
 				</Box>
 			</Container>
+
+			{/* Footer section */}
 			<footer>
 				<Footer />
 			</footer>
