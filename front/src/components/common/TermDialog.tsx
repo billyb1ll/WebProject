@@ -6,7 +6,7 @@ import {
 	Checkbox,
 	Link,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { COLORS } from "@/constants/colors";
 
 interface TermDialogProps {
@@ -19,27 +19,51 @@ export default function TermDialog({
 	setTermsAccepted,
 }: TermDialogProps) {
 	const [isOpen, setIsOpen] = useState(false);
+	// New internal state to track checkbox
+	const [internalChecked, setInternalChecked] = useState(termsAccepted);
+
+	// Keep internal state in sync with external prop
+	useEffect(() => {
+		setInternalChecked(termsAccepted);
+	}, [termsAccepted]);
 
 	const handleAgree = () => {
-		setTermsAccepted(true);
 		setIsOpen(false);
+		setInternalChecked(true);
+		setTermsAccepted(true);
 	};
 
 	const handleCancel = () => {
-		setTermsAccepted(false);
 		setIsOpen(false);
+		setInternalChecked(false);
+		setTermsAccepted(false);
+	};
+
+	const handleCheckboxChange = (checked: boolean) => {
+		console.log("Checkbox checked:", checked);
+		setInternalChecked(checked);
+
+		if (checked) {
+			setIsOpen(true);
+		} else {
+			setTermsAccepted(false);
+		}
 	};
 
 	return (
 		<>
 			<Checkbox.Root
-				checked={termsAccepted}
-				onCheckedChange={(e) =>
-					e.checked ? setIsOpen(true) : setTermsAccepted(false)
-				}>
+				checked={internalChecked}
+				onCheckedChange={(e) => handleCheckboxChange(!!e.checked)}>
 				<Dialog.Root
 					open={isOpen}
-					onOpenChange={({ open }) => setIsOpen(open)}
+					onOpenChange={({ open }) => {
+						setIsOpen(open);
+						if (!open) {
+							setInternalChecked(false);
+							setTermsAccepted(false);
+						}
+					}}
 					placement={"center"}
 					size="lg"
 					motionPreset="scale">
