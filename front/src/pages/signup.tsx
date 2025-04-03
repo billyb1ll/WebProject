@@ -1,10 +1,8 @@
-"use client";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import {
 	Box,
 	Button,
-	Checkbox,
 	Container,
 	Field,
 	Input,
@@ -21,10 +19,12 @@ import {
 	PasswordInput,
 	PasswordStrengthMeter,
 } from "@/components/ui/password-input";
+
 import { Toaster, toaster } from "@/components/ui/toaster";
 import { COLORS } from "@/constants/colors";
 import { ROUTES } from "@/constants/routes";
 import { VALIDATION } from "@/constants/validation";
+import TermDialog from "@/components/common/TermDialog";
 
 export default function SignUp() {
 	const navigate = useNavigate();
@@ -333,24 +333,10 @@ export default function SignUp() {
 								</Field.Root>
 
 								{/* Terms and conditions checkbox */}
-								<Checkbox.Root
-									checked={termsAccepted}
-									onCheckedChange={(e) => setTermsAccepted(!!e.checked)}>
-									<Checkbox.HiddenInput />
-									<Checkbox.Control
-										background={COLORS.BRAND_PRIMARY}
-										borderRadius={"6px"}
-									/>
-									<Checkbox.Label>
-										I agree to the{" "}
-										<Link
-											href="#"
-											color={COLORS.BRAND_PRIMARY}
-											_hover={{ fontWeight: "bold", color: COLORS.BRAND_PRIMARY }}>
-											terms and conditions
-										</Link>
-									</Checkbox.Label>
-								</Checkbox.Root>
+								<TermDialog
+									termsAccepted={termsAccepted}
+									setTermsAccepted={setTermsAccepted}
+								/>
 								{/* Sign-up button */}
 								<Button
 									size="lg"
