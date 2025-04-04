@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export type ChocolateType = "dark" | "milk" | "white";
 export type Topping = "none" | "nuts" | "sprinkles" | "fruit";
@@ -73,9 +73,26 @@ export function useChocolateConfigurator() {
 		setConfig((prev) => ({ ...prev, packaging }));
 	};
 
-	const updateMessage = (message: string) => {
-		setConfig((prev) => ({ ...prev, message }));
-	};
+	const updateMessage = useCallback((message: string) => {
+		// Create a completely new object to ensure React detects the change
+		setConfig((prev) => ({
+			...prev,
+			message: message,
+			// Adding a timestamp can sometimes help force React to recognize the update
+			_lastUpdated: Date.now(),
+		}));
+	}, []);
+
+	// Ensure we trigger rerenders when message changes
+	useEffect(() => {
+		// This effect runs when message changes
+		// Force component using this hook to update
+		const timer = setTimeout(() => {
+			// This empty state update can sometimes help trigger rerenders
+			setConfig((current) => ({ ...current }));
+		}, 0);
+		return () => clearTimeout(timer);
+	}, [config.message]);
 
 	const updateMessageFont = (font: string) => {
 		setConfig((prev) => ({

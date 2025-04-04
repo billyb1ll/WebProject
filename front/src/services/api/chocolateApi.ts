@@ -46,6 +46,8 @@ export interface PriceData {
 	toppings: Record<Topping, number>;
 	shapes: Record<ChocolateShape, number>;
 	packaging: Record<PackagingType, number>;
+	messageBasePrice: number;
+	messageCharPrice: number;
 }
 
 // Message pricing constants
@@ -202,6 +204,8 @@ const mockPriceData: PriceData = {
 		premium: 8.99,
 		eco: 1.99,
 	},
+	messageBasePrice: 1.99,
+	messageCharPrice: 0.15,
 };
 
 // API Service Methods

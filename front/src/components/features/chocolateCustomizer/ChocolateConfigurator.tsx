@@ -21,6 +21,7 @@ import StepThree from "./steps/StepThree";
 import StepFour from "./steps/StepFour";
 import StepFive from "./steps/StepFive";
 import { useChocolateOptions } from "../../../hooks/useChocolateOptions";
+import { useEffect, useState, useCallback } from "react";
 
 export default function ChocolateConfigurator() {
 	const {
@@ -38,6 +39,38 @@ export default function ChocolateConfigurator() {
 
 	// Use the chocolate options hook to preload all data
 	const { isLoading, isError, error } = useChocolateOptions();
+
+	// State to store price calculation
+	const [priceInfo, setPriceInfo] = useState({ subtotal: 0, details: {} });
+
+	// Create a memoized function to calculate price
+	const recalculatePrice = useCallback(() => {
+		const result = calculatePrice(config);
+		// Using timeouts can sometimes help with state batching issues
+		setTimeout(() => {
+			setPriceInfo(result);
+		}, 0);
+	}, [config]);
+
+	// Force price update whenever any part of config changes
+	useEffect(() => {
+		recalculatePrice();
+	}, [
+		config.chocolateType,
+		config.shape,
+		config.packaging,
+		config.message,
+		config.messageFont,
+		// Convert toppings array to string to detect changes
+		config.toppings.join(","),
+		recalculatePrice,
+	]);
+
+	// Additional effect specifically for message changes
+	useEffect(() => {
+		// This is specifically to catch message updates
+		recalculatePrice();
+	}, [config.message, recalculatePrice]);
 
 	// Show loading state while fetching initial data
 	if (isLoading) {
@@ -81,8 +114,12 @@ export default function ChocolateConfigurator() {
 		Math.min(100, ((currentStep - 1) / 4) * 100)
 	);
 
-	// Calculate price for the current configuration
-	const { subtotal } = calculatePrice(config);
+	// Wrapper for message updates to ensure price recalculation
+	const handleMessageUpdate = (message: string) => {
+		updateMessage(message);
+		// Force an immediate price recalculation
+		setTimeout(recalculatePrice, 10);
+	};
 
 	// Step titles for display
 	const stepTitles = [
@@ -108,7 +145,7 @@ export default function ChocolateConfigurator() {
 				return (
 					<StepFive
 						config={config}
-						updateMessage={updateMessage}
+						updateMessage={handleMessageUpdate}
 						updateMessageFont={updateMessageFont}
 					/>
 				);
@@ -216,7 +253,7 @@ export default function ChocolateConfigurator() {
 							size="lg"
 							width="100%"
 							mt={4}>
-							Add to Cart - {formatPrice(subtotal)}
+							Add to Cart - {formatPrice(priceInfo.subtotal)}
 						</Button>
 					)}
 				</Box>

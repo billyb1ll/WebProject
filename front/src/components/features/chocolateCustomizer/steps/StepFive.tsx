@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	Box,
 	Text,
@@ -73,7 +73,10 @@ export default function StepFive({
 	// Calculate the current message price based on length
 	const calculateMessagePrice = (message: string): number => {
 		if (!message || !pricing) return 0;
-		return pricing.messageBasePrice + message.length * pricing.messageCharPrice;
+		// Ensure we're accessing the properties correctly
+		const basePrice = pricing.messageBasePrice || 0;
+		const charPrice = pricing.messageCharPrice || 0;
+		return basePrice + message.length * charPrice;
 	};
 
 	// Current price based on message length
@@ -89,6 +92,7 @@ export default function StepFive({
 	const handleCustomMessageChange = (
 		e: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
+		// This ensures the message is updated in the config
 		updateMessage(e.target.value);
 	};
 
@@ -104,6 +108,11 @@ export default function StepFive({
 		const fontOption = FONT_OPTIONS.find((font) => font.value === selectedFont);
 		return fontOption?.fontFamily || "cursive";
 	};
+
+	// Recalculate message price when config.message changes
+	useEffect(() => {
+		console.log("Message updated:", config.message);
+	}, [config.message]);
 
 	if (isLoading) {
 		return (

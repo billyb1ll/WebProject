@@ -3,6 +3,7 @@ import {
 	chocolateService,
 	PriceData,
 } from "../../services/api/chocolateService";
+import mockPriceData from "../../services/mock/_chocolate_pricing";
 
 // Cache for pricing data to avoid unnecessary API calls
 let pricingCache: PriceData | null = null;
@@ -14,9 +15,18 @@ let pricingCache: PriceData | null = null;
  */
 function calculateMessagePrice(message: string): number {
 	if (!message || !pricingCache) return 0;
-	return (
-		pricingCache.messageBasePrice + message.length * pricingCache.messageCharPrice
+
+	// Explicitly extract and use the pricing data to avoid any undefined issues
+	const basePrice = pricingCache.messageBasePrice || 0;
+	const charPrice = pricingCache.messageCharPrice || 0;
+
+	// Log this for debugging
+	console.debug(
+		`Message price calculation: base=${basePrice}, chars=${message.length}, charPrice=${charPrice}`
 	);
+
+	const total = basePrice + message.length * charPrice;
+	return total;
 }
 
 /**
@@ -28,9 +38,10 @@ export async function calculatePriceAsync(config: ChocolateConfig): Promise<{
 	subtotal: number;
 	details: Record<string, number>;
 }> {
-	// Get pricing data from API (or cache)
+	// Load pricing data if not already loaded
 	if (!pricingCache) {
 		pricingCache = await chocolateService.getPricing();
+		console.log("Pricing data loaded:", pricingCache);
 	}
 
 	const pricing = pricingCache;
@@ -59,6 +70,16 @@ export async function calculatePriceAsync(config: ChocolateConfig): Promise<{
 	const subtotal =
 		basePrice + shapePrice + packagingPrice + toppingsPrice + messagePrice;
 
+	// Debug logging
+	console.debug("Price calculation result:", {
+		basePrice,
+		shapePrice,
+		packagingPrice,
+		toppingsPrice,
+		messagePrice,
+		subtotal,
+	});
+
 	return {
 		subtotal,
 		details: {
@@ -79,11 +100,35 @@ export function calculatePrice(config: ChocolateConfig): {
 	subtotal: number;
 	details: Record<string, number>;
 } {
-	// If we don't have pricing data yet, return zeros
+	// If we don't have pricing data yet, load it synchronously if possible
 	if (!pricingCache) {
 		console.warn(
-			"Pricing data not loaded yet, using zeros. Call loadPricingData() first."
+			"Pricing data not loaded yet. Attempting to load synchronously."
 		);
+		try {
+			// Use imported mock data directly
+			pricingCache = mockPriceData;
+			console.log("Loaded mock pricing data synchronously:", pricingCache);
+		} catch (error) {
+			console.error("Failed to load mock pricing data:", error);
+			// Return zeros as fallback
+			return {
+				subtotal: 0,
+				details: {
+					base: 0,
+					shape: 0,
+					packaging: 0,
+					toppings: 0,
+					message: 0,
+				},
+			};
+		}
+	}
+
+	const pricing = pricingCache;
+
+	// Make sure pricing is not null before using it
+	if (!pricing) {
 		return {
 			subtotal: 0,
 			details: {
@@ -95,8 +140,6 @@ export function calculatePrice(config: ChocolateConfig): {
 			},
 		};
 	}
-
-	const pricing = pricingCache;
 
 	// Rest of the calculation is the same as the async version
 	const basePrice = pricing.baseChocolate[config.chocolateType];
@@ -110,7 +153,19 @@ export function calculatePrice(config: ChocolateConfig): {
 		});
 	}
 
+	// Make sure we're using the absolutely latest message value
 	const messagePrice = calculateMessagePrice(config.message);
+
+	// Debug log
+	console.debug(`Price calculation for config:`, {
+		message: config.message,
+		messagePrice,
+		basePrice,
+		shapePrice,
+		packagingPrice,
+		toppingsPrice,
+	});
+
 	const subtotal =
 		basePrice + shapePrice + packagingPrice + toppingsPrice + messagePrice;
 
@@ -130,13 +185,13 @@ export function calculatePrice(config: ChocolateConfig): {
  * Helper function to preload pricing data
  */
 export async function loadPricingData(): Promise<void> {
-	if (!pricingCache) {
-		try {
-			pricingCache = await chocolateService.getPricing();
-		} catch (error) {
-			console.error("Failed to load pricing data:", error);
-			throw error;
-		}
+	try {
+		console.log("Loading pricing data...");
+		pricingCache = await chocolateService.getPricing();
+		console.log("Pricing data loaded successfully:", pricingCache);
+	} catch (error) {
+		console.error("Failed to load pricing data:", error);
+		throw error;
 	}
 }
 
@@ -149,3 +204,8 @@ export function formatPrice(price: number): string {
 		currency: "USD",
 	}).format(price);
 }
+
+// Initialize by loading pricing data immediately
+loadPricingData().catch((err) =>
+	console.error("Failed to initialize pricing data:", err)
+);
