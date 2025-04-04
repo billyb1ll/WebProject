@@ -4,7 +4,7 @@ import {
 	ChocolateShape,
 	PackagingType,
 	Topping,
-} from "../hooks/useChocolateConfigurator";
+} from "../../hooks/useChocolateConfigurator";
 
 // Mock price data - in production, these would come from API/database
 interface PriceData {

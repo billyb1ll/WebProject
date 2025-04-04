@@ -14,7 +14,7 @@ import {
 	ChocolateConfig,
 	ChocolateType,
 } from "../../../../hooks/useChocolateConfigurator";
-import { formatPrice } from "../../../../utils/priceCalculator";
+import { formatPrice } from "../../../../utils/func/priceCalculator";
 
 interface StepOneProps {
 	config: ChocolateConfig;

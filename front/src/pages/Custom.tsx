@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Heading, Text, Box, Icon } from "@chakra-ui/react";
 import ChocolateConfigurator from "../components/features/chocolateCustomizer/ChocolateConfigurator";
 import { FaGift } from "react-icons/fa";

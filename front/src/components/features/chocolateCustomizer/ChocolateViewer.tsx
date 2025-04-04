@@ -15,7 +15,10 @@ import { Tooltip } from "@/components/ui/tooltip";
 import ChocolateModel from "./models/ChocolateModel";
 import ToppingsModel from "./models/ToppingsModel";
 import { ChocolateConfig } from "../../../hooks/useChocolateConfigurator";
-import { calculatePrice, formatPrice } from "../../../utils/priceCalculator";
+import {
+	calculatePrice,
+	formatPrice,
+} from "../../../utils/func/priceCalculator";
 import { FaSun, FaMoon } from "react-icons/fa";
 
 // Separate component for the rotating chocolate scene

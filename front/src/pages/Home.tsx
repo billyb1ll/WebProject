@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Footer from "../components/layout/footer";
+import { Link } from "react-router-dom";
 
 export default function Home() {
 	const [index, setIndex] = useState(0);
@@ -154,35 +155,40 @@ export default function Home() {
 				{/* Product Grid */}
 				<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 6, md: 10 }}>
 					{weeklyBestSellers.products.map((product) => (
-						<Box
-							key={product.id}
-							bg="white"
-							borderRadius="md"
-							boxShadow="md"
-							p={6}
-							textAlign="center">
-							<Heading as="h3" size="lg" mb={4} color="#604538">
-								{product.name}
-							</Heading>
-							<Image
-								src={product.image}
-								alt={product.name}
-								objectFit="cover"
+						<Link to={`/products/${product.id}`} key={product.id}>
+							{/* Product card */}
+							<Box
+								key={product.id}
+								bg="white"
+								color="#604538"
 								borderRadius="md"
-								bg="#E8E2D9"
-								height="200px"
-								width="100%"
-								mb={4}
-								backgroundSize="cover"
-								backgroundPosition="center"
-							/>
-							<Text fontSize="md" color="#989898" mb={2}>
-								{product.description}
-							</Text>
-							<Text textStyle="lg">
-								<FormatNumber value={product.price} style="currency" currency="USD" />
-							</Text>
-						</Box>
+								boxShadow="md"
+								_hover={{ transform: "scale(1.02)", boxShadow: "lg", transition: "all 0.4s ease" }}
+								p={6}
+								textAlign="center">
+								<Heading as="h3" size="lg" mb={4} color="#604538">
+									{product.name}
+								</Heading>
+								<Image
+									src={product.image}
+									alt={product.name}
+									objectFit="cover"
+									borderRadius="md"
+									bg="#E8E2D9"
+									height="200px"
+									width="100%"
+									mb={4}
+									backgroundSize="cover"
+									backgroundPosition="center"
+								/>
+								<Text fontSize="md" color="#989898" mb={2}>
+									{product.description}
+								</Text>
+								<Text textStyle="lg">
+									<FormatNumber value={product.price} style="currency" currency="USD" />
+								</Text>
+							</Box>
+						</Link>
 					))}
 				</SimpleGrid>
 
@@ -273,6 +279,7 @@ export default function Home() {
 					{/* Product cards grid */}
 					<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 4, md: 8 }}>
 						{[1, 2, 3].map((item) => (
+							<Link to={`/products/${item}`} key={item}>
 							<Box
 								key={item}
 								bg="#F5F0E8"
@@ -325,7 +332,8 @@ export default function Home() {
 										<FormatNumber value={999999.95} style="currency" currency="USD" />
 									</Text>
 								</Box>
-							</Box>
+								</Box>
+							</Link>
 						))}
 					</SimpleGrid>
 				</Box>

@@ -1,7 +1,10 @@
 import { Box, Flex, Heading, Button, HStack, Text } from "@chakra-ui/react";
 import ChocolateViewer from "./ChocolateViewer";
 import { useChocolateConfigurator } from "../../../hooks/useChocolateConfigurator";
-import { calculatePrice, formatPrice } from "../../../utils/priceCalculator";
+import {
+	calculatePrice,
+	formatPrice,
+} from "../../../utils/func/priceCalculator";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import StepThree from "./steps/StepThree";
@@ -60,7 +63,7 @@ export default function ChocolateConfigurator() {
 	return (
 		<Box>
 			{/* Progress indicator */}
-			<Box mb={6} >
+			<Box mb={6}>
 				{/* Progress bar */}
 				<Box position="relative" height="8px" bg="#E8DDD8" borderRadius="md" mb={4}>
 					<Box
@@ -73,7 +76,7 @@ export default function ChocolateConfigurator() {
 				</Box>
 
 				{/* Step indicators */}
-				<HStack justify="space-between" px={2} >
+				<HStack justify="space-between" px={2}>
 					{[1, 2, 3, 4, 5].map((step) => (
 						<Box key={step} textAlign="center" position="relative" width="60px">
 							<Box

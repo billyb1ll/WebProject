@@ -11,7 +11,7 @@ import {
 	Flex,
 } from "@chakra-ui/react";
 import { ChocolateConfig } from "../../../../hooks/useChocolateConfigurator";
-import { formatPrice } from "../../../../utils/priceCalculator";
+import { formatPrice } from "../../../../utils/func/priceCalculator";
 
 interface StepFiveProps {
 	config: ChocolateConfig;

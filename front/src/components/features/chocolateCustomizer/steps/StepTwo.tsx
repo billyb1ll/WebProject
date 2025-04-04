@@ -12,7 +12,7 @@ import {
 	ChocolateConfig,
 	Topping,
 } from "../../../../hooks/useChocolateConfigurator";
-import { formatPrice } from "../../../../utils/priceCalculator";
+import { formatPrice } from "../../../../utils/func/priceCalculator";
 
 interface StepTwoProps {
 	config: ChocolateConfig;

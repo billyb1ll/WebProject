@@ -12,7 +12,7 @@ import {
 	ChocolateConfig,
 	PackagingType,
 } from "../../../../hooks/useChocolateConfigurator";
-import { formatPrice } from "../../../../utils/priceCalculator";
+import { formatPrice } from "../../../../utils/func/priceCalculator";
 
 interface StepFourProps {
 	config: ChocolateConfig;
