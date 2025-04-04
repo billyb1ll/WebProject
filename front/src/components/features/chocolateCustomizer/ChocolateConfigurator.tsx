@@ -1,9 +1,21 @@
-import { Box, Flex, Heading, Button, HStack, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import {
+	Box,
+	Flex,
+	Heading,
+	Button,
+	HStack,
+	Text,
+	Spinner,
+	Center,
+	VStack,
+} from "@chakra-ui/react";
 import ChocolateViewer from "./ChocolateViewer";
 import { useChocolateConfigurator } from "../../../hooks/useChocolateConfigurator";
 import {
 	calculatePrice,
 	formatPrice,
+	loadPricingData,
 } from "../../../utils/func/priceCalculator";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
@@ -22,7 +34,66 @@ export default function ChocolateConfigurator() {
 		updateShape,
 		updatePackaging,
 		updateMessage,
+		updateMessageFont,
 	} = useChocolateConfigurator();
+
+	// State for initial data loading
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	// Preload pricing data when the configurator mounts
+	useEffect(() => {
+		async function initialize() {
+			try {
+				await loadPricingData();
+				setIsLoading(false);
+			} catch (err) {
+				console.error("Failed to load pricing data:", err);
+				setError(
+					"Failed to load product data. Please refresh the page or try again later."
+				);
+				setIsLoading(false);
+			}
+		}
+
+		initialize();
+	}, []);
+
+	// Show loading state while fetching initial data
+	if (isLoading) {
+		return (
+			<Center height="400px">
+				<VStack gap={4}>
+					<Spinner size="xl" color="#A47864" />
+					<Text color="#604538">Loading chocolate configurator...</Text>
+				</VStack>
+			</Center>
+		);
+	}
+
+	// Show error state if data loading failed
+	if (error) {
+		return (
+			<Center height="400px">
+				<Box
+					p={6}
+					bg="red.50"
+					borderRadius="lg"
+					borderWidth={1}
+					borderColor="red.200"
+					maxWidth="600px"
+					textAlign="center">
+					<Heading as="h3" size="md" mb={4} color="red.600">
+						Error Loading Data
+					</Heading>
+					<Text>{error}</Text>
+					<Button mt={4} colorScheme="red" onClick={() => window.location.reload()}>
+						Refresh Page
+					</Button>
+				</Box>
+			</Center>
+		);
+	}
 
 	// Calculate progress percentage
 	const progressPercentage = Math.max(
@@ -54,7 +125,13 @@ export default function ChocolateConfigurator() {
 			case 4:
 				return <StepFour config={config} updatePackaging={updatePackaging} />;
 			case 5:
-				return <StepFive config={config} updateMessage={updateMessage} />;
+				return (
+					<StepFive
+						config={config}
+						updateMessage={updateMessage}
+						updateMessageFont={updateMessageFont}
+					/>
+				);
 			default:
 				return <StepOne config={config} updateType={updateType} />;
 		}

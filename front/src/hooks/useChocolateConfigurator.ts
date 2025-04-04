@@ -11,6 +11,7 @@ export interface ChocolateConfig {
 	shape: ChocolateShape;
 	packaging: PackagingType;
 	message: string;
+	messageFont: string; // New property
 }
 
 export function useChocolateConfigurator() {
@@ -21,6 +22,7 @@ export function useChocolateConfigurator() {
 		shape: "square",
 		packaging: "standard",
 		message: "",
+		messageFont: "cursive", // Default font
 	});
 
 	const nextStep = () => {
@@ -75,6 +77,13 @@ export function useChocolateConfigurator() {
 		setConfig((prev) => ({ ...prev, message }));
 	};
 
+	const updateMessageFont = (font: string) => {
+		setConfig((prev) => ({
+			...prev,
+			messageFont: font,
+		}));
+	};
+
 	return {
 		config,
 		currentStep,
@@ -85,5 +94,6 @@ export function useChocolateConfigurator() {
 		updateShape,
 		updatePackaging,
 		updateMessage,
+		updateMessageFont,
 	};
 }

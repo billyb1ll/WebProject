@@ -9,6 +9,8 @@ import {
 	Badge,
 	Image,
 	Flex,
+    RadioGroup,
+	HStack,
 } from "@chakra-ui/react";
 import { ChocolateConfig } from "../../../../hooks/useChocolateConfigurator";
 import { formatPrice } from "../../../../utils/func/priceCalculator";
@@ -16,14 +18,49 @@ import { formatPrice } from "../../../../utils/func/priceCalculator";
 interface StepFiveProps {
 	config: ChocolateConfig;
 	updateMessage: (message: string) => void;
+	updateMessageFont?: (font: string) => void; // New prop for font selection
 }
 
-const MESSAGE_PRICE = 1.99;
+/**
+ * Dynamic message pricing model:
+ * BASE_MESSAGE_PRICE: Cost to add any message (starting fee)
+ * PER_CHAR_PRICE: Additional cost per character
+ */
+const BASE_MESSAGE_PRICE = 1.99;
+const PER_CHAR_PRICE = 0.15;
+const MAX_MESSAGE_LENGTH = 100;
 
-export default function StepFive({ config, updateMessage }: StepFiveProps) {
+// Available font options for message customization
+const FONT_OPTIONS = [
+	{ value: "cursive", label: "Handwritten", fontFamily: "cursive" },
+	{ value: "serif", label: "Elegant", fontFamily: "Georgia, serif" },
+	{ value: "sans-serif", label: "Modern", fontFamily: "Helvetica, sans-serif" },
+	{ value: "monospace", label: "Classic", fontFamily: "monospace" },
+	{ value: "fantasy", label: "Playful", fontFamily: "fantasy, cursive" },
+];
+
+export default function StepFive({
+	config,
+	updateMessage,
+	updateMessageFont = () => {},
+}: StepFiveProps) {
 	const [messageOption, setMessageOption] = React.useState(
 		config.message ? "custom" : "none"
 	);
+
+	// State for selected font, default to cursive if not set in config
+	const [selectedFont, setSelectedFont] = React.useState(
+		config.messageFont || "cursive"
+	);
+
+	// Calculate the current message price based on length
+	const calculateMessagePrice = (message: string): number => {
+		if (!message) return 0;
+		return BASE_MESSAGE_PRICE + message.length * PER_CHAR_PRICE;
+	};
+
+	// Current price based on message length
+	const currentMessagePrice = calculateMessagePrice(config.message);
 
 	const messageOptions = [
 		{
@@ -36,9 +73,10 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 		{
 			type: "custom",
 			label: "Custom Message",
-			description: "Add a personalized message to make your gift special.",
+			description:
+				"Add a personalized message to make your gift special. Base price plus per-character fee.",
 			image: "/images/message-custom.jpg",
-			price: MESSAGE_PRICE,
+			price: BASE_MESSAGE_PRICE,
 		},
 	];
 
@@ -53,6 +91,19 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 		e: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
 		updateMessage(e.target.value);
+	};
+
+	// Handle font selection change
+	const handleFontChange = (event: React.FormEvent<HTMLDivElement>) => {
+		const value = (event.target as HTMLInputElement).value;
+		setSelectedFont(value);
+		updateMessageFont(value);
+	};
+
+	// Get the current font family based on selection
+	const getCurrentFontFamily = () => {
+		const fontOption = FONT_OPTIONS.find((font) => font.value === selectedFont);
+		return fontOption?.fontFamily || "cursive";
 	};
 
 	return (
@@ -88,7 +139,6 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 								height="120px"
 								objectFit="cover"
 							/>
-							{/* Add price badge in top-left corner */}
 							<Badge
 								position="absolute"
 								top={2}
@@ -98,7 +148,7 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 								px={2}
 								py={1}
 								borderRadius="md">
-								{price === 0 ? "Free" : `+${formatPrice(price)}`}
+								{price === 0 ? "Free" : `From ${formatPrice(price)}`}
 							</Badge>
 							{messageOption === type && (
 								<Badge
@@ -124,13 +174,6 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 								display="flex"
 								justifyContent="space-between">
 								{label}
-								<Text
-									as="span"
-									fontSize="xs"
-									fontWeight="medium"
-									color={messageOption === type ? "#604538" : "gray.500"}>
-									{price === 0 ? "Free" : `+${formatPrice(price)}`}
-								</Text>
 							</Heading>
 							<Text fontSize="xs" color="gray.600">
 								{description}
@@ -155,21 +198,86 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 						<Text fontWeight="medium" color="#604538">
 							Your Personal Message
 						</Text>
-						<Badge colorScheme="orange">+{formatPrice(MESSAGE_PRICE)}</Badge>
+						<Badge colorScheme="orange">+{formatPrice(currentMessagePrice)}</Badge>
 					</Flex>
 					<Textarea
 						value={config.message}
 						onChange={handleCustomMessageChange}
 						placeholder="Write your message here (max 100 characters)"
-						maxLength={100}
+						maxLength={MAX_MESSAGE_LENGTH}
 						rows={3}
 						borderColor="#E8DDD8"
 						_hover={{ borderColor: "#A47864" }}
 						_focus={{ borderColor: "#604538", boxShadow: "0 0 0 1px #604538" }}
 					/>
-					<Text fontSize="xs" color="gray.500" mt={1}>
-						{config.message.length}/100 characters
-					</Text>
+					<Flex justifyContent="space-between" alignItems="center" mt={1}>
+						<Text fontSize="xs" color="gray.500">
+							{config.message.length}/{MAX_MESSAGE_LENGTH} characters
+						</Text>
+						<Text fontSize="xs" color="gray.500">
+							{formatPrice(BASE_MESSAGE_PRICE)} base + {formatPrice(PER_CHAR_PRICE)}
+							/character
+						</Text>
+					</Flex>
+
+					{/* Font selection - Updated to use proper RadioGroup structure */}
+					<Box mt={4} borderTopWidth="1px" borderColor="#E8DDD8" pt={3}>
+						<Text fontWeight="medium" color="#604538" mb={2}>
+							Select Font Style
+						</Text>
+						<RadioGroup.Root
+							value={selectedFont}
+							onChange={handleFontChange}
+							colorPalette="brown"
+							size="md">
+							<HStack gap={4} wrap="wrap">
+								{FONT_OPTIONS.map((font) => (
+									<Box
+										key={font.value}
+										borderWidth="1px"
+										borderRadius="md"
+										borderColor={selectedFont === font.value ? "#A47864" : "#E8DDD8"}
+										bg={selectedFont === font.value ? "#F5F0E8" : "white"}
+										p={2}>
+										<RadioGroup.Item value={font.value}>
+											<RadioGroup.ItemHiddenInput />
+											<RadioGroup.ItemIndicator />
+											<RadioGroup.ItemText fontFamily={font.fontFamily}>
+												{font.label}
+											</RadioGroup.ItemText>
+										</RadioGroup.Item>
+									</Box>
+								))}
+							</HStack>
+						</RadioGroup.Root>
+					</Box>
+
+					{/* Price breakdown */}
+					{config.message.length > 0 && (
+						<Box mt={3} p={2} bg="#F5F0E8" borderRadius="md">
+							<Flex justifyContent="space-between" fontSize="xs">
+								<Text>Base price:</Text>
+								<Text>{formatPrice(BASE_MESSAGE_PRICE)}</Text>
+							</Flex>
+							<Flex justifyContent="space-between" fontSize="xs">
+								<Text>
+									{config.message.length} characters × {formatPrice(PER_CHAR_PRICE)}:
+								</Text>
+								<Text>{formatPrice(config.message.length * PER_CHAR_PRICE)}</Text>
+							</Flex>
+							<Flex
+								justifyContent="space-between"
+								fontWeight="bold"
+								fontSize="sm"
+								mt={1}
+								pt={1}
+								borderTopWidth="1px"
+								borderColor="#E8DDD8">
+								<Text>Total message price:</Text>
+								<Text>{formatPrice(currentMessagePrice)}</Text>
+							</Flex>
+						</Box>
+					)}
 
 					<Text fontSize="sm" color="gray.500" mt={2}>
 						Your message will be printed on a card and included with your chocolate.
@@ -193,8 +301,8 @@ export default function StepFive({ config, updateMessage }: StepFiveProps) {
 						alignItems="center"
 						justifyContent="center">
 						{config.message ? (
-							<Text fontFamily="cursive" fontStyle="italic">
-								"{config.message}"
+							<Text fontFamily={getCurrentFontFamily()} fontStyle="italic">
+								" {config.message} "
 							</Text>
 						) : (
 							<Text color="gray.500">No message added</Text>

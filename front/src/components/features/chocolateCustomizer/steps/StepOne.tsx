@@ -15,76 +15,32 @@ import {
 	ChocolateType,
 } from "../../../../hooks/useChocolateConfigurator";
 import { formatPrice } from "../../../../utils/func/priceCalculator";
+import {
+	chocolateApi,
+	ChocolateOption,
+} from "../../../../services/api/chocolateApi";
 
 interface StepOneProps {
 	config: ChocolateConfig;
 	updateType: (type: ChocolateType) => void;
 }
 
-// Mock function to simulate fetching from database
-// In real app, this would be an API call to your backend
-async function fetchChocolateTypesFromDB() {
-	// Simulate network delay
-	await new Promise((resolve) => setTimeout(resolve, 500));
-    // Mock data
-	return [
-		{
-			type: "dark",
-			label: "Dark Chocolate",
-			description:
-				"Rich and intense with 70% cocoa content. Perfect for those who appreciate a robust chocolate flavor with minimal sweetness.",
-			image: "/images/chocolate-dark.jpg",
-			price: 6.99,
-			product_id: 1, // This would be database ID
-		},
-		{
-			type: "milk",
-			label: "Milk Chocolate",
-			description:
-				"Smooth and creamy classic favorite. A perfect balance of sweetness and chocolate flavor that everyone loves.",
-			image: "/images/chocolate-milk.jpg",
-			price: 5.99,
-			product_id: 2,
-		},
-		{
-			type: "white",
-			label: "White Chocolate",
-			description:
-				"Sweet and buttery with vanilla notes. A delicate flavor profile with a smooth, melt-in-your-mouth texture.",
-			image: "/images/chocolate-white.jpg",
-			price: 7.99,
-			product_id: 3,
-		},
-	];
-}
-
 export default function StepOne({ config, updateType }: StepOneProps) {
-	const [chocolateTypes, setChocolateTypes] = useState<
-		{
-			type: ChocolateType;
-			label: string;
-			description: string;
-			image: string;
-			price: number;
-			product_id: number;
-		}[]
-	>([]);
+	const [chocolateTypes, setChocolateTypes] = useState<ChocolateOption[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-	// Simulate fetching data from database
+	// Fetch chocolate types from the API service
 	useEffect(() => {
 		async function loadData() {
 			try {
-				const data = await fetchChocolateTypesFromDB();
-				setChocolateTypes(
-					data.map((item) => ({
-						...item,
-						type: item.type as ChocolateType,
-					}))
-				);
+				setLoading(true);
+				const data = await chocolateApi.getChocolateTypes();
+				setChocolateTypes(data);
 				setLoading(false);
 			} catch (error) {
 				console.error("Error fetching chocolate types:", error);
+				setError("Failed to load chocolate options. Please try again.");
 				setLoading(false);
 			}
 		}
@@ -101,6 +57,25 @@ export default function StepOne({ config, updateType }: StepOneProps) {
 						<Skeleton key={i} height="300px" borderRadius="lg" />
 					))}
 				</SimpleGrid>
+			</VStack>
+		);
+	}
+
+	if (error) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="red.500">{error}</Text>
+				<Box
+					p={4}
+					bg="red.50"
+					borderRadius="md"
+					borderWidth={1}
+					borderColor="red.200">
+					<Text>
+						We're having trouble connecting to our servers. Please check your
+						connection or try again later.
+					</Text>
+				</Box>
 			</VStack>
 		);
 	}
