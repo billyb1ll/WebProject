@@ -26,8 +26,7 @@ interface StepOneProps {
 async function fetchChocolateTypesFromDB() {
 	// Simulate network delay
 	await new Promise((resolve) => setTimeout(resolve, 500));
-
-	// This data would come from your database
+    // Mock data
 	return [
 		{
 			type: "dark",
@@ -36,7 +35,7 @@ async function fetchChocolateTypesFromDB() {
 				"Rich and intense with 70% cocoa content. Perfect for those who appreciate a robust chocolate flavor with minimal sweetness.",
 			image: "/images/chocolate-dark.jpg",
 			price: 6.99,
-			product_id: 1, // This would be your database ID
+			product_id: 1, // This would be database ID
 		},
 		{
 			type: "milk",
