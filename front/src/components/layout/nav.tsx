@@ -40,7 +40,7 @@ export default function Navbar() {
 	return (
 		<Box
 			as="header"
-			position="fixed"
+			position="sticky"
 			top="0"
 			zIndex={1000}
 			width="100%"

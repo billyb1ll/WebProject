@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../components/layout/banner";
 
-import Navbar from "../components/layout/nav";
 import {
 	Box,
 	Container,
@@ -114,10 +113,6 @@ export default function Home() {
 	};
 	return (
 		<>
-			{/* Header with navigation */}
-			<header>
-				<Navbar />
-			</header>
 			{/* Hero banner component */}
 			<Banner />
 			{/* Main content container */}

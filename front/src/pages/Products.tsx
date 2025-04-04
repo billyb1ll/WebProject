@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Container, Heading, Text, SimpleGrid } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 export default function Product() {
 	return (
@@ -12,14 +13,16 @@ export default function Product() {
 			</Text>
 
 			<SimpleGrid columns={{ base: 1, md: 3 }} gap={10} mt={10}>
-				<Box p={5} shadow="md" borderWidth="1px" borderRadius="md">
+				<Link to="/custom">
+				<Box p={5} shadow="md" borderWidth="1px" borderRadius="md" _hover={{ transform: "scale(1.05)", boxShadow: "lg", transition: "all 0.3s ease" }}>
 					<Heading fontSize="xl" color="#A47864">
 						Custom Chocolate Designs
 					</Heading>
-					<Text mt={4}>
+					<Text mt={4} color="black" >
 						Create your own personalized chocolate with custom shapes and flavors.
 					</Text>
-				</Box>
+					</Box>
+				</Link>
 				<Box p={5} shadow="md" borderWidth="1px" borderRadius="md">
 					<Heading fontSize="xl" color="#A47864">
 						Premium Ingredients

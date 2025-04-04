@@ -19,7 +19,6 @@ html {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   /* Prevent horizontal scroll */
 }
 
@@ -44,6 +43,7 @@ main {
   flex: 1;
   width: 100%;
   display: block;
+  padding-top: 10px;
   /* Change from flex to block to fix layout issues */
 }
 
@@ -141,4 +141,14 @@ p {
 
 .read-the-docs {
   color: #888;
+}
+
+body,
+html,
+#root {
+  overflow-x: visible;
+}
+
+nav {
+  position: sticky;
 }
