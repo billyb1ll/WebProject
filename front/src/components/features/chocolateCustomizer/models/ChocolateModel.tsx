@@ -8,15 +8,24 @@ interface ChocolateModelProps {
 	config: ChocolateConfig;
 }
 
+/**
+ * ChocolateModel renders the 3D chocolate base with proper geometry and material
+ * based on the selected configuration. It handles different shapes (heart, round, square)
+ * and chocolate types (dark, milk, white).
+ */
 export default function ChocolateModel({ config }: ChocolateModelProps) {
 	const groupRef = useRef<THREE.Group>(null);
 	const { shape, chocolateType, toppings } = config;
 
-	// Create heart shape using Three.js Shape with better proportions
+	/**
+	 * Heart shape generation using Bezier curves
+	 * The coordinates are carefully chosen to create a balanced, symmetrical heart
+	 * that looks natural when extruded into 3D
+	 */
 	const heartShape = useMemo(() => {
 		const shape = new THREE.Shape();
 
-		// Adjusted heart shape for better proportions
+		// Starting at top center and drawing curves to create heart lobes
 		shape.moveTo(0, 0.25); // Starting point at top center
 		shape.bezierCurveTo(0, 0.35, 0.35, 0.35, 0.35, 0.25); // Right top curve
 		shape.bezierCurveTo(0.35, 0.1, 0, 0, 0, -0.15); // Right side to bottom
@@ -26,47 +35,61 @@ export default function ChocolateModel({ config }: ChocolateModelProps) {
 		return shape;
 	}, []);
 
-	// Create extrude settings for heart with normalized thickness
+	/**
+	 * Extrusion settings for the heart shape
+	 * Bevel parameters create the rounded edges typical of molded chocolate
+	 */
 	const extrudeSettings = useMemo(() => {
 		return {
-			depth: 0.15, // Slightly thinner for better proportions
+			depth: 0.15, // Thickness of chocolate piece
 			bevelEnabled: true,
-			bevelSegments: 3, // More segments for smoother edges
-			bevelSize: 0.015,
-			bevelThickness: 0.015,
+			bevelSegments: 3, // More segments = smoother edges but higher polygon count
+			bevelSize: 0.015, // Size of beveled edge
+			bevelThickness: 0.015, // Depth of bevel
 		};
 	}, []);
 
-	// Material based on chocolate type
+	/**
+	 * Create material based on chocolate type with appropriate
+	 * physical properties (color, roughness, metalness)
+	 */
 	const material = useMemo(() => {
 		const matProps = createChocolateMaterial(chocolateType);
 		return new THREE.MeshStandardMaterial({
 			color: matProps.color,
-			roughness: matProps.roughness,
-			metalness: matProps.metalness,
+			roughness: matProps.roughness, // Controls how matte/glossy the surface appears
+			metalness: matProps.metalness, // Lower value gives more plastic/organic appearance
 		});
 	}, [chocolateType]);
 
-	// Get geometry based on the shape with normalized dimensions
+	/**
+	 * Generate appropriate geometry based on the selected shape
+	 * All shapes are normalized to have similar volume/presence in the scene
+	 */
 	const geometry = useMemo(() => {
 		switch (shape) {
 			case "heart":
 				return new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
 			case "round":
-				return new THREE.CylinderGeometry(0.5, 0.5, 0.15, 32); // Reduced radius from 0.6 to 0.5, height from 0.2 to 0.15
+				// CylinderGeometry creates a disc with many segments for smooth edges
+				return new THREE.CylinderGeometry(0.5, 0.5, 0.15, 32);
 			case "square":
 			default:
-				return new THREE.BoxGeometry(0.9, 0.15, 0.9); // Reduced from 1x0.2x1 to 0.9x0.15x0.9
+				// BoxGeometry dimensions: width × height × depth
+				return new THREE.BoxGeometry(0.5, 0.15, 0.95);
 		}
 	}, [shape, heartShape, extrudeSettings]);
 
-	// Apply rotation adjustments based on shape
+	/**
+	 * Apply rotation adjustments to ensure all shapes are oriented correctly
+	 * Heart shape in particular needs flipping to match expected orientation
+	 */
 	const getRotation = (): [number, number, number] => {
 		switch (shape) {
 			case "heart":
-				return [Math.PI, 0, Math.PI]; // Flip and rotate heart for proper orientation
+				// PI rotation around X and Z axes to flip and orient correctly
+				return [Math.PI, 0, Math.PI];
 			case "round":
-				return [0, 0, 0];
 			default:
 				return [0, 0, 0];
 		}
@@ -74,16 +97,14 @@ export default function ChocolateModel({ config }: ChocolateModelProps) {
 
 	return (
 		<group ref={groupRef}>
-			{/* The chocolate base with adjusted rotation */}
 			<mesh
 				castShadow
 				receiveShadow
 				geometry={geometry}
 				material={material}
 				rotation={getRotation()}
-				position={[0, 0, 0]} // Ensure base position is at origin
+				position={[0, 0, 0]}
 			/>
-
 			{/* Toppings get placed on top of the chocolate, in the same group */}
 			<ToppingsModel toppings={toppings} shape={shape} />
 		</group>
