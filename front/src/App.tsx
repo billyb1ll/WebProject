@@ -1,34 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ROUTES } from "./constants/routes";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
-import Products from "./pages/Products";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import SignUp from "./pages/SignUp";
-import Login from "./pages/Login";
-import Navbar from "./components/layout/nav";
-
+import Pricing from "./pages/Pricing";
 import Custom from "./pages/Custom";
-
+import Product from "./pages/Products";
 import "./App.css";
 
 function App() {
 	return (
-		<BrowserRouter>
-			<Navbar />
-			<main>
+		<Router>
+			<Layout>
 				<Routes>
-					<Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
-					<Route path={ROUTES.HOME} element={<Home />} />
-					<Route path={ROUTES.PRODUCTS} element={<Products />} />
-					<Route path={ROUTES.ABOUT} element={<About />} />
-					<Route path={ROUTES.SIGNUP} element={<SignUp />} />
-					<Route path={ROUTES.LOGIN} element={<Login />} />
-					<Route path={ROUTES.CUSTOM} element={<Custom />}/>
+					<Route path="/" element={<Home />} />
+					<Route path="/about" element={<About />} />
+					<Route path="/products" element={<Product />} />
+					<Route path="/pricing" element={<Pricing />} />
+					<Route path="/custom" element={<Custom />} />
+					<Route path="*" element={<NotFound />} />
 				</Routes>
-			</main>
-		</BrowserRouter>
+			</Layout>
+		</Router>
 	);
 }
 

@@ -40,7 +40,8 @@ html {
 
 /* Ensure the main content area fills available space */
 main {
-  flex: 1;
+  flex: 1 0 auto;
+  /* Fix to ensure main content takes available space */
   width: 100%;
   display: block;
   padding-top: 10px;
@@ -146,9 +147,51 @@ p {
 body,
 html,
 #root {
-  overflow-x: visible;
+  overflow-x: hidden;
+  /* Change from visible to hidden */
 }
 
 nav {
   position: sticky;
+}
+
+/* Fix potential footer visibility issues */
+footer {
+  position: relative;
+  width: 100%;
+  z-index: 10;
+  display: block;
+  margin-top: auto;
+  /* Push footer to bottom if content is short */
+}
+
+/* Fix subscription form styling */
+footer form {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Fix for email input field */
+footer .chakra-input__group {
+  width: 100%;
+}
+
+/* Fix for potential z-index issues */
+.bg-\[\#573E33\] {
+  position: relative;
+  z-index: 1;
+}
+
+/* Additional responsive fixes */
+@media (max-width: 768px) {
+
+  footer form,
+  footer .chakra-input__group {
+    width: 100%;
+  }
+
+  footer .chakra-button {
+    white-space: nowrap;
+  }
 }

@@ -12,7 +12,6 @@ import {
 	Image,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import Footer from "../components/layout/footer";
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -163,7 +162,11 @@ export default function Home() {
 								color="#604538"
 								borderRadius="md"
 								boxShadow="md"
-								_hover={{ transform: "scale(1.02)", boxShadow: "lg", transition: "all 0.4s ease" }}
+								_hover={{
+									transform: "scale(1.02)",
+									boxShadow: "lg",
+									transition: "all 0.4s ease",
+								}}
 								p={6}
 								textAlign="center">
 								<Heading as="h3" size="lg" mb={4} color="#604538">
@@ -280,58 +283,58 @@ export default function Home() {
 					<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 4, md: 8 }}>
 						{[1, 2, 3].map((item) => (
 							<Link to={`/products/${item}`} key={item}>
-							<Box
-								key={item}
-								bg="#F5F0E8"
-								borderRadius="lg"
-								overflow="hidden"
-								border="1px solid #A38C7F"
-								boxShadow="0 4px 12px rgba(0,0,0,0.05)"
-								transition="transform 0.3s ease"
-								_hover={{ transform: "translateY(-5px)" }}>
-								{/* Product image placeholder */}
-								<Box bg="#E8E2D9" height={{ base: "240px", md: "480px" }} width="100%">
-									<Image
-										src="/images/chocolate-selection.jpg" // Update
-										alt="Chocolate selection"
-										objectFit="cover"
-										height="100%"
-										width="100%"
-										borderRadius="lg"
-										transition="transform 0.5s ease"
-									/>
-								</Box>
-
-								{/* Product footer with price and cart button */}
 								<Box
-									p={4}
-									display="flex"
-									flexDirection={{ base: "column", md: "row" }}
-									justifyContent="space-between"
-									alignItems="center"
-									borderTop="1px solid #EFEFEF">
-									<Box
-										as="button"
-										bg="transparent"
-										color="#604538"
-										px={4}
-										py={2}
-										border="1px solid #604538"
-										borderRadius="md"
-										fontSize="sm"
-										fontWeight="medium"
-										transition="all 0.2s"
-										_hover={{ bg: "#604538", color: "white" }}>
-										ADD TO CART
+									key={item}
+									bg="#F5F0E8"
+									borderRadius="lg"
+									overflow="hidden"
+									border="1px solid #A38C7F"
+									boxShadow="0 4px 12px rgba(0,0,0,0.05)"
+									transition="transform 0.3s ease"
+									_hover={{ transform: "translateY(-5px)" }}>
+									{/* Product image placeholder */}
+									<Box bg="#E8E2D9" height={{ base: "240px", md: "480px" }} width="100%">
+										<Image
+											src="/images/chocolate-selection.jpg" // Update
+											alt="Chocolate selection"
+											objectFit="cover"
+											height="100%"
+											width="100%"
+											borderRadius="lg"
+											transition="transform 0.5s ease"
+										/>
 									</Box>
-									<Text
-										fontWeight="500"
-										color="#604538"
-										fontSize="md"
-										mt={{ base: 2, md: 0 }}>
-										<FormatNumber value={999999.95} style="currency" currency="USD" />
-									</Text>
-								</Box>
+
+									{/* Product footer with price and cart button */}
+									<Box
+										p={4}
+										display="flex"
+										flexDirection={{ base: "column", md: "row" }}
+										justifyContent="space-between"
+										alignItems="center"
+										borderTop="1px solid #EFEFEF">
+										<Box
+											as="button"
+											bg="transparent"
+											color="#604538"
+											px={4}
+											py={2}
+											border="1px solid #604538"
+											borderRadius="md"
+											fontSize="sm"
+											fontWeight="medium"
+											transition="all 0.2s"
+											_hover={{ bg: "#604538", color: "white" }}>
+											ADD TO CART
+										</Box>
+										<Text
+											fontWeight="500"
+											color="#604538"
+											fontSize="md"
+											mt={{ base: 2, md: 0 }}>
+											<FormatNumber value={999999.95} style="currency" currency="USD" />
+										</Text>
+									</Box>
 								</Box>
 							</Link>
 						))}
@@ -549,11 +552,6 @@ export default function Home() {
 					</Box>
 				</Box>
 			</Container>
-
-			{/* Footer section */}
-			<footer>
-				<Footer />
-			</footer>
 		</>
 	);
 }
