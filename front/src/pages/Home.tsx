@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../components/layout/banner";
+
 import Navbar from "../components/layout/nav";
 import {
 	Box,

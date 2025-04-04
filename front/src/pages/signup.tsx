@@ -14,11 +14,11 @@ import {
 	Heading,
 	NativeSelect,
 } from "@chakra-ui/react";
-import { LuUser, LuMail, LuLock } from "react-icons/lu";
 import {
 	PasswordInput,
 	PasswordStrengthMeter,
 } from "@/components/ui/password-input";
+import { LuUser, LuMail, LuLock } from "react-icons/lu";
 
 import { Toaster, toaster } from "@/components/ui/toaster";
 import { COLORS } from "@/constants/colors";
@@ -219,10 +219,9 @@ export default function SignUp() {
 									</InputGroup>
 								</Field.Root>
 								{/* Last Name field */}
-								<Field.Root required>
+								<Field.Root>
 									<Field.Label>
 										Last Name
-										<Field.RequiredIndicator />
 									</Field.Label>
 									<InputGroup startElement={<LuUser />}>
 										<Input

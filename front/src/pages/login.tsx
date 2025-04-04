@@ -13,13 +13,13 @@ import {
 	InputGroup,
 	Heading,
 } from "@chakra-ui/react";
+
 import { LuMail, LuLock } from "react-icons/lu";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Toaster, toaster } from "@/components/ui/toaster";
 import { COLORS } from "@/constants/colors";
 import { ROUTES } from "@/constants/routes";
 import { VALIDATION } from "@/constants/validation";
-import TermDialog from "@/components/common/TermDialog";
 
 export default function Login() {
 	const navigate = useNavigate();
@@ -164,13 +164,6 @@ export default function Login() {
 										/>
 									</InputGroup>
 								</Field.Root>
-
-								{/* Terms and conditions checkbox */}
-								<TermDialog
-									termsAccepted={termsAccepted}
-									setTermsAccepted={setTermsAccepted}
-								/>
-
 								{/* Login button */}
 								<Button
 									size="lg"
