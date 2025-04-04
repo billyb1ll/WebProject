@@ -7,12 +7,14 @@ import {
 	Image,
 	Heading,
 	Badge,
+	Skeleton,
 } from "@chakra-ui/react";
 import {
 	ChocolateConfig,
 	Topping,
 } from "../../../../hooks/useChocolateConfigurator";
 import { formatPrice } from "../../../../utils/func/priceCalculator";
+import { useChocolateOptions } from "../../../../hooks/useChocolateOptions";
 
 interface StepTwoProps {
 	config: ChocolateConfig;
@@ -20,46 +22,40 @@ interface StepTwoProps {
 }
 
 export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
-	const toppings: {
-		type: Topping;
-		label: string;
-		description: string;
-		image: string;
-		price: number;
-	}[] = [
-		{
-			type: "none",
-			label: "No Toppings",
-			description:
-				"Pure chocolate experience with no added ingredients. Enjoy the authentic taste of our premium chocolate.",
-			image: "/images/topping-none.jpg",
-			price: 0,
-		},
-		{
-			type: "nuts",
-			label: "Mixed Nuts",
-			description:
-				"Almonds, hazelnuts, and pecans. A perfect combination of crunchy nuts that complement the smooth chocolate.",
-			image: "/images/topping-nuts.jpg",
-			price: 1.99,
-		},
-		{
-			type: "sprinkles",
-			label: "Colorful Sprinkles",
-			description:
-				"Fun and festive decoration that adds a pop of color and a slight crunch to your chocolate creation.",
-			image: "/images/topping-sprinkles.jpg",
-			price: 0.99,
-		},
-		{
-			type: "fruit",
-			label: "Dried Fruits",
-			description:
-				"Berries and citrus zest that add a natural sweetness and tangy flavor to complement the chocolate.",
-			image: "/images/topping-fruit.jpg",
-			price: 1.49,
-		},
-	];
+	// Use the new hook to fetch toppings
+	const { toppings, isLoading, isError, error } = useChocolateOptions();
+
+	if (isLoading) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="#604538">Loading topping options...</Text>
+				<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={3}>
+					{[1, 2, 3, 4].map((i) => (
+						<Skeleton key={i} height="180px" borderRadius="lg" />
+					))}
+				</SimpleGrid>
+			</VStack>
+		);
+	}
+
+	if (isError) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="red.500">{error}</Text>
+				<Box
+					p={4}
+					bg="red.50"
+					borderRadius="md"
+					borderWidth={1}
+					borderColor="red.200">
+					<Text>
+						We're having trouble loading topping options. Please check your connection
+						or try again later.
+					</Text>
+				</Box>
+			</VStack>
+		);
+	}
 
 	return (
 		<VStack gap={6} align="stretch">
@@ -69,7 +65,7 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 			</Text>
 
 			<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={3}>
-				{toppings.map(({ type, label, description, image, price }) => {
+				{toppings.map(({ id, type, name, description, imageUrl, price }) => {
 					const isSelected =
 						type === "none"
 							? config.toppings.length === 0 || config.toppings.includes("none")
@@ -77,7 +73,7 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 
 					return (
 						<Box
-							key={type}
+							key={id}
 							borderWidth="2px"
 							borderRadius="lg"
 							borderColor={isSelected ? "#A47864" : "transparent"}
@@ -90,11 +86,13 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 							onClick={() => toggleTopping(type)}>
 							<Box position="relative" height="100px">
 								<Image
-									src={image}
+									src={imageUrl}
 									onError={(e) => {
-										(e.target as HTMLImageElement).src = "/images/fallback.jpg";
+										(
+											e.target as HTMLImageElement
+										).src = `https://via.placeholder.com/200x100?text=${name}`;
 									}}
-									alt={label}
+									alt={name}
 									width="100%"
 									height="100%"
 									objectFit="cover"
@@ -127,7 +125,7 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 							</Box>
 							<Box p={3}>
 								<Heading as="h3" size="sm" mb={1} color="#604538" fontSize="md">
-									{label}
+									{name}
 								</Heading>
 								<Text fontSize="xs" color="gray.600">
 									{description}

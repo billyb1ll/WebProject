@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
 	Box,
 	Flex,
@@ -15,13 +14,13 @@ import { useChocolateConfigurator } from "../../../hooks/useChocolateConfigurato
 import {
 	calculatePrice,
 	formatPrice,
-	loadPricingData,
 } from "../../../utils/func/priceCalculator";
 import StepOne from "./steps/StepOne";
 import StepTwo from "./steps/StepTwo";
 import StepThree from "./steps/StepThree";
 import StepFour from "./steps/StepFour";
 import StepFive from "./steps/StepFive";
+import { useChocolateOptions } from "../../../hooks/useChocolateOptions";
 
 export default function ChocolateConfigurator() {
 	const {
@@ -37,27 +36,8 @@ export default function ChocolateConfigurator() {
 		updateMessageFont,
 	} = useChocolateConfigurator();
 
-	// State for initial data loading
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-
-	// Preload pricing data when the configurator mounts
-	useEffect(() => {
-		async function initialize() {
-			try {
-				await loadPricingData();
-				setIsLoading(false);
-			} catch (err) {
-				console.error("Failed to load pricing data:", err);
-				setError(
-					"Failed to load product data. Please refresh the page or try again later."
-				);
-				setIsLoading(false);
-			}
-		}
-
-		initialize();
-	}, []);
+	// Use the chocolate options hook to preload all data
+	const { isLoading, isError, error } = useChocolateOptions();
 
 	// Show loading state while fetching initial data
 	if (isLoading) {
@@ -72,7 +52,7 @@ export default function ChocolateConfigurator() {
 	}
 
 	// Show error state if data loading failed
-	if (error) {
+	if (isError) {
 		return (
 			<Center height="400px">
 				<Box

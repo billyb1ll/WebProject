@@ -9,25 +9,20 @@ import {
 	Badge,
 	Image,
 	Flex,
-    RadioGroup,
+	RadioGroup,
 	HStack,
+	Skeleton,
 } from "@chakra-ui/react";
 import { ChocolateConfig } from "../../../../hooks/useChocolateConfigurator";
 import { formatPrice } from "../../../../utils/func/priceCalculator";
+import { useChocolateOptions } from "../../../../hooks/useChocolateOptions";
 
 interface StepFiveProps {
 	config: ChocolateConfig;
 	updateMessage: (message: string) => void;
-	updateMessageFont?: (font: string) => void; // New prop for font selection
+	updateMessageFont?: (font: string) => void;
 }
 
-/**
- * Dynamic message pricing model:
- * BASE_MESSAGE_PRICE: Cost to add any message (starting fee)
- * PER_CHAR_PRICE: Additional cost per character
- */
-const BASE_MESSAGE_PRICE = 1.99;
-const PER_CHAR_PRICE = 0.15;
 const MAX_MESSAGE_LENGTH = 100;
 
 // Available font options for message customization
@@ -53,15 +48,10 @@ export default function StepFive({
 		config.messageFont || "cursive"
 	);
 
-	// Calculate the current message price based on length
-	const calculateMessagePrice = (message: string): number => {
-		if (!message) return 0;
-		return BASE_MESSAGE_PRICE + message.length * PER_CHAR_PRICE;
-	};
+	// Use the hook to get pricing data
+	const { pricing, isLoading, isError, error } = useChocolateOptions();
 
-	// Current price based on message length
-	const currentMessagePrice = calculateMessagePrice(config.message);
-
+	// Message options with proper data from API
 	const messageOptions = [
 		{
 			type: "none",
@@ -76,9 +66,18 @@ export default function StepFive({
 			description:
 				"Add a personalized message to make your gift special. Base price plus per-character fee.",
 			image: "/images/message-custom.jpg",
-			price: BASE_MESSAGE_PRICE,
+			price: pricing?.messageBasePrice || 1.99,
 		},
 	];
+
+	// Calculate the current message price based on length
+	const calculateMessagePrice = (message: string): number => {
+		if (!message || !pricing) return 0;
+		return pricing.messageBasePrice + message.length * pricing.messageCharPrice;
+	};
+
+	// Current price based on message length
+	const currentMessagePrice = calculateMessagePrice(config.message);
 
 	const handleMessageOptionChange = (value: string) => {
 		setMessageOption(value);
@@ -105,6 +104,34 @@ export default function StepFive({
 		const fontOption = FONT_OPTIONS.find((font) => font.value === selectedFont);
 		return fontOption?.fontFamily || "cursive";
 	};
+
+	if (isLoading) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="#604538">Loading message options...</Text>
+				<Skeleton height="200px" borderRadius="lg" />
+			</VStack>
+		);
+	}
+
+	if (isError) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="red.500">{error}</Text>
+				<Box
+					p={4}
+					bg="red.50"
+					borderRadius="md"
+					borderWidth={1}
+					borderColor="red.200">
+					<Text>
+						We're having trouble loading message options. Please check your connection
+						or try again later.
+					</Text>
+				</Box>
+			</VStack>
+		);
+	}
 
 	return (
 		<VStack gap={6} align="stretch">
@@ -215,8 +242,8 @@ export default function StepFive({
 							{config.message.length}/{MAX_MESSAGE_LENGTH} characters
 						</Text>
 						<Text fontSize="xs" color="gray.500">
-							{formatPrice(BASE_MESSAGE_PRICE)} base + {formatPrice(PER_CHAR_PRICE)}
-							/character
+							{formatPrice(pricing?.messageBasePrice || 1.99)} base +
+							{formatPrice(pricing?.messageCharPrice || 0.15)}/character
 						</Text>
 					</Flex>
 
@@ -253,17 +280,20 @@ export default function StepFive({
 					</Box>
 
 					{/* Price breakdown */}
-					{config.message.length > 0 && (
+					{config.message.length > 0 && pricing && (
 						<Box mt={3} p={2} bg="#F5F0E8" borderRadius="md">
 							<Flex justifyContent="space-between" fontSize="xs">
 								<Text>Base price:</Text>
-								<Text>{formatPrice(BASE_MESSAGE_PRICE)}</Text>
+								<Text>{formatPrice(pricing.messageBasePrice)}</Text>
 							</Flex>
 							<Flex justifyContent="space-between" fontSize="xs">
 								<Text>
-									{config.message.length} characters × {formatPrice(PER_CHAR_PRICE)}:
+									{config.message.length} characters ×{" "}
+									{formatPrice(pricing.messageCharPrice)}:
 								</Text>
-								<Text>{formatPrice(config.message.length * PER_CHAR_PRICE)}</Text>
+								<Text>
+									{formatPrice(config.message.length * pricing.messageCharPrice)}
+								</Text>
 							</Flex>
 							<Flex
 								justifyContent="space-between"

@@ -7,12 +7,14 @@ import {
 	Image,
 	Heading,
 	Badge,
+	Skeleton,
 } from "@chakra-ui/react";
 import {
 	ChocolateConfig,
 	PackagingType,
 } from "../../../../hooks/useChocolateConfigurator";
 import { formatPrice } from "../../../../utils/func/priceCalculator";
+import { useChocolateOptions } from "../../../../hooks/useChocolateOptions";
 
 interface StepFourProps {
 	config: ChocolateConfig;
@@ -20,48 +22,40 @@ interface StepFourProps {
 }
 
 export default function StepFour({ config, updatePackaging }: StepFourProps) {
-	const packagingOptions: {
-		type: PackagingType;
-		label: string;
-		description: string;
-		price: number;
-		image: string;
-		features: string[];
-	}[] = [
-		{
-			type: "standard",
-			label: "Standard Box",
-			description: "Simple and elegant packaging for everyday gifting.",
-			price: 0,
-			image: "/images/packaging-standard.jpg",
-			features: ["Brown kraft box", "Recyclable", "Simple design"],
-		},
-		{
-			type: "gift",
-			label: "Gift Package",
-			description: "Beautiful box with ribbon for special occasions.",
-			price: 3.99,
-			image: "/images/packaging-gift.jpg",
-			features: ["Satin ribbon", "Gift tag", "Elegant design"],
-		},
-		{
-			type: "premium",
-			label: "Premium Box",
-			description: "Luxury wooden box with gold accents for memorable gifts.",
-			price: 8.99,
-			image: "/images/packaging-premium.jpg",
-			features: ["Wooden box", "Gold foil accents", "Magnetic closure"],
-		},
-		{
-			type: "eco",
-			label: "Eco-Friendly",
-			description:
-				"Biodegradable packaging for environmentally conscious choices.",
-			price: 1.99,
-			image: "/images/packaging-eco.jpg",
-			features: ["100% biodegradable", "Plant-based materials", "Zero plastic"],
-		},
-	];
+	// Use the new hook to fetch packaging options
+	const { packagingOptions, isLoading, isError, error } = useChocolateOptions();
+
+	if (isLoading) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="#604538">Loading packaging options...</Text>
+				<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={3}>
+					{[1, 2, 3, 4].map((i) => (
+						<Skeleton key={i} height="220px" borderRadius="lg" />
+					))}
+				</SimpleGrid>
+			</VStack>
+		);
+	}
+
+	if (isError) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="red.500">{error}</Text>
+				<Box
+					p={4}
+					bg="red.50"
+					borderRadius="md"
+					borderWidth={1}
+					borderColor="red.200">
+					<Text>
+						We're having trouble loading packaging options. Please check your
+						connection or try again later.
+					</Text>
+				</Box>
+			</VStack>
+		);
+	}
 
 	return (
 		<VStack gap={6} align="stretch">
@@ -71,9 +65,9 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 
 			<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={3}>
 				{packagingOptions.map(
-					({ type, label, description, price, image, features }) => (
+					({ id, type, name, description, price, imageUrl, features }) => (
 						<Box
-							key={type}
+							key={id}
 							onClick={() => updatePackaging(type)}
 							borderWidth="2px"
 							borderRadius="lg"
@@ -89,13 +83,13 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 							flexDirection="column">
 							<Box position="relative">
 								<Image
-									src={image}
+									src={imageUrl}
 									onError={(e) => {
 										(
 											e.target as HTMLImageElement
-										).src = `https://via.placeholder.com/300x120?text=${label}`;
+										).src = `https://via.placeholder.com/300x120?text=${name}`;
 									}}
-									alt={label}
+									alt={name}
 									width="100%"
 									height="120px"
 									objectFit="cover"
@@ -127,7 +121,7 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 							</Box>
 							<Box p={3} flex="1">
 								<Heading as="h3" size="sm" mb={1} color="#604538" fontSize="md">
-									{label}
+									{name}
 								</Heading>
 								<Text fontSize="xs" color="gray.600" mb={2}>
 									{description}

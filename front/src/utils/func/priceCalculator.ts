@@ -1,8 +1,8 @@
 import { ChocolateConfig } from "../../hooks/useChocolateConfigurator";
-import { MESSAGE_PRICING } from "../../services/api/chocolateApi";
-
-// Mock price data is now imported from the API service
-import { chocolateApi, PriceData } from "../../services/api/chocolateApi";
+import {
+	chocolateService,
+	PriceData,
+} from "../../services/api/chocolateService";
 
 // Cache for pricing data to avoid unnecessary API calls
 let pricingCache: PriceData | null = null;
@@ -13,9 +13,9 @@ let pricingCache: PriceData | null = null;
  * @returns The calculated price: base price + per character fee
  */
 function calculateMessagePrice(message: string): number {
-	if (!message) return 0;
+	if (!message || !pricingCache) return 0;
 	return (
-		MESSAGE_PRICING.basePrice + message.length * MESSAGE_PRICING.perCharPrice
+		pricingCache.messageBasePrice + message.length * pricingCache.messageCharPrice
 	);
 }
 
@@ -30,7 +30,7 @@ export async function calculatePriceAsync(config: ChocolateConfig): Promise<{
 }> {
 	// Get pricing data from API (or cache)
 	if (!pricingCache) {
-		pricingCache = await chocolateApi.getPricing();
+		pricingCache = await chocolateService.getPricing();
 	}
 
 	const pricing = pricingCache;
@@ -126,14 +126,23 @@ export function calculatePrice(config: ChocolateConfig): {
 	};
 }
 
-// Helper function to preload pricing data
+/**
+ * Helper function to preload pricing data
+ */
 export async function loadPricingData(): Promise<void> {
 	if (!pricingCache) {
-		pricingCache = await chocolateApi.getPricing();
+		try {
+			pricingCache = await chocolateService.getPricing();
+		} catch (error) {
+			console.error("Failed to load pricing data:", error);
+			throw error;
+		}
 	}
 }
 
-// Format price to currency string
+/**
+ * Format price to currency string
+ */
 export function formatPrice(price: number): string {
 	return new Intl.NumberFormat("en-US", {
 		style: "currency",

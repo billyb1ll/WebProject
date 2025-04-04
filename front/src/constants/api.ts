@@ -2,9 +2,14 @@ export const API = {
 	BASE_URL: "http://localhost:3000/api",
 	ENDPOINTS: {
 		PRODUCTS: "/products",
+		PRODUCT_CATEGORIES: "/products/categories",
+		PRODUCT_FEATURED: "/products/featured",
 		ADMIN: "/admin",
 		LOGIN: "/admin/login",
 		PROFILE: "/admin/profile",
+		CHOCOLATE: "/chocolate",
+		ORDERS: "/orders",
+		CUSTOMERS: "/customers",
 	},
 	HEADERS: {
 		CONTENT_TYPE: "application/json",

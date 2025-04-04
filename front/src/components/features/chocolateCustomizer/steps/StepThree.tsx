@@ -7,12 +7,14 @@ import {
 	Image,
 	Heading,
 	Badge,
+	Skeleton,
 } from "@chakra-ui/react";
 import {
 	ChocolateConfig,
 	ChocolateShape,
 } from "../../../../hooks/useChocolateConfigurator";
 import { formatPrice } from "../../../../utils/func/priceCalculator";
+import { useChocolateOptions } from "../../../../hooks/useChocolateOptions";
 
 interface StepThreeProps {
 	config: ChocolateConfig;
@@ -20,38 +22,40 @@ interface StepThreeProps {
 }
 
 export default function StepThree({ config, updateShape }: StepThreeProps) {
-	const shapes: {
-		type: ChocolateShape;
-		label: string;
-		description: string;
-		image: string;
-		price: number;
-	}[] = [
-		{
-			type: "square",
-			label: "Classic Square",
-			description:
-				"Traditional and elegant design. Perfect for gifting and sharing with friends and family.",
-			image: "/images/shape-square.jpg",
-			price: 0,
-		},
-		{
-			type: "round",
-			label: "Elegant Round",
-			description:
-				"Smooth edges, perfect for gifting. A timeless shape that represents unity and perfection.",
-			image: "/images/shape-round.jpg",
-			price: 1.5,
-		},
-		{
-			type: "heart",
-			label: "Romantic Heart",
-			description:
-				"Express your feelings with this shape. Ideal for anniversaries, Valentine's Day, or to show someone you care.",
-			image: "/images/shape-heart.jpg",
-			price: 2.5,
-		},
-	];
+	// Use the new hook to fetch shapes
+	const { shapes, isLoading, isError, error } = useChocolateOptions();
+
+	if (isLoading) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="#604538">Loading shape options...</Text>
+				<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={3}>
+					{[1, 2, 3].map((i) => (
+						<Skeleton key={i} height="200px" borderRadius="lg" />
+					))}
+				</SimpleGrid>
+			</VStack>
+		);
+	}
+
+	if (isError) {
+		return (
+			<VStack gap={6} align="stretch">
+				<Text color="red.500">{error}</Text>
+				<Box
+					p={4}
+					bg="red.50"
+					borderRadius="md"
+					borderWidth={1}
+					borderColor="red.200">
+					<Text>
+						We're having trouble loading shape options. Please check your connection
+						or try again later.
+					</Text>
+				</Box>
+			</VStack>
+		);
+	}
 
 	return (
 		<VStack gap={6} align="stretch">
@@ -60,9 +64,9 @@ export default function StepThree({ config, updateShape }: StepThreeProps) {
 			</Text>
 
 			<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={3}>
-				{shapes.map(({ type, label, description, image, price }) => (
+				{shapes.map(({ id, type, name, description, imageUrl, price }) => (
 					<Box
-						key={type}
+						key={id}
 						onClick={() => updateShape(type)}
 						borderWidth="2px"
 						borderRadius="lg"
@@ -78,13 +82,13 @@ export default function StepThree({ config, updateShape }: StepThreeProps) {
 						flexDirection="column">
 						<Box position="relative" flex="0 0 120px">
 							<Image
-								src={image}
+								src={imageUrl}
 								onError={(e) => {
 									(
 										e.target as HTMLImageElement
-									).src = `https://via.placeholder.com/200x120?text=${label}`;
+									).src = `https://via.placeholder.com/200x120?text=${name}`;
 								}}
-								alt={label}
+								alt={name}
 								width="100%"
 								height="100%"
 								objectFit="cover"
@@ -124,7 +128,7 @@ export default function StepThree({ config, updateShape }: StepThreeProps) {
 								fontSize="md"
 								display="flex"
 								justifyContent="space-between">
-								{label}
+								{name}
 							</Heading>
 							<Text fontSize="xs" color="gray.600">
 								{description}
