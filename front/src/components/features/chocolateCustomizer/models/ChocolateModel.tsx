@@ -72,11 +72,11 @@ export default function ChocolateModel({ config }: ChocolateModelProps) {
 				return new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
 			case "round":
 				// CylinderGeometry creates a disc with many segments for smooth edges
-				return new THREE.CylinderGeometry(0.5, 0.5, 0.15, 32);
+				return new THREE.CylinderGeometry(0.5, 0.5, 0.05, 32);
 			case "square":
 			default:
 				// BoxGeometry dimensions: width × height × depth
-				return new THREE.BoxGeometry(0.5, 0.15, 0.95);
+				return new THREE.BoxGeometry(0.5, 0.05, 0.95);
 		}
 	}, [shape, heartShape, extrudeSettings]);
 

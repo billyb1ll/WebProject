@@ -104,20 +104,20 @@ export default function ToppingsModel({ toppings, shape }: ToppingsModelProps) {
 
 		switch (toppingType) {
 			case "nuts":
-				baseScale = 0.05;
-				heightOffset = 0.08; // Sits slightly higher on surface
+				baseScale = 0.03;
+				heightOffset = 0.02; // Sits slightly higher on surface
 				break;
 			case "sprinkles":
 				baseScale = 0.04; // Smaller for sprinkles
-				heightOffset = 0.08;
+				heightOffset = 0.03;
 				break;
 			case "fruit":
 				baseScale = 0.05;
-				heightOffset = 0.09; // Fruits sit higher on surface
+				heightOffset = 0.03; // Fruits sit higher on surface
 				break;
 			default:
 				baseScale = 0.05;
-				heightOffset = 0.08;
+				heightOffset = 0.05;
 		}
 
 		// Shape-specific placement bounds
