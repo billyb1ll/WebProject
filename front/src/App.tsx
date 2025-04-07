@@ -1,25 +1,46 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	useLocation,
+} from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Layout from "./components/layout/Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import Pricing from "./pages/Pricing";
 import Custom from "./pages/Custom";
 import Product from "./pages/Products";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+
+import { ROUTES } from "./constants/routes";
 import "./App.css";
+
+// AnimatedRoutes component
+function AnimatedRoutes() {
+	const location = useLocation();
+
+	return (
+		<AnimatePresence mode="wait">
+			<Routes location={location} key={location.pathname}>
+				<Route path={ROUTES.HOME} element={<Home />} />
+				<Route path={ROUTES.LOGIN} element={<Login />} />
+				<Route path={ROUTES.SIGNUP} element={<SignUp />} />
+				<Route path={ROUTES.ABOUT} element={<About />} />
+				<Route path={ROUTES.PRODUCTS} element={<Product />} />
+				<Route path={ROUTES.CUSTOM} element={<Custom />} />
+				<Route path="*" element={<NotFound />} />
+			</Routes>
+		</AnimatePresence>
+	);
+}
 
 function App() {
 	return (
 		<Router>
 			<Layout>
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/about" element={<About />} />
-					<Route path="/products" element={<Product />} />
-					<Route path="/pricing" element={<Pricing />} />
-					<Route path="/custom" element={<Custom />} />
-					<Route path="*" element={<NotFound />} />
-				</Routes>
+				<AnimatedRoutes />
 			</Layout>
 		</Router>
 	);

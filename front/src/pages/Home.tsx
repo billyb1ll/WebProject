@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../components/layout/banner";
+import AnimatedPage from "../components/common/AnimatedPage";
 
 import {
 	Box,
@@ -17,7 +18,6 @@ import { Link } from "react-router-dom";
 export default function Home() {
 	const [index, setIndex] = useState(0);
 
-	// Define the reviews array
 	const reviews = [
 		{
 			id: 1,
@@ -52,7 +52,7 @@ export default function Home() {
 			setIndex((prevIndex) => (prevIndex + 1) % reviews.length);
 		}, 5000);
 		return () => clearInterval(interval);
-	}, []);
+	}, [reviews.length]);
 	interface Product {
 		id: number;
 		name: string;
@@ -112,7 +112,7 @@ export default function Home() {
 		],
 	};
 	return (
-		<>
+		<AnimatedPage>
 			{/* Hero banner component */}
 			<Banner />
 			{/* Main content container */}
@@ -122,76 +122,91 @@ export default function Home() {
 				px={{ base: 4, md: 6 }}>
 				{/* Welcome section */}
 				<Box textAlign="center" mb={8} mt={4}>
-					<Heading
-						as="h1"
-						size={{ base: "xl", md: "2xl" }}
-						mb={{ base: 4, md: 6 }}
-						color="#604538"
-						lineHeight="1.2">
-						Welcome to Ratamoth Chocolate
-					</Heading>
-					<Text fontSize={{ base: "md", md: "lg" }} maxW="800px" mx="auto">
-						Discover our premium selection of handcrafted chocolates made with the
-						finest ingredients.
-					</Text>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.2, duration: 0.5 }}>
+						<Heading
+							as="h1"
+							size={{ base: "xl", md: "2xl" }}
+							mb={{ base: 4, md: 6 }}
+							color="#604538"
+							lineHeight="1.2">
+							Welcome to Ratamoth Chocolate
+						</Heading>
+						<Text fontSize={{ base: "md", md: "lg" }} maxW="800px" mx="auto">
+							Discover our premium selection of handcrafted chocolates made with the
+							finest ingredients.
+						</Text>
+					</motion.div>
 				</Box>
 
 				{/* Weekly Best Sellers Section */}
-				<Box textAlign="center" mb={8} mt={10} pt={"2.5"}>
-					<Heading
-						as="h2"
-						size={{ base: "lg", md: "xl" }}
-						mb={{ base: 4, md: 6 }}
-						color="#604538"
-						lineHeight="1.2">
-						Weekly Best Sellers
-					</Heading>
-					<Text fontSize={{ base: "md", md: "lg" }} maxW="800px" mx="auto" mb={6}>
-						Our most popular handcrafted chocolates this week.
-					</Text>
-				</Box>
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.4, duration: 0.5 }}>
+					<Box textAlign="center" mb={8} mt={10} pt={"2.5"}>
+						<Heading
+							as="h2"
+							size={{ base: "lg", md: "xl" }}
+							mb={{ base: 4, md: 6 }}
+							color="#604538"
+							lineHeight="1.2">
+							Weekly Best Sellers
+						</Heading>
+						<Text fontSize={{ base: "md", md: "lg" }} maxW="800px" mx="auto" mb={6}>
+							Our most popular handcrafted chocolates this week.
+						</Text>
+					</Box>
+				</motion.div>
 
 				{/* Product Grid */}
 				<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 6, md: 10 }}>
-					{weeklyBestSellers.products.map((product) => (
-						<Link to={`/products/${product.id}`} key={product.id}>
-							{/* Product card */}
-							<Box
-								key={product.id}
-								bg="white"
-								color="#604538"
-								borderRadius="md"
-								boxShadow="md"
-								_hover={{
-									transform: "scale(1.02)",
-									boxShadow: "lg",
-									transition: "all 0.4s ease",
-								}}
-								p={6}
-								textAlign="center">
-								<Heading as="h3" size="lg" mb={4} color="#604538">
-									{product.name}
-								</Heading>
-								<Image
-									src={product.image}
-									alt={product.name}
-									objectFit="cover"
+					{weeklyBestSellers.products.map((product, idx) => (
+						<motion.div
+							key={product.id}
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.2 + idx * 0.1, duration: 0.5 }}>
+							<Link to={`/products/${product.id}`}>
+								{/* Product card */}
+								<Box
+									bg="white"
+									color="#604538"
 									borderRadius="md"
-									bg="#E8E2D9"
-									height="200px"
-									width="100%"
-									mb={4}
-									backgroundSize="cover"
-									backgroundPosition="center"
-								/>
-								<Text fontSize="md" color="#989898" mb={2}>
-									{product.description}
-								</Text>
-								<Text textStyle="lg">
-									<FormatNumber value={product.price} style="currency" currency="USD" />
-								</Text>
-							</Box>
-						</Link>
+									boxShadow="md"
+									_hover={{
+										transform: "scale(1.02)",
+										boxShadow: "lg",
+										transition: "all 0.4s ease",
+									}}
+									p={6}
+									textAlign="center">
+									<Heading as="h3" size="lg" mb={4} color="#604538">
+										{product.name}
+									</Heading>
+									<Image
+										src={product.image}
+										alt={product.name}
+										objectFit="cover"
+										borderRadius="md"
+										bg="#E8E2D9"
+										height="200px"
+										width="100%"
+										mb={4}
+										backgroundSize="cover"
+										backgroundPosition="center"
+									/>
+									<Text fontSize="md" color="#989898" mb={2}>
+										{product.description}
+									</Text>
+									<Text textStyle="lg">
+										<FormatNumber value={product.price} style="currency" currency="USD" />
+									</Text>
+								</Box>
+							</Link>
+						</motion.div>
 					))}
 				</SimpleGrid>
 
@@ -552,6 +567,6 @@ export default function Home() {
 					</Box>
 				</Box>
 			</Container>
-		</>
+		</AnimatedPage>
 	);
 }
