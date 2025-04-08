@@ -13,6 +13,7 @@ import Custom from "./pages/Custom";
 import Product from "./pages/Products";
 import Login from "./pages/login";
 import SignUp from "./pages/SignUp";
+import ProductDetail from "./pages/ProductDetail";
 
 import { ROUTES } from "./constants/routes";
 import "./App.css";
@@ -29,6 +30,7 @@ function AnimatedRoutes() {
 				<Route path={ROUTES.SIGNUP} element={<SignUp />} />
 				<Route path={ROUTES.ABOUT} element={<About />} />
 				<Route path={ROUTES.PRODUCTS} element={<Product />} />
+				<Route path={`${ROUTES.PRODUCTS}/:id`} element={<ProductDetail />} />
 				<Route path={ROUTES.CUSTOM} element={<Custom />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
