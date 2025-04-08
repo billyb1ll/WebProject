@@ -11,7 +11,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Custom from "./pages/Custom";
 import Product from "./pages/Products";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 import SignUp from "./pages/SignUp";
 
 import { ROUTES } from "./constants/routes";
