@@ -12,7 +12,7 @@ import NotFound from "./pages/NotFound";
 import Custom from "./pages/Custom";
 import Product from "./pages/Products";
 import Login from "./pages/login";
-import SignUp from "./pages/SignUp";
+import SignUp from "./pages/signup";
 
 import { ROUTES } from "./constants/routes";
 import "./App.css";
