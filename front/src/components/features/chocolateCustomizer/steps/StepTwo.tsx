@@ -58,7 +58,7 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 	}
 
 	return (
-		<VStack gap={6} align="stretch">
+		<VStack gap={5} align="stretch">
 			<Text color="#604538">
 				Select your favorite toppings. You can choose multiple options or none for a
 				pure chocolate experience.
@@ -74,7 +74,7 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 					return (
 						<Box
 							key={id}
-							borderWidth="2px"
+							border={"1px solid"}
 							borderRadius="lg"
 							borderColor={isSelected ? "#A47864" : "transparent"}
 							overflow="hidden"
@@ -84,7 +84,7 @@ export default function StepTwo({ config, toggleTopping }: StepTwoProps) {
 							_hover={{ transform: "translateY(-2px)", boxShadow: "lg" }}
 							bg={isSelected ? "#F5F0E8" : "white"}
 							onClick={() => toggleTopping(type)}>
-							<Box position="relative" height="100px">
+							<Box position="relative" height="200px">
 								<Image
 									src={imageUrl}
 									onError={(e) => {

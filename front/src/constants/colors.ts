@@ -13,6 +13,8 @@ export const COLORS = {
 	TEXT_PRIMARY: "#213547",
 	BACKGROUND_LIGHT: "#F5F0E8",
 	BACKGROUND_MEDIUM: "#E0D9CF",
+	BACKGROUND_GRADIENT:
+		"radial-gradient(circle, rgba(122,75,58,1) 0%, rgba(161,120,102,1) 35%, rgba(198,171,158,1) 70%, rgba(252,226,194,1) 100%)",
 
 	// State colors
 	SUCCESS: "green",

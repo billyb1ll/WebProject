@@ -3,7 +3,8 @@ import { useState, useCallback, useEffect } from "react";
 export type ChocolateType = "dark" | "milk" | "white";
 export type Topping = "none" | "nuts" | "sprinkles" | "fruit";
 export type ChocolateShape = "square" | "round" | "heart";
-export type PackagingType = "standard" | "gift" | "premium" | "eco";
+
+export type PackagingType = string;
 
 export interface ChocolateConfig {
 	chocolateType: ChocolateType;
@@ -14,6 +15,11 @@ export interface ChocolateConfig {
 	messageFont: string; // New property
 }
 
+/**
+ * Custom hook for chocolate customization logic
+ * @debug If configurator state isn't updating properly, check state changes in this hook
+ * @returns Configuration state and methods to manage it
+ */
 export function useChocolateConfigurator() {
 	const [currentStep, setCurrentStep] = useState(1);
 	const [config, setConfig] = useState<ChocolateConfig>({
@@ -22,17 +28,19 @@ export function useChocolateConfigurator() {
 		shape: "square",
 		packaging: "standard",
 		message: "",
-		messageFont: "cursive", // Default font
+		messageFont: "cursive",
 	});
 
 	const nextStep = () => {
 		if (currentStep < 5) {
+			console.debug(`Moving from step ${currentStep} to step ${currentStep + 1}`);
 			setCurrentStep(currentStep + 1);
 		}
 	};
 
 	const prevStep = () => {
 		if (currentStep > 1) {
+			console.debug(`Moving from step ${currentStep} to step ${currentStep - 1}`);
 			setCurrentStep(currentStep - 1);
 		}
 	};
@@ -52,11 +60,13 @@ export function useChocolateConfigurator() {
 			const filteredToppings = currentToppings.filter((t) => t !== "none");
 
 			if (filteredToppings.includes(topping)) {
+				console.debug(`Removing topping: ${topping}`);
 				return {
 					...prev,
 					toppings: filteredToppings.filter((t) => t !== topping),
 				};
 			} else {
+				console.debug(`Adding topping: ${topping}`);
 				return {
 					...prev,
 					toppings: [...filteredToppings, topping],
@@ -69,9 +79,36 @@ export function useChocolateConfigurator() {
 		setConfig((prev) => ({ ...prev, shape }));
 	};
 
-	const updatePackaging = (packaging: PackagingType) => {
-		setConfig((prev) => ({ ...prev, packaging }));
-	};
+	const updatePackaging = useCallback((packaging: PackagingType) => {
+		console.debug(
+			`useChocolateConfigurator: Updating packaging to: ${packaging}`
+		);
+
+		// Force a full state update with a completely new object
+		setConfig((prev) => {
+			if (prev.packaging === packaging) {
+				console.debug(
+					"useChocolateConfigurator: Same packaging selected, forcing update anyway"
+				);
+			}
+
+			const newConfig = {
+				...prev,
+				packaging,
+				// Adding a timestamp to force React to recognize the update
+				_lastUpdated: Date.now(),
+			};
+
+			// Return new config object
+			return newConfig;
+		});
+
+		// Force an immediate UI update
+		setTimeout(() => {
+			console.debug("useChocolateConfigurator: Triggering follow-up update");
+			setConfig((current) => ({ ...current, _forceUpdate: Date.now() }));
+		}, 50);
+	}, []);
 
 	const updateMessage = useCallback((message: string) => {
 		// Create a completely new object to ensure React detects the change
@@ -94,12 +131,28 @@ export function useChocolateConfigurator() {
 		return () => clearTimeout(timer);
 	}, [config.message]);
 
+	// Ensure we trigger rerenders when packaging changes
+	useEffect(() => {
+		// This effect runs when packaging changes
+		// Force component using this hook to update
+		const timer = setTimeout(() => {
+			// This empty state update can sometimes help trigger rerenders
+			setConfig((current) => ({ ...current }));
+		}, 0);
+		return () => clearTimeout(timer);
+	}, [config.packaging]);
+
 	const updateMessageFont = (font: string) => {
 		setConfig((prev) => ({
 			...prev,
 			messageFont: font,
 		}));
 	};
+
+	// Log current state for debugging
+	useEffect(() => {
+		console.debug("Chocolate configurator state updated:", config);
+	}, [config]);
 
 	return {
 		config,

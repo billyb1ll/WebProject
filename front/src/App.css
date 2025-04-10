@@ -44,7 +44,7 @@ main {
   /* Fix to ensure main content takes available space */
   width: 100%;
   display: block;
-  padding-top: 10px;
+
   /* Change from flex to block to fix layout issues */
 }
 
@@ -151,11 +151,6 @@ html,
   /* Change from visible to hidden */
 }
 
-nav {
-  position: sticky;
-}
-
-/* Fix potential footer visibility issues */
 footer {
   position: relative;
   width: 100%;

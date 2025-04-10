@@ -20,6 +20,7 @@ import {
 	formatPrice,
 } from "../../../utils/func/priceCalculator";
 import { FaSun, FaMoon } from "react-icons/fa";
+import { useChocolateOptions } from "../../../hooks/useChocolateOptions";
 
 // Separate component for the rotating chocolate scene
 function RotatingChocolateScene({ config }: { config: ChocolateConfig }) {
@@ -50,13 +51,92 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 	const [key, setKey] = useState(0);
 	// State for enhanced lighting control
 	const [enhancedLighting, setEnhancedLighting] = useState(true);
-
-	// Calculate price based on current config
-	const { subtotal, details } = calculatePrice(config);
+	// Add state to store and manage price updates
+	const [priceDetails, setPriceDetails] = useState(() => calculatePrice(config));
+	// Track last packaging for debugging
+	const [lastPackaging, setLastPackaging] = useState(config.packaging);
+	// Use the chocolate options hook to get pricing data
+	const { packagingOptions, pricing } = useChocolateOptions();
 
 	// Adjust responsive controls with smaller scale values
 	const modelScale = useBreakpointValue({ base: 1.2, md: 1.5 }) || 1.3;
 	const isMobile = useBreakpointValue({ base: true, md: false });
+
+	// Force recalculation of prices when config changes
+	useEffect(() => {
+		// If we have pricing data from the API, use it to calculate a more accurate price
+		if (pricing) {
+			const newPriceDetails = calculatePrice(config);
+			setPriceDetails(newPriceDetails);
+			console.log("ChocolateViewer: Price recalculated with API pricing data:", {
+				packaging: config.packaging,
+				packagingPrice: newPriceDetails.details.packaging,
+				subtotal: newPriceDetails.subtotal,
+			});
+		}
+	}, [config, pricing]);
+
+	// Get the actual packaging price directly from the API data
+	const getActualPackagingPrice = () => {
+		// If we have packaging options from API, find the selected one and use its price
+		if (packagingOptions && packagingOptions.length > 0) {
+			const selectedPackaging = packagingOptions.find(
+				(pkg) => pkg.type === config.packaging
+			);
+			if (selectedPackaging) {
+				return selectedPackaging.price;
+			}
+		}
+		// Fallback to the calculated price
+		return priceDetails.details.packaging;
+	};
+
+	// Update priceDetails with the actual packaging price
+	useEffect(() => {
+		// Only update if we have packaging options from API
+		if (packagingOptions && packagingOptions.length > 0) {
+			const actualPackagePrice = getActualPackagingPrice();
+
+			// If the package price is different from what's already in priceDetails
+			if (actualPackagePrice !== priceDetails.details.packaging) {
+				// Create a new priceDetails object with the updated packaging price
+				const updatedPriceDetails = {
+					...priceDetails,
+					subtotal:
+						priceDetails.subtotal -
+						priceDetails.details.packaging +
+						actualPackagePrice,
+					details: {
+						...priceDetails.details,
+						packaging: actualPackagePrice,
+					},
+				};
+
+				setPriceDetails(updatedPriceDetails);
+				console.log("ChocolateViewer: Updated packaging price:", {
+					oldPrice: priceDetails.details.packaging,
+					newPrice: actualPackagePrice,
+					newSubtotal: updatedPriceDetails.subtotal,
+				});
+			}
+		}
+	}, [config.packaging, packagingOptions]);
+
+	// Specific effect for packaging changes to ensure proper updates
+	useEffect(() => {
+		if (lastPackaging !== config.packaging) {
+			console.log(
+				`ChocolateViewer: Packaging changed from "${lastPackaging}" to "${config.packaging}"`
+			);
+			const newDetails = calculatePrice({ ...config }); // Force new calculation with fresh config copy
+			setPriceDetails(newDetails);
+			setLastPackaging(config.packaging);
+			console.log(
+				"ChocolateViewer: Price details after packaging change:",
+				newDetails
+			);
+		}
+	}, [config.packaging, lastPackaging]);
 
 	// Force re-render when config changes to ensure model updates
 	useEffect(() => {
@@ -177,7 +257,7 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 						Your Chocolate Creation
 					</Text>
 					<Text fontWeight="bold" fontSize="lg" color="#604538">
-						{formatPrice(subtotal)}
+						{formatPrice(priceDetails.subtotal)}
 					</Text>
 				</Flex>
 
@@ -210,47 +290,58 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 				</Flex>
 
 				<Flex my={2} />
-				{/* Price breakdown - modified for better mobile display */}
+				{/* Price breakdown - using priceDetails to ensure updates */}
 				<VStack align="stretch" fontSize={{ base: "2xs", sm: "xs" }} gap={1}>
 					<Tooltip content="Base chocolate price">
 						<Flex justify="space-between">
 							<Text>Base ({config.chocolateType}):</Text>
-							<Text>{formatPrice(details.base)}</Text>
+							<Text>{formatPrice(priceDetails.details.base)}</Text>
 						</Flex>
 					</Tooltip>
 
-					{details.shape > 0 && (
+					{priceDetails.details.shape > 0 && (
 						<Tooltip content="Additional cost for shape">
 							<Flex justify="space-between">
 								<Text>Shape ({config.shape}):</Text>
-								<Text>+{formatPrice(details.shape)}</Text>
+								<Text>+{formatPrice(priceDetails.details.shape)}</Text>
 							</Flex>
 						</Tooltip>
 					)}
 
-					{details.toppings > 0 && (
+					{priceDetails.details.toppings > 0 && (
 						<Tooltip content="Cost for selected toppings">
 							<Flex justify="space-between">
 								<Text>Toppings:</Text>
-								<Text>+{formatPrice(details.toppings)}</Text>
+								<Text>+{formatPrice(priceDetails.details.toppings)}</Text>
 							</Flex>
 						</Tooltip>
 					)}
 
-					{details.packaging > 0 && (
-						<Tooltip content="Packaging upgrade cost">
-							<Flex justify="space-between">
-								<Text>Packaging ({config.packaging}):</Text>
-								<Text>+{formatPrice(details.packaging)}</Text>
+					{/* Make packaging price display more robust */}
+					{priceDetails.details.packaging < 0 && (
+						<Tooltip content="Special promotional pricing">
+							<Flex justify="space-between" color="green.600" fontWeight="medium">
+								<Text>Packaging promotion:</Text>
+								<Text>{formatPrice(priceDetails.details.packaging)}</Text>
 							</Flex>
 						</Tooltip>
 					)}
+					<Tooltip content="Packaging cost">
+						<Flex justify="space-between">
+							<Text>Packaging ({config.packaging}):</Text>
+							<Text>
+								{getActualPackagingPrice() > 0
+									? `+${formatPrice(getActualPackagingPrice())}`
+									: formatPrice(getActualPackagingPrice())}
+							</Text>
+						</Flex>
+					</Tooltip>
 
-					{details.message > 0 && (
+					{priceDetails.details.message > 0 && (
 						<Tooltip content="Custom message fee">
 							<Flex justify="space-between">
 								<Text>Custom message:</Text>
-								<Text>+{formatPrice(details.message)}</Text>
+								<Text>+{formatPrice(priceDetails.details.message)}</Text>
 							</Flex>
 						</Tooltip>
 					)}

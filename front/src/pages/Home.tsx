@@ -11,12 +11,79 @@ import {
 	FormatNumber,
 	Avatar,
 	Image,
+	Spinner,
+	Center,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { productService } from "../services/api/productService";
+import {
+	ApiResponse,
+	ServerProduct,
+	MappedProduct,
+	ServerProductImage,
+} from "../types/product.types";
 
 export default function Home() {
 	const [index, setIndex] = useState(0);
+	const [loading, setLoading] = useState(true);
+	const [featuredProducts, setFeaturedProducts] = useState<ServerProduct[]>([]);
+	const [error, setError] = useState<string | null>(null);
+
+	// Fetch products from API
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				setLoading(true);
+				// Get featured products from API for the homepage
+				const featuredResponse = await productService.getFeaturedProducts();
+				console.log("Featured API response:", featuredResponse);
+
+				// Check response structure and extract products accordingly
+				if (Array.isArray(featuredResponse)) {
+					// Handle direct array response
+					setFeaturedProducts(featuredResponse);
+				} else if (
+					featuredResponse &&
+					typeof featuredResponse === "object" &&
+					"success" in featuredResponse
+				) {
+					// Handle { success: true, data: [...] } format
+					setFeaturedProducts(
+						(featuredResponse as ApiResponse<ServerProduct[]>).data || []
+					);
+				} else {
+					// Fallback
+					setFeaturedProducts([]);
+				}
+
+				setError(null);
+			} catch (err) {
+				console.error("Failed to fetch featured products:", err);
+				setError("Failed to load featured products. Please try again later.");
+
+				// Fallback to regular product listing if featured products fail
+				try {
+					// Provide default filters to avoid "filters.page is undefined" error
+					const response = await productService.getProducts({
+						page: 1,
+						limit: 6,
+					});
+					console.log("Fallback API response:", response);
+					setFeaturedProducts(response.products || []);
+					setError(null);
+				} catch (fallbackErr) {
+					console.error("Fallback request also failed:", fallbackErr);
+					// Set empty array to prevent rendering issues
+					setFeaturedProducts([]);
+				}
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProducts();
+	}, []);
 
 	const reviews = [
 		{
@@ -53,64 +120,55 @@ export default function Home() {
 		}, 5000);
 		return () => clearInterval(interval);
 	}, [reviews.length]);
-	interface Product {
-		id: number;
-		name: string;
-		price: number;
-		image: string;
-		description: string;
-	}
-	interface WeeklyBestSellers {
-		products: Product[];
-	}
-	// Mock data for weekly best sellers
-	// In a real application, this data would be fetched from an API or database
-	const weeklyBestSellers: WeeklyBestSellers = {
-		products: [
-			{
-				id: 1,
-				name: "Chocolate Bar",
-				price: 5.99,
-				image: "path/to/image1.jpg",
-				description: "Delicious chocolate bar with nuts.",
-			},
-			{
-				id: 2,
-				name: "Dark Chocolate",
-				price: 7.99,
-				image: "path/to/image2.jpg",
-				description: "Rich dark chocolate with a hint of sea salt.",
-			},
-			{
-				id: 3,
-				name: "Milk Chocolate",
-				price: 6.99,
-				image: "path/to/image3.jpg",
-				description: "Creamy milk chocolate with caramel filling.",
-			},
-			{
-				id: 4,
-				name: "Truffle Collection",
-				price: 12.99,
-				image: "path/to/image4.jpg",
-				description: "Assorted chocolate truffles with various fillings.",
-			},
-			{
-				id: 5,
-				name: "White Chocolate",
-				price: 6.49,
-				image: "path/to/image5.jpg",
-				description: "Smooth white chocolate with vanilla beans.",
-			},
-			{
-				id: 6,
-				name: "Chocolate Pralines",
-				price: 9.99,
-				image: "path/to/image6.jpg",
-				description: "Premium pralines with hazelnut filling.",
-			},
-		],
-	};
+
+	// Format API products to match UI requirements
+	const mappedProducts = React.useMemo(() => {
+		if (!featuredProducts || featuredProducts.length === 0) {
+			return [];
+		}
+
+		return featuredProducts.map((product) => {
+			// Handle the new database field names that might be returned from the API
+			const id = product.id || product.product_id;
+			const name = product.name || product.product_name;
+			const price =
+				typeof product.price === "number"
+					? product.price
+					: typeof product.product_price === "number"
+					? product.product_price
+					: typeof product.product_price === "string"
+					? parseFloat(product.product_price)
+					: 0;
+			const description =
+				product.description || product.product_des || "No description available.";
+
+			// Handle different image structures that might be returned
+			let imageUrl = "https://via.placeholder.com/300?text=No+Image";
+
+			if (product.images && product.images.length > 0) {
+				const primaryImage = product.images.find(
+					(img) => img.isPrimary || img.is_primary === true || img.is_primary === 1
+				);
+
+				if (primaryImage) {
+					imageUrl = primaryImage.imageUrl || primaryImage.image_url || imageUrl;
+				} else {
+					// Use first image if no primary image is found
+					const firstImage = product.images[0];
+					imageUrl = firstImage.imageUrl || firstImage.image_url || imageUrl;
+				}
+			}
+
+			return {
+				id: typeof id === "number" ? id : 0, // Ensure id is a number
+				name: name || "Unnamed Product",
+				price: typeof price === "number" ? price : 0,
+				image: imageUrl,
+				description: description || "",
+			} as MappedProduct;
+		});
+	}, [featuredProducts]);
+
 	return (
 		<AnimatedPage>
 			{/* Hero banner component */}
@@ -162,53 +220,71 @@ export default function Home() {
 				</motion.div>
 
 				{/* Product Grid */}
-				<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 6, md: 10 }}>
-					{weeklyBestSellers.products.map((product, idx) => (
-						<motion.div
-							key={product.id}
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.2 + idx * 0.1, duration: 0.5 }}>
-							<Link to={`/products/${product.id}`}>
-								{/* Product card */}
-								<Box
-									bg="white"
-									color="#604538"
-									borderRadius="md"
-									boxShadow="md"
-									_hover={{
-										transform: "scale(1.02)",
-										boxShadow: "lg",
-										transition: "all 0.4s ease",
-									}}
-									p={6}
-									textAlign="center">
-									<Heading as="h3" size="lg" mb={4} color="#604538">
-										{product.name}
-									</Heading>
-									<Image
-										src={product.image}
-										alt={product.name}
-										objectFit="cover"
+				{loading ? (
+					<Center py={10}>
+						<Spinner size="xl" color="#604538" />
+					</Center>
+				) : error ? (
+					<Center py={10}>
+						<Text color="red.500">{error}</Text>
+					</Center>
+				) : mappedProducts.length === 0 ? (
+					<Center py={10}>
+						<Text color="#604538">No featured products available at this time.</Text>
+					</Center>
+				) : (
+					<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 6, md: 10 }}>
+						{mappedProducts.slice(0, 6).map((product, idx) => (
+							<motion.div
+								key={product.id}
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.2 + idx * 0.1, duration: 0.5 }}>
+								<Link to={`/products/${product.id}`}>
+									{/* Product card */}
+									<Box
+										bg="white"
+										color="#604538"
 										borderRadius="md"
-										bg="#E8E2D9"
-										height="200px"
-										width="100%"
-										mb={4}
-										backgroundSize="cover"
-										backgroundPosition="center"
-									/>
-									<Text fontSize="md" color="#989898" mb={2}>
-										{product.description}
-									</Text>
-									<Text textStyle="lg">
-										<FormatNumber value={product.price} style="currency" currency="USD" />
-									</Text>
-								</Box>
-							</Link>
-						</motion.div>
-					))}
-				</SimpleGrid>
+										boxShadow="md"
+										_hover={{
+											transform: "scale(1.02)",
+											boxShadow: "lg",
+											transition: "all 0.4s ease",
+										}}
+										p={6}
+										textAlign="center">
+										<Heading as="h3" size="lg" mb={4} color="#604538">
+											{product.name}
+										</Heading>
+										<Image
+											src={product.image}
+											alt={product.name}
+											objectFit="cover"
+											borderRadius="md"
+											bg="#E8E2D9"
+											height="200px"
+											width="100%"
+											mb={4}
+											backgroundSize="cover"
+											backgroundPosition="center"
+										/>
+										<Text fontSize="md" color="#989898" mb={2}>
+											{product.description}
+										</Text>
+										<Text textStyle="lg">
+											<FormatNumber
+												value={product.price}
+												style="currency"
+												currency="USD"
+											/>
+										</Text>
+									</Box>
+								</Link>
+							</motion.div>
+						))}
+					</SimpleGrid>
+				)}
 
 				{/* Featured Images Section */}
 				<Box
@@ -295,65 +371,81 @@ export default function Home() {
 					</Heading>
 
 					{/* Product cards grid */}
-					<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 4, md: 8 }}>
-						{[1, 2, 3].map((item) => (
-							<Link to={`/products/${item}`} key={item}>
-								<Box
-									key={item}
-									bg="#F5F0E8"
-									borderRadius="lg"
-									overflow="hidden"
-									border="1px solid #A38C7F"
-									boxShadow="0 4px 12px rgba(0,0,0,0.05)"
-									transition="transform 0.3s ease"
-									_hover={{ transform: "translateY(-5px)" }}>
-									{/* Product image placeholder */}
-									<Box bg="#E8E2D9" height={{ base: "240px", md: "480px" }} width="100%">
-										<Image
-											src="/images/chocolate-selection.jpg" // Update
-											alt="Chocolate selection"
-											objectFit="cover"
-											height="100%"
-											width="100%"
-											borderRadius="lg"
-											transition="transform 0.5s ease"
-										/>
-									</Box>
-
-									{/* Product footer with price and cart button */}
+					{loading ? (
+						<Center py={10}>
+							<Spinner size="xl" color="#604538" />
+						</Center>
+					) : error ? (
+						<Center py={10}>
+							<Text color="red.500">{error}</Text>
+						</Center>
+					) : (
+						<SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap={{ base: 4, md: 8 }}>
+							{mappedProducts.slice(0, 3).map((product) => (
+								<Link to={`/products/${product.id}`} key={product.id}>
 									<Box
-										p={4}
-										display="flex"
-										flexDirection={{ base: "column", md: "row" }}
-										justifyContent="space-between"
-										alignItems="center"
-										borderTop="1px solid #EFEFEF">
+										bg="#F5F0E8"
+										borderRadius="lg"
+										overflow="hidden"
+										border="1px solid #A38C7F"
+										boxShadow="0 4px 12px rgba(0,0,0,0.05)"
+										transition="transform 0.3s ease"
+										_hover={{ transform: "translateY(-5px)" }}>
+										{/* Product image */}
 										<Box
-											as="button"
-											bg="transparent"
-											color="#604538"
-											px={4}
-											py={2}
-											border="1px solid #604538"
-											borderRadius="md"
-											fontSize="sm"
-											fontWeight="medium"
-											transition="all 0.2s"
-											_hover={{ bg: "#604538", color: "white" }}>
-											ADD TO CART
+											bg="#E8E2D9"
+											height={{ base: "240px", md: "480px" }}
+											width="100%">
+											<Image
+												src={product.image}
+												alt={product.name}
+												objectFit="cover"
+												height="100%"
+												width="100%"
+												borderRadius="lg"
+												transition="transform 0.5s ease"
+											/>
 										</Box>
-										<Text
-											fontWeight="500"
-											color="#604538"
-											fontSize="md"
-											mt={{ base: 2, md: 0 }}>
-											<FormatNumber value={999999.95} style="currency" currency="USD" />
-										</Text>
+
+										{/* Product footer with price and cart button */}
+										<Box
+											p={4}
+											display="flex"
+											flexDirection={{ base: "column", md: "row" }}
+											justifyContent="space-between"
+											alignItems="center"
+											borderTop="1px solid #EFEFEF">
+											<Box
+												as="button"
+												bg="transparent"
+												color="#604538"
+												px={4}
+												py={2}
+												border="1px solid #604538"
+												borderRadius="md"
+												fontSize="sm"
+												fontWeight="medium"
+												transition="all 0.2s"
+												_hover={{ bg: "#604538", color: "white" }}>
+												ADD TO CART
+											</Box>
+											<Text
+												fontWeight="500"
+												color="#604538"
+												fontSize="md"
+												mt={{ base: 2, md: 0 }}>
+												<FormatNumber
+													value={product.price}
+													style="currency"
+													currency="USD"
+												/>
+											</Text>
+										</Box>
 									</Box>
-								</Box>
-							</Link>
-						))}
-					</SimpleGrid>
+								</Link>
+							))}
+						</SimpleGrid>
+					)}
 				</Box>
 
 				{/* Video Showcase Section */}

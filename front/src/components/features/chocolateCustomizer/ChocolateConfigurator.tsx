@@ -3,14 +3,18 @@ import {
 	Flex,
 	Heading,
 	Button,
-	HStack,
 	Text,
 	Spinner,
 	Center,
 	VStack,
+	Steps,
+	ButtonGroup,
 } from "@chakra-ui/react";
 import ChocolateViewer from "./ChocolateViewer";
-import { useChocolateConfigurator } from "../../../hooks/useChocolateConfigurator";
+import {
+	useChocolateConfigurator,
+	PackagingType,
+} from "../../../hooks/useChocolateConfigurator";
 import {
 	calculatePrice,
 	formatPrice,
@@ -54,6 +58,7 @@ export default function ChocolateConfigurator() {
 
 	// Force price update whenever any part of config changes
 	useEffect(() => {
+		// Extract toppings as string for dependency tracking
 		recalculatePrice();
 	}, [
 		config.chocolateType,
@@ -61,8 +66,7 @@ export default function ChocolateConfigurator() {
 		config.packaging,
 		config.message,
 		config.messageFont,
-		// Convert toppings array to string to detect changes
-		config.toppings.join(","),
+		config.toppings,
 		recalculatePrice,
 	]);
 
@@ -108,17 +112,34 @@ export default function ChocolateConfigurator() {
 		);
 	}
 
-	// Calculate progress percentage
-	const progressPercentage = Math.max(
-		0,
-		Math.min(100, ((currentStep - 1) / 4) * 100)
-	);
-
 	// Wrapper for message updates to ensure price recalculation
 	const handleMessageUpdate = (message: string) => {
 		updateMessage(message);
 		// Force an immediate price recalculation
 		setTimeout(recalculatePrice, 10);
+	};
+
+	// Wrapper for packaging updates to ensure price recalculation
+	const handlePackagingUpdate = (packaging: PackagingType) => {
+		console.debug(`ChocolateConfigurator: Updating packaging to ${packaging}`);
+
+		// Update the packaging in the chocolate config
+		updatePackaging(packaging);
+
+		// Force an immediate price recalculation - using a more reliable approach
+		setTimeout(() => {
+			console.debug(
+				`ChocolateConfigurator: Config packaging after update: ${config.packaging}`
+			);
+			// Force price recalculation after packaging update
+			const newConfig = { ...config, packaging }; // Create new config with updated packaging
+			const result = calculatePrice(newConfig);
+			console.debug(
+				`ChocolateConfigurator: New price after packaging update:`,
+				result
+			);
+			setPriceInfo(result);
+		}, 10);
 	};
 
 	// Step titles for display
@@ -140,7 +161,7 @@ export default function ChocolateConfigurator() {
 			case 3:
 				return <StepThree config={config} updateShape={updateShape} />;
 			case 4:
-				return <StepFour config={config} updatePackaging={updatePackaging} />;
+				return <StepFour config={config} updatePackaging={handlePackagingUpdate} />;
 			case 5:
 				return (
 					<StepFive
@@ -156,91 +177,89 @@ export default function ChocolateConfigurator() {
 
 	return (
 		<Box>
-			{/* Progress indicator */}
+			{/* Steps progress at the top */}
 			<Box mb={6}>
-				{/* Progress bar */}
-				<Box position="relative" height="8px" bg="#E8DDD8" borderRadius="md" mb={4}>
-					<Box
-						bg="#A47864"
-						height="100%"
-						width={`${progressPercentage}%`}
-						borderRadius="md"
-						transition="width 0.3s ease-in-out"
-					/>
-				</Box>
-
-				{/* Step indicators */}
-				<HStack justify="space-between" px={2}>
-					{[1, 2, 3, 4, 5].map((step) => (
-						<Box key={step} textAlign="center" position="relative" width="60px">
-							<Box
-								width={{ base: "20px", md: "30px" }}
-								height="20px"
-								borderRadius="full"
-								bg={step <= currentStep ? "#A47864" : "gray.200"}
-								display="flex"
-								alignItems="center"
-								justifyContent="center"
-								mx="auto"
-								mb={1}
-								transition="all 0.2s">
-								{step < currentStep && (
-									<Text fontSize="xs" color="white" fontWeight="bold">
-										✓
-									</Text>
-								)}
-							</Box>
-							<Text
-								fontSize="xs"
-								color={step <= currentStep ? "#604538" : "gray.400"}
-								fontWeight={step === currentStep ? "bold" : "normal"}>
-								Step {step}
-							</Text>
-						</Box>
-					))}
-				</HStack>
+				<Steps.Root
+					defaultStep={currentStep - 1}
+					count={stepTitles.length}
+					colorPalette="orange"
+					variant="subtle"
+					size="md"
+					step={currentStep - 1}
+					onStepChange={(details) => {
+						if (details.step + 1 < currentStep) {
+							// Allow going back
+							prevStep();
+						} else if (details.step + 1 > currentStep) {
+							// Allow going forward
+							nextStep();
+						}
+					}}>
+					<Steps.List>
+						{stepTitles.map((title, index) => (
+							<Steps.Item key={index} index={index} title={title}>
+								<Steps.Indicator />
+								<Steps.Title>{title}</Steps.Title>
+								<Steps.Separator />
+							</Steps.Item>
+						))}
+					</Steps.List>
+				</Steps.Root>
 			</Box>
 
+			{/* Main content area: Viewer on left, Step content on right */}
 			<Flex direction={{ base: "column", lg: "row" }} gap={8} align="start">
 				{/* Left section: 3D Viewer */}
-				<Box flex="3">
+				<Box flex="1" minWidth={{ base: "100%", lg: "50%" }}>
 					<ChocolateViewer config={config} />
 				</Box>
 
 				{/* Right section: Current step controls */}
-				<Box flex="2">
+				<Box flex="2" minWidth={{ base: "100%", lg: "40%" }}>
 					<Heading as="h3" size="lg" mb={6} color="#604538" textAlign="center">
 						Step {currentStep}: {stepTitles[currentStep - 1]}
 					</Heading>
-
-					{renderStep()}
+					{/* Current step content */}
+					<Box
+						mb={6}
+						p={4}
+						borderWidth="0px"
+						borderRadius="lg"
+						bg="white"
+						padding={1}>
+						{renderStep()}
+					</Box>
 
 					{/* Navigation buttons */}
 					<Flex justify="space-between" mt={6}>
-						<Button
-							onClick={prevStep}
-							disabled={currentStep === 1}
+						<ButtonGroup
+							size="lg"
 							variant="outline"
-							color="#604538"
-							borderColor="#604538"
-							bg="white"
-							_hover={{ bg: "#E8DDD8" }}
-							size="lg"
-							width="120px">
-							Back
-						</Button>
+							flex="1"
+							gap={4}
+							justifyContent="space-between">
+							<Button
+								color="#604538"
+								borderColor="#604538"
+								bg="white"
+								_hover={{ bg: "#E8DDD8" }}
+								width="120px"
+								disabled={currentStep === 1}
+								onClick={prevStep}>
+								Back
+							</Button>
 
-						<Button
-							onClick={nextStep}
-							colorScheme="brown"
-							bg="#604538"
-							color="white"
-							_hover={{ bg: "#3A2213" }}
-							size="lg"
-							width="120px"
-							disabled={currentStep === 5}>
-							{currentStep === 5 ? "Finish" : "Next"}
-						</Button>
+							<Button
+								colorScheme="brown"
+								bg="#604538"
+								color="white"
+								_hover={{ bg: "#3A2213" }}
+								width="120px"
+								disabled={currentStep === 5}
+								onClick={nextStep}>
+								{currentStep === 5 ? "Finish" : "Next"}
+							</Button>
+						</ButtonGroup>
 					</Flex>
 
 					{/* Order button on last step */}
