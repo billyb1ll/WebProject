@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { MESSAGES } from "../constants/messages";
 import { API } from "../constants/api";
-import { API as SharedAPI } from "../../../front/src/constants/api";
 
 // Extending Express Request type to include user
 declare global {
@@ -30,7 +29,7 @@ export const authMiddleware = (
 
 		// In a real app, verify JWT token and extract user info
 		// For now, we'll mock it
-		if (token === SharedAPI.MOCK.JWT_TOKEN) {
+		if (token === API.MOCK.JWT_TOKEN) {
 			req.user = { id: 1, role: "admin" };
 			next();
 		} else {

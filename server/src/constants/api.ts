@@ -1,11 +1,12 @@
+// API constants for the server
 export const API = {
-	ROUTES: {
-		ROOT: "/",
-		API: "/api",
+	BASE_URL: "/api/v1",
+	ENDPOINTS: {
 		PRODUCTS: "/products",
+		PRODUCT_CATEGORIES: "",
+		PRODUCT_WITH_IMAGES: "/products/with-images",
+		PRODUCTS_FEATURED: "/products/featured",
 		ADMIN: "/admin",
-		ADMIN_LOGIN: "/login",
-		ADMIN_PROFILE: "/profile",
 	},
 	STATUS_CODES: {
 		OK: 200,
@@ -14,6 +15,10 @@ export const API = {
 		UNAUTHORIZED: 401,
 		FORBIDDEN: 403,
 		NOT_FOUND: 404,
+		CONFLICT: 409,
 		SERVER_ERROR: 500,
+	},
+	MOCK: {
+		JWT_TOKEN: "mock-jwt-token",
 	},
 };
