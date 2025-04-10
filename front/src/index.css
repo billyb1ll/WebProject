@@ -15,12 +15,20 @@
 /* Remove color-scheme which can cause issues */
 /* color-scheme: light dark; */
 
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
-  /* Prevent horizontal scroll */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 a {

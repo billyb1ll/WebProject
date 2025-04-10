@@ -1,5 +1,5 @@
 export const API = {
-	BASE_URL: "http://localhost:3000/api",
+	BASE_URL: "http://localhost:3030/api/v1",
 	ENDPOINTS: {
 		PRODUCTS: "/products",
 		PRODUCT_CATEGORIES: "/products/categories",
