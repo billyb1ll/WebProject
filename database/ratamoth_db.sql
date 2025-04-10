@@ -136,6 +136,7 @@ CREATE TABLE `payments` (
 DROP TABLE IF EXISTS `packaging`;
 CREATE TABLE `packaging` (
     `packaging_id` INT NOT NULL AUTO_INCREMENT,
+    `packaging_type` VARCHAR(50),
     `packaging_name` VARCHAR(50) NOT NULL UNIQUE,
     `packaging_price` DECIMAL(10,2) NOT NULL,
     `packaging_image` VARCHAR(255) DEFAULT NULL,
@@ -163,4 +164,30 @@ CREATE TABLE `custom_chocolate` (
     CONSTRAINT `fk_custom_base` FOREIGN KEY (`base_chocolate_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_custom_shape` FOREIGN KEY (`shape_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_custom_packaging` FOREIGN KEY (`packaging_id`) REFERENCES `packaging` (`packaging_id`) ON DELETE SET NULL
+);
+
+-- Table for managing custom chocolate toppings (many-to-many relationship)
+DROP TABLE IF EXISTS `custom_chocolate_toppings`;
+CREATE TABLE `custom_chocolate_toppings` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `custom_id` INT NOT NULL,
+    `topping_id` INT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unique_custom_topping` (`custom_id`, `topping_id`),
+    CONSTRAINT `fk_choctop_custom` FOREIGN KEY (`custom_id`) REFERENCES `custom_chocolate` (`custom_id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_choctop_topping` FOREIGN KEY (`topping_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT
+);
+
+CREATE TABLE `Review_product` (
+    `review_id` INT NOT NULL AUTO_INCREMENT,
+    `product_id` INT DEFAULT NULL,
+    `customer_id` INT DEFAULT NULL,
+    `message` TEXT DEFAULT NULL,
+    `rating` INT DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`review_id`),
+    CONSTRAINT `fk_review_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_review_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`c_id`) ON DELETE SET NULL
 );
