@@ -4,8 +4,8 @@ info:
   description: API for chocolate customization service and product management
   version: 1.0.0
 servers:
-  - url: /api/v1
-    description: Production API path
+  - url: http://localhost:3000/api/v1
+    description: Production API path (Default port 3000 if not specified)
 components:
   schemas:
     Product:
