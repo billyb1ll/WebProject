@@ -126,20 +126,14 @@ export default function ChocolateConfigurator() {
 		// Update the packaging in the chocolate config
 		updatePackaging(packaging);
 
-		// Force an immediate price recalculation - using a more reliable approach
-		setTimeout(() => {
-			console.debug(
-				`ChocolateConfigurator: Config packaging after update: ${config.packaging}`
-			);
-			// Force price recalculation after packaging update
-			const newConfig = { ...config, packaging }; // Create new config with updated packaging
-			const result = calculatePrice(newConfig);
-			console.debug(
-				`ChocolateConfigurator: New price after packaging update:`,
-				result
-			);
-			setPriceInfo(result);
-		}, 10);
+		// Recalculate price immediately after updating packaging
+		const newConfig = { ...config, packaging }; // Create new config with updated packaging
+		const result = calculatePrice(newConfig);
+		console.debug(
+			`ChocolateConfigurator: New price after packaging update:`,
+			result
+		);
+		setPriceInfo(result);
 	};
 
 	// Step titles for display

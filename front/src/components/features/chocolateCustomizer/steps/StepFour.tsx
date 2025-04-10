@@ -135,7 +135,7 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 									position="absolute"
 									top={2}
 									left={2}
-									bg={price === 0 ? "green.500" : "blue.500"}
+									bg={price === 0 ? "green.500" : "orange.500"}
 									color="white"
 									px={2}
 									py={1}

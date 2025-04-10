@@ -22,7 +22,7 @@ function AnimatedRoutes() {
 	const location = useLocation();
 
 	return (
-		<AnimatePresence mode="wait" initial={false}>
+		<AnimatePresence mode="wait">
 			<Routes location={location} key={location.pathname}>
 				<Route path={ROUTES.HOME} element={<Home />} />
 				<Route path={ROUTES.LOGIN} element={<Login />} />

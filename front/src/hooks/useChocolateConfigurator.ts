@@ -84,30 +84,20 @@ export function useChocolateConfigurator() {
 			`useChocolateConfigurator: Updating packaging to: ${packaging}`
 		);
 
-		// Force a full state update with a completely new object
+		// Update state naturally without forcing redundant updates
 		setConfig((prev) => {
 			if (prev.packaging === packaging) {
 				console.debug(
-					"useChocolateConfigurator: Same packaging selected, forcing update anyway"
+					"useChocolateConfigurator: Same packaging selected, no update needed"
 				);
+				return prev; // Return previous state if no change
 			}
 
-			const newConfig = {
+			return {
 				...prev,
 				packaging,
-				// Adding a timestamp to force React to recognize the update
-				_lastUpdated: Date.now(),
 			};
-
-			// Return new config object
-			return newConfig;
 		});
-
-		// Force an immediate UI update
-		setTimeout(() => {
-			console.debug("useChocolateConfigurator: Triggering follow-up update");
-			setConfig((current) => ({ ...current, _forceUpdate: Date.now() }));
-		}, 50);
 	}, []);
 
 	const updateMessage = useCallback((message: string) => {
