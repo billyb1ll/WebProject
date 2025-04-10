@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { Admin } from "../types/admin";
 import { MESSAGES } from "../constants/messages";
 import { API } from "../constants/api";
-import { API as SharedAPI } from "../../../front/src/constants/api";
 
 export class AdminController {
 	// Login admin
@@ -14,7 +13,7 @@ export class AdminController {
 			if (username === "admin" && password === "password") {
 				res.status(API.STATUS_CODES.OK).json({
 					success: true,
-					token: SharedAPI.MOCK.JWT_TOKEN,
+					token: API.MOCK.JWT_TOKEN,
 					user: { id: 1, username, role: "admin" },
 				});
 			} else {
