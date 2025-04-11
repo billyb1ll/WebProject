@@ -15,6 +15,7 @@ CREATE TABLE `product` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `deleted_at` TIMESTAMP NULL DEFAULT NULL,
+    `is_custom` BOOLEAN DEFAULT FALSE COMMENT 'Indicates if the product is for custom chocolate',
     PRIMARY KEY (`product_id`),
     INDEX `idx_product_category` (`product_category`),
     INDEX `idx_product_status` (`product_status`)

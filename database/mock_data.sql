@@ -2,38 +2,38 @@
 USE `ratamoth_db`;
 
 -- Insert mock products
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('Dark Chocolate Bar', TRUE, 100, 5.99, 'bar'),
-('Milk Chocolate Truffle', TRUE, 150, 8.99, 'truffle'),
-('White Chocolate Bonbon', TRUE, 80, 7.50, 'bonbon'),
-('Hazelnut Praline', TRUE, 120, 6.75, 'praline'),
-('Raspberry Chocolate Bar', TRUE, 90, 6.25, 'bar'),
-('Coconut Chocolate Ball', TRUE, 110, 4.99, 'ball'),
-('Mint Chocolate Square', TRUE, 70, 5.50, 'square'),
-('Caramel Chocolate Heart', TRUE, 85, 9.99, 'heart');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('Dark Chocolate Bar', TRUE, 100, 0, 5.99, 'bar', FALSE),
+('Milk Chocolate Truffle', TRUE, 150, 0, 8.99, 'truffle', FALSE),
+('White Chocolate Bonbon', TRUE, 80, 0, 7.50, 'bonbon', FALSE),
+('Hazelnut Praline', TRUE, 120, 0, 6.75, 'praline', FALSE),
+('Raspberry Chocolate Bar', TRUE, 90, 0, 6.25, 'bar', FALSE),
+('Coconut Chocolate Ball', TRUE, 110, 0, 4.99, 'ball', FALSE),
+('Mint Chocolate Square', TRUE, 70, 0, 5.50, 'square', FALSE),
+('Caramel Chocolate Heart', TRUE, 85, 0, 9.99, 'heart', FALSE);
 
 -- Insert mock chocolate types
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('Dark Chocolate', TRUE, 100, 6.99, 'base'),
-('Milk Chocolate', TRUE, 100, 5.99, 'base'),
-('White Chocolate', TRUE, 100, 7.99, 'base');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('Dark Chocolate', TRUE, 100, 0, 6.99, 'base', TRUE),
+('Milk Chocolate', TRUE, 100, 0, 5.99, 'base', TRUE),
+('White Chocolate', TRUE, 100, 0, 7.99, 'base', TRUE);
 
 -- Insert mock toppings
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('No Toppings', TRUE, 100, 0.00, 'topping'),
-('Mixed Nuts', TRUE, 100, 1.99, 'topping'),
-('Colorful Sprinkles', TRUE, 100, 0.99, 'topping'),
-('Dried Fruits', TRUE, 100, 1.49, 'topping');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('No Toppings', TRUE, 100, 0, 0.00, 'topping', TRUE),
+('Mixed Nuts', TRUE, 100, 0, 1.99, 'topping', TRUE),
+('Colorful Sprinkles', TRUE, 100, 0, 0.99, 'topping', TRUE),
+('Dried Fruits', TRUE, 100, 0, 1.49, 'topping', TRUE);
 
 -- Insert mock shapes
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('Classic Square', TRUE, 100, 0.00, 'shape'),
-('Elegant Round', TRUE, 100, 1.50, 'shape'),
-('Romantic Heart', TRUE, 100, 2.50, 'shape');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('Classic Square', TRUE, 100, 0, 0.00, 'shape', TRUE),
+('Elegant Round', TRUE, 100, 0, 1.50, 'shape', TRUE),
+('Romantic Heart', TRUE, 100, 0, 2.50, 'shape', TRUE);
 
 -- Insert general pricing info product
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('Custom Options Pricing', TRUE, 999, 0.00, 'pricing');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('Custom Options Pricing', TRUE, 999, 0, 0.00, 'pricing', TRUE);
 
 -- Insert product descriptions
 INSERT INTO `product_description` (`product_id`, `product_des`, `specifications`) VALUES
@@ -166,15 +166,15 @@ INSERT INTO `Review_product` (`product_id`, `customer_id`, `message`, `rating`) 
 (8, 1, 'These caramel hearts make the perfect gift. The salted caramel filling is amazing!', 5),
 (2, 2, 'The truffles melted during shipping, but still tasted great.', 3),
 (3, 3, 'I usually don\'t like white chocolate but these bonbons changed my mind!', 4),
-(4, 4, 'The pralines have a perfect balance of sweetness and nuttiness.', 5),
-(26, 2, 'The Luxury Chocolate Collection was the perfect gift for my chocolate-loving friend. Every piece was exquisite and beautifully presented in the wooden box. Worth every penny!', 5);
+(4, 4, 'The pralines have a perfect balance of sweetness and nuttiness.', 5);
+
 
 -- Insert seasonal chocolate products
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('Christmas Spiced Chocolate', TRUE, 50, 7.99, 'seasonal'),
-('Halloween Pumpkin Truffles', TRUE, 75, 8.49, 'seasonal'),
-('Valentine\'s Champagne Truffles', TRUE, 60, 10.99, 'seasonal'),
-('Easter Chocolate Eggs', TRUE, 80, 6.49, 'seasonal');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('Christmas Spiced Chocolate', TRUE, 50, 0, 7.99, 'seasonal', FALSE),
+('Halloween Pumpkin Truffles', TRUE, 75, 0, 8.49, 'seasonal', FALSE),
+('Valentine\'s Champagne Truffles', TRUE, 60, 0, 10.99, 'seasonal', FALSE),
+('Easter Chocolate Eggs', TRUE, 80, 0, 6.49, 'seasonal', FALSE);
 
 -- Insert seasonal product descriptions
 INSERT INTO `product_description` (`product_id`, `product_des`, `specifications`) VALUES
@@ -191,11 +191,11 @@ INSERT INTO `product_images` (`product_id`, `image_url`, `is_primary`) VALUES
 (23, 'https://example.com/images/easter-eggs.jpg', TRUE);
 
 -- Insert gift bundles
-INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
-('Chocolate Lover\'s Bundle', TRUE, 30, 24.99, 'bundle'),
-('Assorted Truffles Gift Box', TRUE, 40, 19.99, 'bundle'),
-('Luxury Chocolate Collection', TRUE, 20, 39.99, 'bundle'),
-('Family Sharing Chocolate Box', TRUE, 35, 29.99, 'bundle');
+INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_sold`, `product_price`, `product_category`, `is_custom`) VALUES
+('Chocolate Lover\'s Bundle', TRUE, 30, 0, 24.99, 'bundle', FALSE),
+('Assorted Truffles Gift Box', TRUE, 40, 0, 19.99, 'bundle', FALSE),
+('Luxury Chocolate Collection', TRUE, 20, 0, 39.99, 'bundle', FALSE),
+('Family Sharing Chocolate Box', TRUE, 35, 0, 29.99, 'bundle', FALSE);
 
 -- Insert gift bundle descriptions
 INSERT INTO `product_description` (`product_id`, `product_des`, `specifications`) VALUES
