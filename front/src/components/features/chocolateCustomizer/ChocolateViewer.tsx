@@ -295,7 +295,9 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 					<Tooltip content="Base chocolate price">
 						<Flex justify="space-between">
 							<Text>Base ({config.chocolateType}):</Text>
-							<Text>{formatPrice(priceDetails.details.base)}</Text>
+							<Text fontSize={{ base: "2xs", sm: "sm" }}>
+								{formatPrice(priceDetails.details.base)}
+							</Text>
 						</Flex>
 					</Tooltip>
 
@@ -303,7 +305,9 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 						<Tooltip content="Additional cost for shape">
 							<Flex justify="space-between">
 								<Text>Shape ({config.shape}):</Text>
-								<Text>+{formatPrice(priceDetails.details.shape)}</Text>
+								<Text fontSize={{ base: "2xs", sm: "sm" }}>
+									+{formatPrice(priceDetails.details.shape)}
+								</Text>
 							</Flex>
 						</Tooltip>
 					)}
@@ -312,7 +316,9 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 						<Tooltip content="Cost for selected toppings">
 							<Flex justify="space-between">
 								<Text>Toppings:</Text>
-								<Text>+{formatPrice(priceDetails.details.toppings)}</Text>
+								<Text fontSize={{ base: "2xs", sm: "sm" }}>
+									+{formatPrice(priceDetails.details.toppings)}
+								</Text>
 							</Flex>
 						</Tooltip>
 					)}
@@ -322,14 +328,14 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 						<Tooltip content="Special promotional pricing">
 							<Flex justify="space-between" color="green.600" fontWeight="medium">
 								<Text>Packaging promotion:</Text>
-								<Text>{formatPrice(priceDetails.details.packaging)}</Text>
+								<Text fontSize={{ base: "2xs", sm: "sm" }}>{formatPrice(priceDetails.details.packaging)}</Text>
 							</Flex>
 						</Tooltip>
 					)}
 					<Tooltip content="Packaging cost">
 						<Flex justify="space-between">
 							<Text>Packaging ({config.packaging}):</Text>
-							<Text>
+							<Text fontSize={{ base: "2xs", sm: "sm" }}>
 								{getActualPackagingPrice() > 0
 									? `+${formatPrice(getActualPackagingPrice())}`
 									: formatPrice(getActualPackagingPrice())}
@@ -341,7 +347,9 @@ export default function ChocolateViewer({ config }: ChocolateViewerProps) {
 						<Tooltip content="Custom message fee">
 							<Flex justify="space-between">
 								<Text>Custom message:</Text>
-								<Text>+{formatPrice(priceDetails.details.message)}</Text>
+								<Text fontSize={{ base: "2xs", sm: "sm" }}>
+									+{formatPrice(priceDetails.details.message)}
+								</Text>
 							</Flex>
 						</Tooltip>
 					)}

@@ -28,6 +28,7 @@ export interface ServerProduct {
 	sold?: number;
 	status?: boolean;
 	images?: ServerProductImage[];
+	created_at?: string;
 }
 
 export interface ServerProductImage {
