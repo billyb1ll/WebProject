@@ -7,6 +7,7 @@ import {
 	Stack,
 	Button,
 	useDisclosure,
+	HStack,
 } from "@chakra-ui/react";
 import { Collapse } from "@chakra-ui/transition";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -14,6 +15,7 @@ import { NavLink } from "react-router-dom";
 import { COLORS } from "../../constants/colors";
 import { ROUTES } from "../../constants/routes";
 import { motion } from "framer-motion";
+import CartIcon from "../features/cart/CartIcon";
 
 interface NavItem {
 	label: string;
@@ -40,7 +42,7 @@ const MotionFlex = motion(Flex);
 const MotionStack = motion(Stack);
 
 export default function Navbar() {
-	const { open, onToggle } = useDisclosure();
+	const { isOpen: open, onToggle } = useDisclosure();
 
 	return (
 		<Box
@@ -142,6 +144,11 @@ export default function Navbar() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.3, duration: 0.5 }}>
+					{/* Cart Icon */}
+					<HStack mr={{ base: 0, md: 2 }}>
+						<CartIcon color={COLORS.BRAND_PRIMARY} />
+					</HStack>
+
 					<NavLink to={ROUTES.LOGIN}>
 						<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
 							<Button
@@ -191,6 +198,18 @@ export default function Navbar() {
 			<Collapse in={open} animateOpacity>
 				<Stack bg="white" p={4} display={{ md: "none" }} boxShadow="md" gap={3}>
 					<Box borderBottom="1px" borderColor="gray.100" w="100%" />
+
+					{/* Cart in mobile menu */}
+					<Box py={2} px={1}>
+						<Flex align="center" justify="space-between">
+							<Text color={COLORS.INACTIVE} fontWeight="500">
+								Your Cart
+							</Text>
+							<CartIcon color={COLORS.BRAND_PRIMARY} />
+						</Flex>
+					</Box>
+					<Box borderBottom="1px" borderColor="gray.100" w="100%" />
+
 					{NAV_ITEMS.map((navItem, index) => (
 						<motion.div
 							key={navItem.label}

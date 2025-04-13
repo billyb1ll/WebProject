@@ -9,6 +9,7 @@ import {
 	VStack,
 	Steps,
 	ButtonGroup,
+	useDisclosure,
 } from "@chakra-ui/react";
 import ChocolateViewer from "./ChocolateViewer";
 import {
@@ -26,6 +27,10 @@ import StepFour from "./steps/StepFour";
 import StepFive from "./steps/StepFive";
 import { useChocolateOptions } from "../../../hooks/useChocolateOptions";
 import { useEffect, useState, useCallback } from "react";
+import { addToCart } from "../../../utils/func/cartUtils";
+import { toaster } from "../../ui/toaster";
+import CartDrawer from "../cart/CartDrawer";
+import { FiShoppingCart } from "react-icons/fi";
 
 export default function ChocolateConfigurator() {
 	const {
@@ -46,6 +51,9 @@ export default function ChocolateConfigurator() {
 
 	// State to store price calculation
 	const [priceInfo, setPriceInfo] = useState({ subtotal: 0, details: {} });
+
+	// Cart drawer disclosure
+	const { open: isOpen, onOpen, onClose } = useDisclosure();
 
 	// Create a memoized function to calculate price
 	const recalculatePrice = useCallback(() => {
@@ -75,6 +83,33 @@ export default function ChocolateConfigurator() {
 		// This is specifically to catch message updates
 		recalculatePrice();
 	}, [config.message, recalculatePrice]);
+
+	// Handle adding to cart
+	const handleAddToCart = () => {
+		try {
+			// Add the current configuration to the cart
+			addToCart(config, priceInfo.subtotal);
+
+			// Show success message
+			toaster.create({
+				title: "Added to cart",
+				description: "Your custom chocolate has been added to the cart",
+				type: "success",
+				duration: 3000,
+			});
+
+			// Open cart drawer
+			onOpen();
+		} catch (error) {
+			console.error("Error adding to cart:", error);
+			toaster.create({
+				title: "Error",
+				description: "Failed to add item to cart. Please try again.",
+				type: "error",
+				duration: 3000,
+			});
+		}
+	};
 
 	// Show loading state while fetching initial data
 	if (isLoading) {
@@ -265,12 +300,17 @@ export default function ChocolateConfigurator() {
 							_hover={{ bg: "#604538" }}
 							size="lg"
 							width="100%"
-							mt={4}>
+							mt={4}
+							onClick={handleAddToCart}>
+							<FiShoppingCart style={{ marginRight: '8px' }} />
 							Add to Cart - {formatPrice(priceInfo.subtotal)}
 						</Button>
 					)}
 				</Box>
 			</Flex>
+
+			{/* Cart Drawer */}
+			<CartDrawer isOpen={isOpen} onClose={onClose} />
 		</Box>
 	);
 }
