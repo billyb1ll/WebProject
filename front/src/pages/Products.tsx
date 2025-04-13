@@ -32,10 +32,10 @@ import { HiSortAscending } from "react-icons/hi";
 export default function Product() {
 	const [loading, setLoading] = useState(true);
 	const [showFilters, setShowFilters] = useState(false);
-	const isMobile = useBreakpointValue({ base: true, md: false });
 	const [products, setProducts] = useState<ServerProduct[]>([]);
 	const [error, setError] = useState<string | null>(null);
-
+	
+	const isMobile = useBreakpointValue({ base: true, md: false });
 	// Sort options with corresponding API parameters
 	type SortOption = {
 		id: string;
@@ -60,11 +60,11 @@ export default function Product() {
 	// Add default current sort option
 	const [currentSortOption] = useState<SortOption>(sortOptions[0]);
 
-	// Function to fetch products without sorting parameters
-	const fetchProducts = async (filters?: ProductFilters) => {
+	// Function to fetch products with sorting parameters
+	const fetchProducts = async (filters?: ProductFilters, orderType?: string) => {
 		try {
 			setLoading(true);
-			const response = await productService.getProducts(filters);
+			const response = await productService.getProducts({ ...filters, orderType });
 
 			if (Array.isArray(response)) {
 				setProducts(response);
@@ -148,10 +148,13 @@ export default function Product() {
 												key={option.id}
 												value={option.id}
 												onSelect={() => {
-													fetchProducts({
-														sort: option.sort,
-														order: option.order,
-													});
+													fetchProducts(
+														{
+															sort: option.sort,
+															order: option.order,
+														},
+														option.sort
+													);
 												}}
 												className="menu-item">
 												<Text>{option.label}</Text>

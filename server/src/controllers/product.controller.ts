@@ -11,15 +11,28 @@ export class ProductController {
 	 */
 	public getAllProducts = async (req: Request, res: Response): Promise<void> => {
 		try {
+			const { orderType } = req.query;
+
+			// Determine the order clause based on the orderType parameter
+			let orderClause = "";
+			if (orderType === "price") {
+				orderClause = "ORDER BY product_price ASC";
+			} else if (orderType === "name") {
+				orderClause = "ORDER BY product_name ASC";
+			} else if (orderType === "newest") {
+				orderClause = "ORDER BY created_at DESC";
+			}
+
 			const [products] = await pool.query(
-				"SELECT * FROM product WHERE product_status = TRUE AND deleted_at IS NULL"
+				`SELECT * FROM product WHERE product_status = TRUE AND deleted_at IS NULL AND is_custom = FALSE ${orderClause}`
 			);
+
 			res.status(API.STATUS_CODES.OK).json({ success: true, data: products });
 		} catch (error) {
 			console.error("Error fetching products:", error);
-			res.status(API.STATUS_CODES.SERVER_ERROR).json({ 
-				success: false, 
-				message: MESSAGES.PRODUCT.FETCH_ALL_ERROR 
+			res.status(API.STATUS_CODES.SERVER_ERROR).json({
+				success: false,
+				message: MESSAGES.PRODUCT.FETCH_ALL_ERROR,
 			});
 		}
 	};
@@ -222,7 +235,6 @@ export class ProductController {
 		try {
 			const { id } = req.params;
 			const productData = req.body;
-
 			const connection = await pool.getConnection();
 			await connection.beginTransaction();
 
