@@ -15,6 +15,7 @@ import Login from "./pages/login";
 import SignUp from "./pages/signup";
 
 import { ROUTES } from "./constants/routes";
+import { COLORS } from "./constants/colors";
 import "./App.css";
 
 // AnimatedRoutes component
