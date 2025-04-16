@@ -11,4 +11,5 @@ export const ROUTES = {
 	CUSTOM_PAGE3: "/custom/page3",
 	CUSTOM_PAGE4: "/custom/page4",
 	CUSTOM_PAGE5: "/custom/page5",
+	ADMIN_DASHBOARD: "/admin/dashboard",
 };

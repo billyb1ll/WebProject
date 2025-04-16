@@ -92,10 +92,13 @@ INSERT INTO `packaging` (`packaging_id`, `packaging_type`, `packaging_name`, `pa
 
 -- Insert mock admin user
 INSERT INTO `admin_login` (`username`, `pass`, `a_role`) VALUES
-('admin', '$2b$10$gL5YsV4oNzZFNzUxMizBn.5vjXqU2Yx5L5UOV5e9Xy2ROD.Sgj2T.', 'admin'); -- password is "admin123"
+('admin', '$2b$10$gL5YsV4oNzZFNzUxMizBn.5vjXqU2Yx5L5UOV5e9Xy2ROD.Sgj2T.', 'admin'), -- password is "admin123"
+('admin1', '$2b$10$dH2185pCWwIV3rhkRWrpqe3JcmNL/TLtMWt5G5n8T.rJEIiE/ug0C', 'admin'), -- password is "12345678a"
+
 
 INSERT INTO `admin_info` (`a_firstname`, `a_lastname`, `a_email`, `a_address`, `a_role`, `log_id`) VALUES
-('Admin', 'User', 'admin@ratamoth.com', '123 Chocolate Street, Sweet City', 'admin', 1);
+('Admin', 'User', 'admin@ratamoth.com', '123 Chocolate Street, Sweet City', 'admin', 1),
+('Admin1', 'User', 'admin1@ratamoth.com', '123 Chocolate Street, Sweet City', 'admin', 2);
 
 -- Insert mock customers
 INSERT INTO `customer` (`c_name`, `c_email`, `c_address`, `c_phone_num`) VALUES
@@ -153,7 +156,7 @@ INSERT INTO `custom_chocolate_toppings` (`custom_id`, `topping_id`) VALUES
 (7, 13), -- nuts on seventh custom
 (7, 15); -- fruit on seventh custom
 
--- Insert mock reviews
+-- Insert mock reviews for standard products (these products are created earlier)
 INSERT INTO `Review_product` (`product_id`, `customer_id`, `message`, `rating`) VALUES
 (1, 1, 'The dark chocolate bar has an excellent rich flavor with perfect bitterness. Will definitely buy again!', 5),
 (1, 2, 'Good quality chocolate but a bit too bitter for my taste.', 4),
@@ -166,8 +169,7 @@ INSERT INTO `Review_product` (`product_id`, `customer_id`, `message`, `rating`) 
 (8, 1, 'These caramel hearts make the perfect gift. The salted caramel filling is amazing!', 5),
 (2, 2, 'The truffles melted during shipping, but still tasted great.', 3),
 (3, 3, 'I usually don\'t like white chocolate but these bonbons changed my mind!', 4),
-(4, 4, 'The pralines have a perfect balance of sweetness and nuttiness.', 5),
-(26, 2, 'The Luxury Chocolate Collection was the perfect gift for my chocolate-loving friend. Every piece was exquisite and beautifully presented in the wooden box. Worth every penny!', 5);
+(4, 4, 'The pralines have a perfect balance of sweetness and nuttiness.', 5);
 
 -- Insert seasonal chocolate products
 INSERT INTO `product` (`product_name`, `product_status`, `product_quantities`, `product_price`, `product_category`) VALUES
@@ -225,4 +227,8 @@ INSERT INTO `custom_chocolate_toppings` (`custom_id`, `topping_id`) VALUES
 (9, 14), -- sprinkles on ninth custom
 (10, 13), -- nuts on tenth custom
 (10, 15); -- fruit on tenth custom
+
+-- Now that product ID 26 (Luxury Chocolate Collection) exists, we can safely add its review
+INSERT INTO `Review_product` (`product_id`, `customer_id`, `message`, `rating`) VALUES
+(26, 2, 'The Luxury Chocolate Collection was the perfect gift for my chocolate-loving friend. Every piece was exquisite and beautifully presented in the wooden box. Worth every penny!', 5);
 

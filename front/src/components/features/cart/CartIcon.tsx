@@ -42,6 +42,7 @@ export default function CartIcon({ color = "white" }: CartIconProps) {
 					aria-label="Shopping cart"
 					variant="ghost"
 					color={color}
+					bg="transparent"
 					onClick={onOpen}
 					_hover={{ bg: "whiteAlpha.200" }}>
 					<FiShoppingCart size={20} />
@@ -53,15 +54,15 @@ export default function CartIcon({ color = "white" }: CartIconProps) {
 						top={0}
 						right={0}
 						bg="#A47864"
+						opacity={0.85}
 						color="white"
-						fontSize="xs"
 						fontWeight="bold"
-						minWidth="18px"
+						minWidth="30px"
 						height="18px"
-						borderRadius="full"
+						borderRadius="15px"
 						transform="translate(25%, -25%)">
 						<Center h="100%">
-							<Text>{itemCount}</Text>
+							<Text fontSize="xs">{itemCount}</Text>
 						</Center>
 					</Box>
 				)}

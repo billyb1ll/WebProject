@@ -54,7 +54,7 @@ class ApiClient {
 			},
 		});
 
-		// Add request interceptor for debugging
+		// Add request interceptor for debugging and authentication
 		this.client.interceptors.request.use(
 			(config) => {
 				// Log outgoing requests in development environment
@@ -64,6 +64,13 @@ class ApiClient {
 						config.params || config.data || {}
 					);
 				}
+
+				// Add Authorization header if token exists
+				const token = localStorage.getItem("token");
+				if (token) {
+					config.headers["Authorization"] = `Bearer ${token}`;
+				}
+
 				return config;
 			},
 			(error) => {
