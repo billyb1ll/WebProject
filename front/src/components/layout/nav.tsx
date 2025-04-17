@@ -307,18 +307,6 @@ export default function Navbar() {
 			<Collapse in={open} animateOpacity>
 				<Stack bg="white" p={4} display={{ md: "none" }} boxShadow="md" gap={3}>
 					<Box borderBottom="1px" borderColor="gray.100" w="100%" />
-
-					{/* Cart in mobile menu */}
-					<Box py={2} px={1}>
-						<Flex align="center" justify="space-between">
-							<Text color={COLORS.INACTIVE} fontWeight="500">
-								Your Cart
-							</Text>
-							<CartIcon color={COLORS.BRAND_PRIMARY} />
-						</Flex>
-					</Box>
-					<Box borderBottom="1px" borderColor="gray.100" w="100%" />
-
 					{NAV_ITEMS.map((navItem, index) => (
 						<motion.div
 							key={navItem.label}
@@ -347,63 +335,7 @@ export default function Navbar() {
 
 					{/* Conditional rendering for mobile auth buttons */}
 					{isAuthenticated ? (
-						<>
-							<Box borderBottom="1px" borderColor="gray.100" w="100%" />
-
-							<Flex align="center" py={2} px={1} justify="space-between">
-								<Text fontWeight="500" color={COLORS.BRAND_PRIMARY}>
-									{isAdmin ? "Welcome Admin" : user?.firstName || "Welcome!"}
-								</Text>
-								<Avatar.Root size="sm">
-									<Avatar.Fallback
-										name={getUserInitials()}
-										bg={COLORS.BRAND_PRIMARY}
-										color="white"
-										fontSize="0.875rem"
-										fontWeight="bold"
-										borderRadius="full"
-										width="100%"
-										height="100%"
-										display="flex"
-										justifyContent="center"
-										alignItems="center">
-										{getUserInitials()}
-									</Avatar.Fallback>
-									<Avatar.Image
-										src={user?.avatar || ""}
-										alt="User Avatar"
-										borderRadius="full"
-										width="100%"
-										height="100%"
-										display="flex"
-										justifyContent="center"
-										alignItems="center"
-										loading="lazy"
-										style={{
-											objectFit: "cover",
-											borderRadius: "50%",
-										}}
-									/>
-								</Avatar.Root>
-							</Flex>
-
-							<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-								<Box
-									as="button"
-									onClick={handleLogout}
-									fontSize="0.875rem"
-									fontWeight={600}
-									color="white"
-									bg="red.500"
-									py={2}
-									borderRadius="0.375rem"
-									width="100%"
-									transition="background-color 0.2s"
-									_hover={{ bg: "red.600" }}>
-									Sign Out
-								</Box>
-							</motion.div>
-						</>
+						<></>
 					) : (
 						<>
 							<Box width="full" textAlign="center">
