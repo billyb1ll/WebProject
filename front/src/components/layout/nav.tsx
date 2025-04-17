@@ -47,7 +47,7 @@ const MotionFlex = motion(Flex);
 const MotionStack = motion(Stack);
 
 export default function Navbar() {
-	const { isOpen: open, onToggle } = useDisclosure();
+	const { open, onToggle } = useDisclosure();
 	const { user, isAuthenticated, logout } = useAuth();
 
 	// Check if user is an admin
@@ -406,30 +406,6 @@ export default function Navbar() {
 						</>
 					) : (
 						<>
-							<Box mt={2} width="full" textAlign="center">
-								<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-									<NavLink
-										to={ROUTES.LOGIN}
-										onClick={onToggle}
-										style={{
-											display: "block",
-											fontSize: "0.875rem",
-											fontWeight: 400,
-											color: COLORS.BRAND_PRIMARY,
-											backgroundColor: "white",
-											padding: "0.625rem 0",
-											borderRadius: "0.375rem",
-											width: "100%",
-											transition: "all 0.2s",
-											border: `1px solid ${COLORS.BRAND_PRIMARY}`,
-											marginBottom: "10px",
-										}}
-										className="mobile-sign-in">
-										Sign In
-									</NavLink>
-								</motion.div>
-							</Box>
-
 							<Box width="full" textAlign="center">
 								<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
 									<NavLink
