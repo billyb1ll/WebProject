@@ -33,7 +33,6 @@ import {
 import { toaster } from "../../ui/toaster";
 import { ROUTES } from "../../../constants/routes";
 import { useNavigate } from "react-router-dom";
-import { CloseButton } from "@chakra-ui/react";
 
 interface CartDrawerProps {
 	isOpen: boolean;
@@ -180,14 +179,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 							top="3"
 							right="3"
 							border="0px solid #E8DDD8"
-							bg="transparent">
-							<CloseButton
-								size="md"
-								color="#604538"
-								bg="transparent"
-								onClick={onClose}
-								aria-label="Close cart drawer"
-							/>
+							bg="transparent"
+							aria-label="Close cart drawer">
+							{/* Using Icon instead of CloseButton */}
+							<Box as="span" color="#604538" fontSize="md">
+								✕
+							</Box>
 						</Drawer.CloseTrigger>
 						<Drawer.Header borderBottomWidth="1px" bg="#F5F0E8" color="#604538">
 							<Drawer.Title>
@@ -211,7 +208,17 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 										<Dialog.Header>
 											<Dialog.Title>Remove Item</Dialog.Title>
 											<Dialog.CloseTrigger asChild>
-												<CloseButton size="sm" onClick={cancelRemove} bg="transparent" />
+												<Box
+													as="button"
+													bg="transparent"
+													color="#604538"
+													display="flex"
+													alignItems="center"
+													justifyContent="center"
+													cursor="pointer"
+													onClick={cancelRemove}>
+													✕
+												</Box>
 											</Dialog.CloseTrigger>
 										</Dialog.Header>
 										<Dialog.Body>
