@@ -127,7 +127,7 @@ class ApiClient {
 	/**
 	 * Try to import mock data using various file naming conventions
 	 */
-	private async tryImportMockData(endpoint: string): Promise<any> {
+	private async tryImportMockData(endpoint: string): Promise<unknown> {
 		const formattedEndpoint = this.formatEndpointForImport(endpoint);
 		const possiblePaths = [
 			`../mock/${formattedEndpoint}.ts`,

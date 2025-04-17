@@ -12,7 +12,7 @@ export interface ChocolateConfig {
 	shape: ChocolateShape;
 	packaging: PackagingType;
 	message: string;
-	messageFont: string; // New property
+	messageFont: string;
 }
 
 /**

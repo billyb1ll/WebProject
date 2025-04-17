@@ -58,6 +58,16 @@ export const getCart = (): Cart => {
 		if (!cartJson) return { ...emptyCart };
 
 		const parsedCart = JSON.parse(cartJson) as Cart;
+
+		// Ensure all required properties are present in each cart item's config
+		parsedCart.items = parsedCart.items.map((item) => {
+			// Make sure messageFont has a default value if missing
+			if (!item.config.messageFont) {
+				item.config.messageFont = "cursive";
+			}
+			return item;
+		});
+
 		return parsedCart;
 	} catch (error) {
 		console.error("Error parsing cart from cookie:", error);
@@ -72,11 +82,32 @@ export const getCart = (): Cart => {
  */
 export const saveCart = (cart: Cart): void => {
 	try {
-		const cartJson = JSON.stringify(cart);
+		// Create a clean cart object without prototype references
+		const cleanCart: Cart = {
+			items: cart.items.map((item) => ({
+				id: item.id,
+				price: item.price,
+				quantity: item.quantity,
+				createdAt: item.createdAt,
+				config: {
+					chocolateType: item.config.chocolateType,
+					toppings: [...item.config.toppings],
+					shape: item.config.shape,
+					packaging: item.config.packaging,
+					message: item.config.message,
+					messageFont: item.config.messageFont || "cursive",
+				},
+			})),
+			totalItems: cart.totalItems,
+			totalPrice: cart.totalPrice,
+		};
+
+		const cartJson = JSON.stringify(cleanCart);
 		Cookies.set(CART_COOKIE_NAME, cartJson, {
 			expires: COOKIE_EXPIRY,
 			sameSite: "strict",
 		});
+		console.debug("Cart saved successfully:", cleanCart);
 	} catch (error) {
 		console.error("Error saving cart to cookie:", error);
 	}
@@ -97,10 +128,17 @@ export const addToCart = (
 ): CartItem => {
 	const cart = getCart();
 
-	// Create new cart item
+	// Create new cart item with explicit properties to ensure serialization works
 	const newItem: CartItem = {
 		id: generateCartItemId(),
-		config,
+		config: {
+			chocolateType: config.chocolateType,
+			toppings: [...config.toppings],
+			shape: config.shape,
+			packaging: config.packaging,
+			message: config.message,
+			messageFont: config.messageFont || "cursive", // Ensure messageFont is included with fallback
+		},
 		price,
 		quantity,
 		createdAt: new Date().toISOString(),

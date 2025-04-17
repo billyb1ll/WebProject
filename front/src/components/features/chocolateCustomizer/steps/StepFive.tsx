@@ -66,7 +66,7 @@ export default function StepFive({
 			description:
 				"Add a personalized message to make your gift special. Base price plus per-character fee.",
 			image: "/images/message-custom.jpg",
-			price: pricing?.messageBasePrice || 1.99,
+			price: pricing?.messageBasePrice || 2.99,
 		},
 	];
 
@@ -241,6 +241,7 @@ export default function StepFive({
 						onChange={handleCustomMessageChange}
 						placeholder="Write your message here (max 100 characters)"
 						maxLength={MAX_MESSAGE_LENGTH}
+						autoresize
 						rows={3}
 						borderColor="#E8DDD8"
 						_hover={{ borderColor: "#A47864" }}
@@ -340,14 +341,34 @@ export default function StepFive({
 						alignItems="center"
 						justifyContent="center">
 						{config.message ? (
-							<Text fontFamily={getCurrentFontFamily()} fontStyle="italic">
-								" {config.message} "
-							</Text>
+							<Textarea
+								value={'"' + config.message + '"'}
+								onChange={handleCustomMessageChange}
+								placeholder="Write your message here (max 100 characters)"
+								maxLength={MAX_MESSAGE_LENGTH}
+								disabled
+								autoresize
+								borderColor="#E8DDD8"
+								_hover={{ borderColor: "#A47864" }}
+								_focus={{ borderColor: "#604538", boxShadow: "0 0 0 1px #604538" }}
+								style={{
+									fontFamily: getCurrentFontFamily(),
+									fontStyle: "italic",
+									fontSize: "20px",
+									background: "transparent",
+									border: "none",
+									outline: "none",
+									textAlign: "center",
+									width: "100%",
+									height: "100%",
+								}}
+							/>
 						) : (
 							<Text color="gray.500">No message added</Text>
 						)}
 					</Box>
 				</Box>
+				
 			)}
 		</VStack>
 	);

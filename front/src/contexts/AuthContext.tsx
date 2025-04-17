@@ -18,8 +18,6 @@ interface AuthContextType {
 	isAdmin: boolean;
 	isCustomer: boolean;
 	isLoading: boolean;
-	login: (email: string, password: string) => Promise<void>;
-	adminLogin: (username: string, password: string) => Promise<void>;
 	unifiedLogin: (identifier: string, password: string) => Promise<void>;
 	signup: (
 		firstName: string,
@@ -61,61 +59,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
 		checkAuth();
 	}, []);
-
-	// Login function
-	const login = async (email: string, password: string): Promise<void> => {
-		try {
-			setIsLoading(true);
-			const user = await authService.login({ email, password });
-			setUser(user);
-			toaster.create({
-				title: "Success",
-				description: "Welcome back!",
-				type: "success",
-				duration: 3000,
-			});
-		} catch (error) {
-			console.error("Login failed:", error);
-			toaster.create({
-				title: "Error",
-				description: error instanceof Error ? error.message : "Login failed",
-				type: "error",
-				duration: 3000,
-			});
-			throw error;
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	// Admin Login function
-	const adminLogin = async (
-		username: string,
-		password: string
-	): Promise<void> => {
-		try {
-			setIsLoading(true);
-			const user = await authService.adminLogin({ username, password });
-			setUser(user);
-			toaster.create({
-				title: "Success",
-				description: "Welcome back, Admin!",
-				type: "success",
-				duration: 3000,
-			});
-		} catch (error) {
-			console.error("Admin login failed:", error);
-			toaster.create({
-				title: "Error",
-				description: error instanceof Error ? error.message : "Admin login failed",
-				type: "error",
-				duration: 3000,
-			});
-			throw error;
-		} finally {
-			setIsLoading(false);
-		}
-	};
 
 	// Unified Login function for both customers and admins
 	const unifiedLogin = async (
@@ -234,8 +177,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 				isAdmin,
 				isCustomer,
 				isLoading,
-				login,
-				adminLogin,
 				unifiedLogin,
 				signup,
 				validateSignup,

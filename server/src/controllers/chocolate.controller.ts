@@ -192,14 +192,15 @@ export class ChocolateController {
 					"WHERE p.product_name = 'Custom Options Pricing'"
 			);
 
+
 			// Transform the data into the pricing structure
 			const priceData = {
 				baseChocolate: {} as Record<string, number>,
 				toppings: {} as Record<string, number>,
 				shapes: {} as Record<string, number>,
 				packaging: {} as Record<string, number>,
-				messageBasePrice: 1.99,
-				messageCharPrice: 0.15,
+				messageBasePrice: 2.99,
+				messageCharPrice: 0.25,
 			};
 
 			// Process chocolate types
@@ -270,7 +271,6 @@ export class ChocolateController {
 					);
 				}
 			}
-
 			res.status(API.STATUS_CODES.OK).json(priceData);
 		} catch (error) {
 			console.error("Error fetching pricing data:", error);
