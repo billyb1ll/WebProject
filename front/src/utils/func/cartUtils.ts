@@ -165,6 +165,9 @@ export const addToCart = (
 	// Save cart to cookie
 	saveCart(cart);
 
+
+	console.debug("Added item to cart:", newItem);
+
 	return newItem;
 };
 

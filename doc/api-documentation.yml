@@ -2,10 +2,12 @@ openapi: 3.0.3
 info:
   title: Chocolate Customizer API
   description: API for chocolate customization service and product management
-  version: 1.0.0
+  version: 1.1.0
 servers:
   - url: http://localhost:3000/api/v1
     description: Production API path (Default port 3000 if not specified)
+  - url: http://localhost:3030/api/v1
+    description: Production API path (Default port 3030 if not specified in env)
 components:
   schemas:
     Product:
@@ -179,6 +181,88 @@ components:
         specifications:
           type: object
           example: {"weight": "100g", "ingredients": ["cocoa mass", "sugar", "cocoa butter"]}
+    ChocolateShape:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        type:
+          type: string
+          enum: [square, round, heart]
+          example: "square"
+        name:
+          type: string
+          example: "Square Chocolate"
+        description:
+          type: string
+          example: "Classic square chocolate shape"
+        imageUrl:
+          type: string
+          format: uri
+          example: "/images/shapes/square.jpg"
+        price:
+          type: number
+          format: float
+          example: 0.00
+    PackagingOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        type:
+          type: string
+          enum: [standard, gift, premium, eco]
+          example: "standard"
+        name:
+          type: string
+          example: "Standard Box"
+        description:
+          type: string
+          example: "Simple and elegant packaging for everyday gifting"
+        imageUrl:
+          type: string
+          format: uri
+          example: "/images/packaging/standard.jpg"
+        price:
+          type: number
+          format: float
+          example: 0.00
+        features:
+          type: array
+          items:
+            type: string
+          example: ["Brown kraft box", "Recyclable", "Simple design"]
+    PricingData:
+      type: object
+      properties:
+        baseChocolate:
+          type: object
+          additionalProperties:
+            type: number
+          example: {"dark": 6.99, "milk": 5.99, "white": 7.99}
+        toppings:
+          type: object
+          additionalProperties:
+            type: number
+          example: {"none": 0, "nuts": 1.99, "sprinkles": 0.99, "fruit": 1.49}
+        shapes:
+          type: object
+          additionalProperties:
+            type: number
+          example: {"square": 0, "round": 1.5, "heart": 2.5}
+        packaging:
+          type: object
+          additionalProperties:
+            type: number
+          example: {"standard": 0, "gift": 3.99, "premium": 8.99, "eco": 1.99}
+        messageBasePrice:
+          type: number
+          example: 1.99
+        messageCharPrice:
+          type: number
+          example: 0.15
   securitySchemes:
     bearerAuth:
       type: http
@@ -606,3 +690,191 @@ paths:
                           type: number
                         category:
                           type: string
+  /chocolate/shapes:
+    get:
+      summary: Get all available chocolate shapes
+      operationId: getChocolateShapes
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChocolateShape'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /chocolate/packaging:
+    get:
+      summary: Get all packaging options
+      operationId: getPackagingOptions
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PackagingOption'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /chocolate/pricing:
+    get:
+      summary: Get pricing data for chocolate customization
+      operationId: getChocolatePricing
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingData'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /chocolate/custom/{id}:
+    get:
+      summary: Get a custom chocolate order by ID
+      operationId: getCustomChocolateOrder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the custom chocolate order
+      responses:
+        '200':
+          description: Custom chocolate order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      chocolateType:
+                        type: string
+                      shape:
+                        type: string
+                      toppings:
+                        type: array
+                        items:
+                          type: string
+                      packaging:
+                        type: string
+                      message:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+        '404':
+          description: Custom order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /chocolate/custom:
+    post:
+      summary: Create a new custom chocolate order
+      operationId: createCustomOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chocolateType:
+                  type: string
+                  example: "dark"
+                  description: Type of chocolate base (dark, milk, white)
+                shape:
+                  type: string
+                  example: "heart"
+                  description: Shape of the chocolate
+                toppings:
+                  type: array
+                  items:
+                    type: string
+                  example: ["nuts", "sprinkles"]
+                  description: Array of toppings to add
+                packaging:
+                  type: string
+                  example: "gift"
+                  description: Packaging option
+                message:
+                  type: string
+                  example: "Happy Birthday!"
+                  description: Optional custom message to be added
+      responses:
+        '201':
+          description: Custom order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      chocolateType:
+                        type: string
+                      shape:
+                        type: string
+                      toppings:
+                        type: array
+                        items:
+                          type: string
+                      packaging:
+                        type: string
+                      message:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                  message:
+                    type: string
+                    example: "Custom chocolate order created successfully"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
