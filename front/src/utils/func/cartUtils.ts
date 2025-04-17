@@ -13,7 +13,11 @@ import Cookies from "js-cookie";
 // Define the cart item structure
 export interface CartItem {
 	id: string; // Unique identifier for cart item
-	config: ChocolateConfig; // Chocolate configuration
+	config?: ChocolateConfig; // Chocolate configuration (optional for regular products)
+	isCustom: boolean; // Flag to indicate if this is a custom chocolate or regular product
+	productId?: number; // Product ID for regular products
+	name: string; // Product name
+	image?: string; // Product image URL
 	price: number; // Price of the item
 	quantity: number; // Quantity of this item
 	createdAt: string; // When the item was added to cart
@@ -62,7 +66,7 @@ export const getCart = (): Cart => {
 		// Ensure all required properties are present in each cart item's config
 		parsedCart.items = parsedCart.items.map((item) => {
 			// Make sure messageFont has a default value if missing
-			if (!item.config.messageFont) {
+			if (item.config && !item.config.messageFont) {
 				item.config.messageFont = "cursive";
 			}
 			return item;
@@ -89,14 +93,20 @@ export const saveCart = (cart: Cart): void => {
 				price: item.price,
 				quantity: item.quantity,
 				createdAt: item.createdAt,
-				config: {
-					chocolateType: item.config.chocolateType,
-					toppings: [...item.config.toppings],
-					shape: item.config.shape,
-					packaging: item.config.packaging,
-					message: item.config.message,
-					messageFont: item.config.messageFont || "cursive",
-				},
+				isCustom: item.isCustom,
+				name: item.name,
+				image: item.image,
+				productId: item.productId,
+				config: item.config
+					? {
+							chocolateType: item.config.chocolateType,
+							toppings: [...item.config.toppings],
+							shape: item.config.shape,
+							packaging: item.config.packaging,
+							message: item.config.message,
+							messageFont: item.config.messageFont || "cursive",
+					  }
+					: undefined,
 			})),
 			totalItems: cart.totalItems,
 			totalPrice: cart.totalPrice,
@@ -139,6 +149,70 @@ export const addToCart = (
 			message: config.message,
 			messageFont: config.messageFont || "cursive", // Ensure messageFont is included with fallback
 		},
+		isCustom: true,
+		name: "Custom Chocolate",
+		price,
+		quantity,
+		createdAt: new Date().toISOString(),
+	};
+
+	// Add to cart
+	cart.items.push(newItem);
+
+	// Update cart totals
+	updateCartTotals(cart);
+
+	// Save cart to cookie
+	saveCart(cart);
+
+	return newItem;
+};
+
+/**
+ * Add a regular product to the cart (not a custom chocolate)
+ * If the product already exists in the cart, increase its quantity instead of adding a new item
+ * @param {number} productId - The ID of the product
+ * @param {string} name - Product name
+ * @param {string} image - Product image URL
+ * @param {number} price - The price of the product
+ * @param {number} quantity - The quantity to add (defaults to 1)
+ * @returns {CartItem} The cart item (either new or updated)
+ */
+export const addProductToCart = (
+	productId: number,
+	name: string,
+	image: string,
+	price: number,
+	quantity: number = 1
+): CartItem => {
+	const cart = getCart();
+
+	// Check if this product already exists in the cart (match by productId for regular products)
+	const existingItemIndex = cart.items.findIndex(
+		(item) => !item.isCustom && item.productId === productId
+	);
+
+	if (existingItemIndex !== -1) {
+		// Product already exists, increment quantity instead of adding new item
+		const existingItem = cart.items[existingItemIndex];
+		cart.items[existingItemIndex].quantity += quantity;
+
+		// Update cart totals
+		updateCartTotals(cart);
+
+		// Save cart to cookie
+		saveCart(cart);
+
+		return cart.items[existingItemIndex];
+	}
+
+	// Create new cart item for regular product
+	const newItem: CartItem = {
+		id: generateCartItemId(),
+		isCustom: false,
+		productId,
+		name,
+		image,
 		price,
 		quantity,
 		createdAt: new Date().toISOString(),
@@ -177,7 +251,6 @@ export const updateCartItemQuantity = (
 		updateCartTotals(cart);
 		saveCart(cart);
 	}
-
 	return cart;
 };
 

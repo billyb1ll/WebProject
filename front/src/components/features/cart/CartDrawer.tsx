@@ -273,28 +273,56 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 											<HStack justifyContent="space-between">
 												{/* Product image */}
 												<Box width="60px" height="60px" bg="#F5F0E8" borderRadius="md">
-													<Image
-														src={`/images/chocolate-${item.config.chocolateType}.jpg`}
-														alt={`${item.config.chocolateType} chocolate`}
-														objectFit="cover"
-														width="100%"
-														height="100%"
-														borderRadius="md"
-													/>
+													{item.isCustom ? (
+														<Image
+															src={`/images/chocolate-${
+																item.config?.chocolateType || "milk"
+															}.jpg`}
+															alt={`${item.config?.chocolateType || "milk"} chocolate`}
+															objectFit="cover"
+															width="100%"
+															height="100%"
+															borderRadius="md"
+														/>
+													) : (
+														<Image
+															src={item.image || "/images/chocolate-default.jpg"}
+															alt={item.name}
+															objectFit="cover"
+															width="100%"
+															height="100%"
+															borderRadius="md"
+														/>
+													)}
 												</Box>
 
 												{/* Product details */}
 												<VStack align="flex-start" flex={1} ml={3} gap={0}>
-													<Text fontWeight="medium" color="#604538">
-														{getChocolateTypeName(item.config.chocolateType)} Chocolate
-													</Text>
-													<Text fontSize="xs" color="gray.600">
-														{item.config.shape} shape, {item.config.packaging} package
-													</Text>
-													{item.config.toppings.length > 0 && (
-														<Text fontSize="xs" color="gray.600">
-															Toppings: {item.config.toppings.join(", ")}
-														</Text>
+													{item.isCustom ? (
+														<>
+															<Text fontWeight="medium" color="#604538">
+																{getChocolateTypeName(item.config?.chocolateType || "milk")}{" "}
+																Chocolate
+															</Text>
+															<Text fontSize="xs" color="gray.600">
+																{item.config?.shape || "square"} shape,{" "}
+																{item.config?.packaging || "standard"} package
+															</Text>
+															{item.config?.toppings?.length > 0 && (
+																<Text fontSize="xs" color="gray.600">
+																	Toppings: {item.config.toppings.join(", ")}
+																</Text>
+															)}
+														</>
+													) : (
+														<>
+															<Text fontWeight="medium" color="#604538">
+																{item.name}
+															</Text>
+															<Text fontSize="xs" color="gray.600">
+																Regular product
+															</Text>
+														</>
 													)}
 												</VStack>
 

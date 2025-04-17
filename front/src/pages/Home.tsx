@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Banner from "../components/layout/banner";
 import AnimatedPage from "../components/common/AnimatedPage";
+import { addProductToCart } from "../utils/func/cartUtils";
+import { toaster } from "../components/ui/toaster";
 
 import {
 	Box,
@@ -272,13 +274,68 @@ export default function Home() {
 										<Text fontSize="md" color="#989898" mb={2}>
 											{product.description}
 										</Text>
-										<Text textStyle="lg">
-											<FormatNumber
-												value={product.price}
-												style="currency"
-												currency="USD"
-											/>
-										</Text>
+										{/* Product footer with price and cart button */}
+										<Box
+											p={4}
+											display="flex"
+											flexDirection={{ base: "column", md: "row" }}
+											justifyContent="space-between"
+											alignItems="center"
+											borderTop="1px solid #EFEFEF">
+											<Box
+												as="button"
+												bg="transparent"
+												color="#604538"
+												px={4}
+												py={2}
+												border="1px solid #604538"
+												borderRadius="md"
+												fontSize="sm"
+												fontWeight="medium"
+												transition="all 0.2s"
+												_hover={{ bg: "#604538", color: "white" }}
+												onClick={(e) => {
+													e.preventDefault(); // Prevent navigation to product page
+													try {
+														// Add the regular product to cart (no custom chocolate config)
+														addProductToCart(
+															product.id,
+															product.name,
+															product.image,
+															product.price
+														);
+
+														// Show success notification
+														toaster.create({
+															title: "Added to cart",
+															description: `${product.name} has been added to your cart.`,
+															type: "success",
+															duration: 3000,
+														});
+													} catch (error) {
+														console.error("Error adding to cart:", error);
+														toaster.create({
+															title: "Error",
+															description: "Failed to add item to cart. Please try again.",
+															type: "error",
+															duration: 3000,
+														});
+													}
+												}}>
+												ADD TO CART
+											</Box>
+											<Text
+												fontWeight="500"
+												color="#604538"
+												fontSize="md"
+												mt={{ base: 2, md: 0 }}>
+												<FormatNumber
+													value={product.price}
+													style="currency"
+													currency="USD"
+												/>
+											</Text>
+										</Box>
 									</Box>
 								</Link>
 							</motion.div>
@@ -426,7 +483,34 @@ export default function Home() {
 												fontSize="sm"
 												fontWeight="medium"
 												transition="all 0.2s"
-												_hover={{ bg: "#604538", color: "white" }}>
+												_hover={{ bg: "#604538", color: "white" }}
+												onClick={(e) => {
+													e.preventDefault(); // Prevent navigation to product page
+													try {
+														// Add the regular product to cart (no custom chocolate config)
+														addProductToCart(
+															product.id,
+															product.name,
+															product.image,
+															product.price
+														);
+														// Show success notification
+														toaster.create({
+															title: "Added to cart",
+															description: `${product.name} has been added to your cart.`,
+															type: "success",
+															duration: 3000,
+														});
+													} catch (error) {
+														console.error("Error adding to cart:", error);
+														toaster.create({
+															title: "Error",
+															description: "Failed to add item to cart. Please try again.",
+															type: "error",
+															duration: 3000,
+														});
+													}
+												}}>
 												ADD TO CART
 											</Box>
 											<Text

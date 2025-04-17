@@ -149,7 +149,6 @@ export class AuthController {
 		}
 	};
 
-
 	/**
 	 * Unified login - automatically determines if the user is a customer or admin
 	 */
