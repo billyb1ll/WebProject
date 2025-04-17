@@ -166,7 +166,9 @@ export const addToCart = (
 	saveCart(cart);
 
 
-	console.debug("Added item to cart:", newItem);
+	if (process.env.NODE_ENV === "development") {
+		console.debug("Added item to cart:", newItem);
+	}
 
 	return newItem;
 };
