@@ -4,6 +4,8 @@ A full-stack e-commerce application specializing in premium chocolate products w
 
 ![Project Logo](https://via.placeholder.com/150x150?text=Ratamoth)
 
+> Last updated: April 17, 2025
+
 ## 📋 Table of Contents
 - [Project Overview](#project-overview)
 - [Features](#features)
@@ -23,12 +25,13 @@ Ratamoth Chocolate is an e-commerce platform that allows customers to browse and
 ## ✨ Features
 
 - **Product Catalog**: Browse chocolate products with detailed information
-- **Custom Chocolate Creator**: Design personalized chocolate products
+- **Custom Chocolate Creator**: Design personalized chocolate products with 3D visualization
 - **Shopping Cart**: Add products, manage quantities, and checkout
 - **User Authentication**: Register, login, and profile management
 - **Order Management**: Track order status and history
 - **Admin Dashboard**: Manage products, orders, and customer information
 - **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Multi-language Support**: Available in multiple languages
 
 ## 🛠️ Technology Stack
 
@@ -45,101 +48,72 @@ Ratamoth Chocolate is an e-commerce platform that allows customers to browse and
 - **React Router** - Navigation
 - **Three.js** - 3D visualization for chocolate customization
 - **React Hook Form** - Form handling
+- **Tanstack Query** - Data fetching and caching
 
 ### Development Tools
 - **Git** - Version control
-- **ESLint** - Code linting
+- **ESLint** - Code linting with TypeScript support
 - **Jest** - Testing
 - **GitHub Actions** - CI/CD
 
 ## 📁 Project Structure
 
-Below is the recommended project structure that follows best practices for scalability and maintainability:
+Below is the updated project structure that reflects the current workspace organization:
 
 ```
 /WebProject/
-├── server/                     # Backend server
-│   ├── src/                    # Source files
-│   │   ├── api/                # API endpoints organization
-│   │   │   ├── routes/         # Route definitions
-│   │   │   └── controllers/    # Request handlers
-│   │   ├── config/             # Configuration files
-│   │   ├── constants/          # Application constants
-│   │   ├── db/                 # Database related code
-│   │   │   ├── models/         # Data models
-│   │   │   ├── migrations/     # Database migration scripts
-│   │   │   └── seeds/          # Seed data for development
-│   │   ├── middleware/         # Express middleware
-│   │   ├── services/           # Business logic services
-│   │   ├── types/              # TypeScript type definitions
-│   │   ├── utils/              # Utility functions
-│   │   ├── app.ts              # Express application configuration
-│   │   └── index.ts            # Server entry point
-│   ├── tests/                  # Backend tests
-│   └── dist/                   # Compiled JavaScript output
+├── database/                   # Database scripts and mock data
+│   ├── mock_data.sql           # Mock data for testing
+│   └── ratamoth_db.sql         # Main database schema
+│
+├── doc/                        # Documentation files
+│   └── api-documentation.yml   # API documentation in YAML format
 │
 ├── front/                      # Frontend application
 │   ├── public/                 # Static public assets
+│   │   └── vite.svg            # Vite logo
 │   ├── src/                    # Source files
-│   │   ├── assets/             # Static assets (images, fonts)
+│   │   ├── assets/             # Static assets (images, models, textures)
+│   │   │   ├── models/         # 3D models for chocolates
+│   │   │   └── textures/       # Textures for chocolates and toppings
 │   │   ├── components/         # React components
-│   │   │   ├── layout/         # Layout components (Header, Footer)
-│   │   │   ├── ui/             # Reusable UI components
-│   │   │   └── features/       # Feature-specific components
+│   │   │   ├── common/         # Common reusable components
+│   │   │   ├── features/       # Feature-specific components
+│   │   │   ├── layout/         # Layout components (Header, Footer, etc.)
+│   │   │   └── ui/             # Reusable UI components
 │   │   ├── constants/          # Frontend constants
 │   │   ├── contexts/           # React contexts for state management
 │   │   ├── hooks/              # Custom React hooks
 │   │   ├── pages/              # Page components
-│   │   ├── services/           # API service integrations
+│   │   ├── services/           # API service integrations and mock data
 │   │   │   ├── api/            # API clients
-│   │   │   └── storage/        # Local storage services
+│   │   │   └── mock/           # Mock data for development
 │   │   ├── types/              # TypeScript type definitions
 │   │   ├── utils/              # Utility functions
-│   │   │   ├── func/           # Functional utilities
-│   │   │   └── 3d/             # Three.js utilities
+│   │   │   ├── 3d/             # Three.js utilities
+│   │   │   └── func/           # Functional utilities
 │   │   ├── App.tsx             # Main App component
 │   │   └── main.tsx            # Application entry point
-│   └── tests/                  # Frontend tests
+│   ├── eslint.config.js        # ESLint configuration
+│   ├── tsconfig.json           # TypeScript configuration
+│   ├── vite.config.ts          # Vite configuration
+│   └── README.md               # Frontend-specific README
 │
-├── shared/                     # Shared code between frontend and backend
-│   ├── types/                  # Shared TypeScript interfaces
-│   ├── constants/              # Shared constants
-│   └── utils/                  # Shared utilities
+├── server/                     # Backend server
+│   ├── src/                    # Source files
+│   │   ├── config/             # Configuration files
+│   │   ├── constants/          # Backend constants
+│   │   ├── controllers/        # Request handlers
+│   │   ├── middleware/         # Express middleware
+│   │   ├── routes/             # Route definitions
+│   │   ├── types/              # TypeScript type definitions
+│   │   └── utils/              # Utility functions
+│   ├── package.json            # Backend dependencies
+│   └── tsconfig.json           # TypeScript configuration
 │
-├── database/                   # Database scripts and schema
-│   └── ratamoth_db.sql         # Main database schema
-│
-├── docs/                       # Project documentation
-│   ├── api/                    # API documentation
-│   ├── architecture/           # Architecture diagrams
-│   └── guides/                 # User and developer guides
-│
-├── scripts/                    # Utility scripts
-│
-├── .github/                    # GitHub configuration
-│   └── workflows/              # GitHub Actions workflows
-│
-├── .gitignore                  # Git ignore patterns
-├── .env.example                # Example environment variables
-└── README.md                   # Project documentation
+├── README.md                   # Project documentation
+└── .gitignore                  # Git ignore patterns
 ```
-
-### Key Recommendations:
-
-#### Server Organization
-- **api folder**: Separates routes and controllers for better organization
-- **services folder**: Contains business logic independent of controllers
-- **db folder**: Groups all database-related code together
-
-#### Frontend Organization
-- **features folder**: Groups components by business features
-- **services folder**: Separates API and local storage services
-- **utils folder**: Organizes utilities by domain (functional, 3D rendering)
-
-#### Shared Code
-The `shared` directory helps avoid code duplication between frontend and backend:
-- Use this for interfaces, constants, and utilities needed in both areas
-- Ensures consistency in data structures across the application
 
 ## 🚀 Setup Instructions
 
