@@ -3,6 +3,7 @@ import productRoutes from "./product.routes";
 import adminRoutes from "./admin.routes";
 import chocolateRoutes from "./chocolate.routes";
 import authRoutes from "./auth.routes";
+import utilsRoutes from "./utils.routes";
 
 const apiRouter = Router();
 
@@ -11,5 +12,6 @@ apiRouter.use("/products", productRoutes);
 apiRouter.use("/admin", adminRoutes);
 apiRouter.use("/chocolate", chocolateRoutes);
 apiRouter.use("/auth", authRoutes);
+apiRouter.use("/utils", utilsRoutes);
 
 export { apiRouter };

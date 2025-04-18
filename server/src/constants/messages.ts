@@ -36,5 +36,9 @@ export const MESSAGES = {
 			FAILED: "Authentication failed",
 		},
 		LOGIN: "Login failed",
+		SIGNUP: "Signup failed",
+		SERVER: {
+			ERROR: "Server error",
+		},
 	},
 };
