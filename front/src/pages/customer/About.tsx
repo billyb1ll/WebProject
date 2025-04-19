@@ -7,7 +7,7 @@ import {
 	Image,
 	SimpleGrid,
 } from "@chakra-ui/react";
-import AnimatedPage from "../components/common/AnimatedPage";
+import AnimatedPage from "../../components/common/AnimatedPage";
 import { motion } from "framer-motion";
 
 export default function About() {

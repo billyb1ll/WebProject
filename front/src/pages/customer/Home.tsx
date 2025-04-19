@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Banner from "../components/layout/banner";
-import AnimatedPage from "../components/common/AnimatedPage";
-import { addProductToCart } from "../utils/func/cartUtils";
-import { toaster } from "../components/ui/toaster";
+import Banner from "../../components/layout/banner";
+import AnimatedPage from "../../components/common/AnimatedPage";
+import { addProductToCart } from "../../utils/func/cartUtils";
+import { toaster } from "../../components/ui/toaster";
 
 import {
 	Box,
@@ -18,13 +18,13 @@ import {
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { productService } from "../services/api/productService";
+import { productService } from "../../services/api/productService";
 import {
 	ApiResponse,
 	ServerProduct,
 	MappedProduct,
 	ServerProductImage,
-} from "../types/product.types";
+} from "../../types/product.types";
 
 export default function Home() {
 	const [index, setIndex] = useState(0);

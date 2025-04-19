@@ -6,13 +6,13 @@ import {
 } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Layout from "./components/layout/Layout";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import NotFound from "./pages/NotFound";
-import Custom from "./pages/Custom";
-import Product from "./pages/Products";
-import Login from "./pages/login";
-import SignUp from "./pages/signup";
+import Home from "./pages/customer/Home";
+import About from "./pages/customer/About";
+import NotFound from "./pages/customer/NotFound";
+import Custom from "./pages/customer/Custom";
+import Product from "./pages/customer/Products";
+import Login from "./pages/customer/login";
+import SignUp from "./pages/customer/Signup";
 import { AuthProvider } from "./contexts/AuthContext";
 
 import { ROUTES } from "./constants/routes";

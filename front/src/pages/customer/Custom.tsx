@@ -1,5 +1,5 @@
 import { Container, Heading, Text, Box, Icon } from "@chakra-ui/react";
-import ChocolateConfigurator from "../components/features/chocolateCustomizer/ChocolateConfigurator";
+import ChocolateConfigurator from "../../components/features/chocolateCustomizer/ChocolateConfigurator";
 import Breadcrumbs from "@/components/layout/Breadcrumb";
 
 import { FaGift } from "react-icons/fa";
@@ -23,7 +23,7 @@ export default function Custom() {
 					<ChocolateConfigurator />
 				</Box>
 
-				<Box mt={16} textAlign="center"  gap={6} mb={10}>
+				<Box mt={16} textAlign="center" gap={6} mb={10}>
 					<Heading as="h2" size="lg" mb={6} color="#604538">
 						How It Works
 					</Heading>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Container, Heading, Text, SimpleGrid } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import AnimatedPage from "../components/common/AnimatedPage";
+import AnimatedPage from "../../components/common/AnimatedPage";
 import { motion } from "framer-motion";
 
 export default function Product() {

@@ -4,6 +4,7 @@ import { MESSAGES } from "../constants/messages";
 import { pool } from "../config/database";
 import bcrypt, { compare } from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 export class AuthController {
 	/**
@@ -479,6 +480,181 @@ export class AuthController {
 			res.status(API.STATUS_CODES.SERVER_ERROR).json({
 				success: false,
 				message: "Failed to get admin profile",
+			});
+		}
+	};
+
+	/**
+	 * Request a password reset for a user account
+	 */
+	public requestPasswordReset = async (
+		req: Request,
+		res: Response
+	): Promise<void> => {
+		try {
+			const { email } = req.body;
+
+			// Validate input
+			if (!email) {
+				res.status(API.STATUS_CODES.BAD_REQUEST).json({
+					success: false,
+					message: "Email is required",
+				});
+				return;
+			}
+
+			// Check if the user exists
+			const [userRows] = await pool.query(
+				"SELECT c_id, c_email FROM customer WHERE c_email = ?",
+				[email]
+			);
+
+			const users = userRows as any[];
+
+			// For security reasons, we don't want to reveal whether the email exists or not
+			// We'll always return a success message, even if the email doesn't exist
+			if (users.length === 0) {
+				// Email doesn't exist, but we don't want to reveal that
+				res.status(API.STATUS_CODES.OK).json({
+					success: true,
+					message:
+						"If the email exists in our system, a password reset link has been sent",
+				});
+				return;
+			}
+
+			const user = users[0];
+
+			// Generate a unique token
+			const resetToken = crypto.randomBytes(32).toString("hex");
+			const tokenExpiry = new Date();
+			tokenExpiry.setHours(tokenExpiry.getHours() + 1); // Token valid for 1 hour
+
+			// Store the token in the database
+			const connection = await pool.getConnection();
+			try {
+				await connection.beginTransaction();
+
+				// First delete any existing reset tokens for this user
+				await connection.query(
+					"DELETE FROM password_reset_tokens WHERE user_id = ? AND user_type = 'customer'",
+					[user.c_id]
+				);
+
+				// Insert the new token
+				await connection.query(
+					"INSERT INTO password_reset_tokens (user_id, user_type, token, expires_at) VALUES (?, ?, ?, ?)",
+					[user.c_id, "customer", resetToken, tokenExpiry]
+				);
+
+				await connection.commit();
+
+				// In a real application, we would send an email with a link containing the token
+				// For this example, we'll just log it
+				console.log(`Password reset token for ${email}: ${resetToken}`);
+
+				res.status(API.STATUS_CODES.OK).json({
+					success: true,
+					message:
+						"If the email exists in our system, a password reset link has been sent",
+				});
+			} catch (error) {
+				await connection.rollback();
+				throw error;
+			} finally {
+				connection.release();
+			}
+		} catch (error) {
+			console.error("Request password reset error:", error);
+			res.status(API.STATUS_CODES.SERVER_ERROR).json({
+				success: false,
+				message: "Failed to process password reset request",
+			});
+		}
+	};
+
+	/**
+	 * Reset a user's password using the reset token
+	 */
+	public resetPassword = async (req: Request, res: Response): Promise<void> => {
+		try {
+			const { token, newPassword } = req.body;
+
+			// Validate input
+			if (!token || !newPassword) {
+				res.status(API.STATUS_CODES.BAD_REQUEST).json({
+					success: false,
+					message: "Token and new password are required",
+				});
+				return;
+			}
+
+			const connection = await pool.getConnection();
+			try {
+				await connection.beginTransaction();
+
+				// Find the token in the database
+				const [tokenRows] = await connection.query(
+					`SELECT user_id, user_type, expires_at 
+					FROM password_reset_tokens 
+					WHERE token = ? AND expires_at > NOW()`,
+					[token]
+				);
+
+				const tokens = tokenRows as any[];
+
+				if (tokens.length === 0) {
+					res.status(API.STATUS_CODES.BAD_REQUEST).json({
+						success: false,
+						message: "Invalid or expired token",
+					});
+					return;
+				}
+
+				const tokenData = tokens[0];
+
+				// Only handle customer password resets for now
+				if (tokenData.user_type !== "customer") {
+					res.status(API.STATUS_CODES.BAD_REQUEST).json({
+						success: false,
+						message: "Unsupported user type for password reset",
+					});
+					return;
+				}
+
+				// Hash the new password
+				const saltRounds = 10;
+				const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+				// Update the user's password according to your schema
+				await connection.query("UPDATE customer SET c_pass = ? WHERE c_id = ?", [
+					hashedPassword,
+					tokenData.user_id,
+				]);
+
+				// Delete the used token
+				await connection.query(
+					"DELETE FROM password_reset_tokens WHERE token = ?",
+					[token]
+				);
+
+				await connection.commit();
+
+				res.status(API.STATUS_CODES.OK).json({
+					success: true,
+					message: "Password has been reset successfully",
+				});
+			} catch (error) {
+				await connection.rollback();
+				throw error;
+			} finally {
+				connection.release();
+			}
+		} catch (error) {
+			console.error("Reset password error:", error);
+			res.status(API.STATUS_CODES.SERVER_ERROR).json({
+				success: false,
+				message: "Failed to reset password",
 			});
 		}
 	};
