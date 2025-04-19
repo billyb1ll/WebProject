@@ -30,6 +30,7 @@ function AnimatedRoutes() {
 				<Route path={ROUTES.SIGNUP} element={<SignUp />} />
 				<Route path={ROUTES.ABOUT} element={<About />} />
 				<Route path={ROUTES.PRODUCTS} element={<Product />} />
+				<Route path={`${ROUTES.PRODUCTS}/:id`} element={<ProductDetail />} />
 				<Route path={ROUTES.CUSTOM} element={<Custom />} />
 				<Route path="*" element={<NotFound />} />
 			</Routes>
