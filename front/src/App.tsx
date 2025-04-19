@@ -14,6 +14,7 @@ import Product from "./pages/customer/Products";
 import Login from "./pages/customer/login";
 import SignUp from "./pages/customer/Signup";
 import { AuthProvider } from "./contexts/AuthContext";
+import ProductDetail from "./pages/customer/ProductDetail";
 
 import { ROUTES } from "./constants/routes";
 import "./App.css";
