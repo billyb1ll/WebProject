@@ -12,4 +12,6 @@ export const ROUTES = {
 	CUSTOM_PAGE4: "/custom/page4",
 	CUSTOM_PAGE5: "/custom/page5",
 	PRODUCT_1: "/product/1",
+	ADMIN_DASHBOARD: "/admin/dashboard",
+	CHECKOUT: "/checkout",
 };

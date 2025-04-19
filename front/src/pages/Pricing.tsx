@@ -19,7 +19,7 @@ export default function Pricing() {
 				Choose the chocolate package that's right for you.
 			</Text>
 
-			<SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+			<SimpleGrid columns={{ base: 1, md: 3 }} gap={10}>
 				<Box p={6} boxShadow="lg" borderRadius="lg" bg="white">
 					<Heading as="h3" size="lg" textAlign="center" color="#A47864">
 						Standard

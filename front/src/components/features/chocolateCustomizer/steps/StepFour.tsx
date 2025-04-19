@@ -22,8 +22,42 @@ interface StepFourProps {
 }
 
 export default function StepFour({ config, updatePackaging }: StepFourProps) {
-	// Use the new hook to fetch packaging options
-	const { packagingOptions, isLoading, isError, error } = useChocolateOptions();
+	// Use the hook to fetch packaging options
+	const { packagingOptions, pricing, isLoading, isError, error } =
+		useChocolateOptions();
+	packagingOptions.sort((a, b) => a.price - b.price);
+
+	// Handler to update packaging selection with price logging
+	const handlePackagingSelect = (type: PackagingType) => {
+		console.log(`StepFour: Selected packaging "${type}"`);
+
+		// Get price for debugging and validation
+		if (pricing && pricing.packaging) {
+			const packagePrice = pricing.packaging[type];
+			console.log(`StepFour: Price for ${type} packaging:`, packagePrice);
+
+			// Validate pricing data
+			if (packagePrice === undefined) {
+				console.error(
+					`Warning: No price defined for packaging type "${type}". Check API data.`
+				);
+			}
+		} else {
+			console.error(
+				"No packaging pricing data available in useChocolateOptions hook"
+			);
+		}
+
+		// Force update and trigger a re-render with a timeout to ensure state propagation
+		updatePackaging(type);
+
+		// Log after update for debugging
+		setTimeout(() => {
+			console.log(
+				`StepFour: Current packaging after selection: ${config.packaging}`
+			);
+		}, 100);
+	};
 
 	if (isLoading) {
 		return (
@@ -68,7 +102,9 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 					({ id, type, name, description, price, imageUrl, features }) => (
 						<Box
 							key={id}
-							onClick={() => updatePackaging(type)}
+							onClick={() => handlePackagingSelect(type)}
+							data-testid={`packaging-option-${type}`}
+							data-price={price}
 							borderWidth="2px"
 							borderRadius="lg"
 							borderColor={config.packaging === type ? "#A47864" : "transparent"}
@@ -94,6 +130,7 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 									height="120px"
 									objectFit="cover"
 								/>
+								{/* Ensure price badge is consistently displayed with the same style as StepOne */}
 								<Badge
 									position="absolute"
 									top={2}
@@ -103,7 +140,7 @@ export default function StepFour({ config, updatePackaging }: StepFourProps) {
 									px={2}
 									py={1}
 									borderRadius="md">
-									{price === 0 ? "Included" : `+${formatPrice(price)}`}
+									{formatPrice(price)}
 								</Badge>
 								{config.packaging === type && (
 									<Badge

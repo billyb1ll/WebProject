@@ -22,6 +22,7 @@ const Breadcrumbs = () => {
 	return (
 		<Breadcrumb.Root
 			variant="plain"
+			aria-label="Breadcrumb"
 			width={"100%"}
 			maxW="container.2xl"
 			height={{ base: "50px", md: "95px" }}

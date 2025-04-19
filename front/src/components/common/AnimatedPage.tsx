@@ -16,7 +16,7 @@ const defaultPageVariants: Variants = {
 		opacity: 1,
 		y: 0,
 		transition: {
-			duration: 0.4,
+			duration: 0.3,
 			ease: "easeInOut",
 		},
 	},
@@ -24,7 +24,7 @@ const defaultPageVariants: Variants = {
 		opacity: 0,
 		y: -20,
 		transition: {
-			duration: 0.3,
+			duration: 0.25,
 			ease: "easeInOut",
 		},
 	},

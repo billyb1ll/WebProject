@@ -12,8 +12,8 @@ import NotFound from "./pages/NotFound";
 import Custom from "./pages/Custom";
 import Product from "./pages/Products";
 import Login from "./pages/login";
-import SignUp from "./pages/SignUp";
-import ProductDetail from "./pages/ProductDetail";
+import SignUp from "./pages/signup";
+import { AuthProvider } from "./contexts/AuthContext";
 
 import { ROUTES } from "./constants/routes";
 import "./App.css";
@@ -40,11 +40,13 @@ function AnimatedRoutes() {
 
 function App() {
 	return (
-		<Router>
-			<Layout>
-				<AnimatedRoutes />
-			</Layout>
-		</Router>
+		<AuthProvider>
+			<Router>
+				<Layout>
+					<AnimatedRoutes />
+				</Layout>
+			</Router>
+		</AuthProvider>
 	);
 }
 

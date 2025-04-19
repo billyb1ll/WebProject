@@ -1,14 +1,26 @@
 import { Router } from "express";
 import { ProductController } from "../controllers/product.controller";
 
-const router = Router();
+export const productRouter = Router();
 const productController = new ProductController();
 
-// Product routes
-router.get("/", productController.getAllProducts);
-router.get("/:id", productController.getProductById);
-router.post("/", productController.createProduct);
-router.put("/:id", productController.updateProduct);
-router.delete("/:id", productController.deleteProduct);
+// GET routes
+productRouter.get("/", productController.getAllProducts);
+productRouter.get("/featured", productController.getFeaturedProducts);
+productRouter.get(
+	"/category/:category",
+	productController.getProductsByCategory
+);
+productRouter.get("/with-images/:id", productController.getProductWithImages);
+productRouter.get("/:id", productController.getProductById);
 
-export default router;
+// POST routes
+productRouter.post("/", productController.createProduct);
+
+// PUT routes
+productRouter.put("/:id", productController.updateProduct);
+
+// DELETE routes
+productRouter.delete("/:id", productController.deleteProduct);
+
+export default productRouter;

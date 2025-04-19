@@ -1,4 +1,5 @@
 import { API } from "../../constants/api";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 /**
  * API response interface that matches backend response structure
@@ -20,19 +21,90 @@ interface ApiError {
 }
 
 /**
- * Base API client for making HTTP requests with proper error handling
+ * API client for handling HTTP requests
+ * @debug Common network issues can be debugged here
  */
 class ApiClient {
+	private client: AxiosInstance;
 	private baseUrl: string;
 	private defaultHeaders: HeadersInit;
+	private useMockData: boolean;
 
+	/**
+	 * Create a new API client instance
+	 * @debug If API calls fail, check baseURL is correct for your environment
+	 */
 	constructor() {
 		// Use environment variable if available, otherwise use default
 		this.baseUrl = import.meta.env.VITE_API_URL || API.BASE_URL;
+		this.baseUrl = this.baseUrl.endsWith("/") ? this.baseUrl : `${this.baseUrl}/`;
+
+		// Check if we should use mock data from env
+		this.useMockData = import.meta.env.VITE_USE_MOCK_DATA === "true";
 
 		this.defaultHeaders = {
-			[API.HEADERS.CONTENT_TYPE]: "application/json",
+			"Content-Type": "application/json",
 		};
+
+		this.client = axios.create({
+			baseURL: this.baseUrl,
+			timeout: 10000,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+
+		// Add request interceptor for debugging and authentication
+		this.client.interceptors.request.use(
+			(config) => {
+				// Log outgoing requests in development environment
+				if (process.env.NODE_ENV === "development") {
+					console.debug(
+						`🌐 API Request: ${config.method?.toUpperCase()} ${config.url}`,
+						config.params || config.data || {}
+					);
+				}
+
+				// Add Authorization header if token exists
+				const token = localStorage.getItem("token");
+				if (token) {
+					config.headers["Authorization"] = `Bearer ${token}`;
+				}
+
+				return config;
+			},
+			(error) => {
+				console.error("API Request Error:", error);
+				return Promise.reject(error);
+			}
+		);
+
+		// Add response interceptor for debugging
+		this.client.interceptors.response.use(
+			(response) => {
+				// Log successful responses in development environment
+				if (process.env.NODE_ENV === "development") {
+					console.debug(
+						`✅ API Response: ${response.config.method?.toUpperCase()} ${
+							response.config.url
+						}`,
+						{ status: response.status, data: response.data }
+					);
+				}
+				return response;
+			},
+			(error) => {
+				// Log error responses with detailed information
+				console.error("API Response Error:", {
+					url: error.config?.url,
+					method: error.config?.method?.toUpperCase(),
+					status: error.response?.status,
+					message: error.message,
+					responseData: error.response?.data,
+				});
+				return Promise.reject(error);
+			}
+		);
 	}
 
 	/**
@@ -47,30 +119,49 @@ class ApiClient {
 	 * Format endpoint for use as a file path
 	 */
 	private formatEndpointForImport(endpoint: string): string {
-		// Replace all forward slashes with underscores
-		return endpoint.replace(/\//g, "_");
+		// Replace all forward slashes with underscores and remove leading underscore if present
+		const formatted = endpoint.replace(/\//g, "_").replace(/^_/, "");
+		return formatted;
+	}
+
+	/**
+	 * Try to import mock data using various file naming conventions
+	 */
+	private async tryImportMockData(endpoint: string): Promise<unknown> {
+		const formattedEndpoint = this.formatEndpointForImport(endpoint);
+		const possiblePaths = [
+			`../mock/${formattedEndpoint}.ts`,
+			`../mock/_${formattedEndpoint}.ts`,
+			`../mock/products.ts`, // Special case for products endpoint
+		];
+
+		for (const path of possiblePaths) {
+			try {
+				console.info(`[DEV] Attempting to load mock data from ${path}`);
+				// Using dynamic import with vite-ignore comment to allow variable path
+				const mockModule = await import(/* @vite-ignore */ path);
+				console.info(`[DEV] Using mock data for ${endpoint} from ${path}`);
+				return mockModule.default;
+			} catch (error) {
+				// Continue to next path if this one fails
+				console.debug(`No mock data at ${path}, trying next path...`);
+			}
+		}
+
+		// If all paths fail, throw an error to fall back to API
+		throw new Error(`No mock data found for ${endpoint}`);
 	}
 
 	/**
 	 * Make a GET request to the API
 	 */
-	async get<T>(endpoint: string, useMock = true): Promise<T> {
+	async get<T>(endpoint: string, useMock = this.useMockData): Promise<T> {
 		// If in development mode and useMock is true, return mock data instead
 		if (import.meta.env.DEV && useMock) {
 			try {
-				// Format endpoint for use in import path
-				const formattedEndpoint = this.formatEndpointForImport(endpoint);
-				const mockPath = `../mock/${formattedEndpoint}.ts`;
-
-				// Dynamic import with proper error handling
-				console.info(`[DEV] Attempting to load mock data from ${mockPath}`);
-				const mockModule = await import(/* @vite-ignore */ mockPath);
-
-				console.info(`[DEV] Using mock data for GET ${endpoint}`);
-				return new Promise((resolve) =>
-					setTimeout(() => resolve(mockModule.default), 500)
-				);
-			} catch (_error) {
+				const mockData = await this.tryImportMockData(endpoint);
+				return new Promise((resolve) => setTimeout(() => resolve(mockData), 500));
+			} catch (error) {
 				console.warn(
 					`No mock data found for ${endpoint}, falling back to API call`
 				);
@@ -78,18 +169,20 @@ class ApiClient {
 		}
 
 		// Proceed with actual API call
-		const headers = {
-			...this.defaultHeaders,
-			...this.getAuthHeaders(),
-		};
-
 		try {
-			const response = await fetch(`${this.baseUrl}${endpoint}`, {
-				method: "GET",
-				headers,
-			});
+			const response = await this.client.get(endpoint);
 
-			return this.handleResponse<T>(response);
+			// Check if response is HTML instead of JSON
+			if (
+				typeof response.data === "string" &&
+				response.data.includes("<!doctype html>")
+			) {
+				throw new Error(
+					"Received HTML response instead of JSON. Check API server or endpoint URL."
+				);
+			}
+
+			return response.data;
 		} catch (error) {
 			return this.handleError<T>(error);
 		}
@@ -101,23 +194,33 @@ class ApiClient {
 	async post<T, D = Record<string, unknown>>(
 		endpoint: string,
 		data: D,
-		useMock = true
+		useMock = this.useMockData
 	): Promise<T> {
 		// If in development mode and useMock is true, return mock data instead
 		if (import.meta.env.DEV && useMock) {
 			try {
-				// Format endpoint for use in import path
+				// Try various naming patterns for the mock POST endpoint
 				const formattedEndpoint = this.formatEndpointForImport(endpoint);
-				const mockPath = `../mock/${formattedEndpoint}_post.ts`;
+				const possiblePaths = [
+					`../mock/${formattedEndpoint}_post.ts`,
+					`../mock/_${formattedEndpoint}_post.ts`,
+				];
 
-				// Dynamic import with proper error handling
-				console.info(`[DEV] Attempting to load mock data from ${mockPath}`);
-				const mockModule = await import(/* @vite-ignore */ mockPath);
+				for (const path of possiblePaths) {
+					try {
+						console.info(`[DEV] Attempting to load mock data from ${path}`);
+						const mockModule = await import(/* @vite-ignore */ path);
+						console.info(`[DEV] Using mock data for POST ${endpoint}`);
+						return new Promise((resolve) =>
+							setTimeout(() => resolve(mockModule.default), 500)
+						);
+					} catch (error) {
+						// Continue to next path if this one fails
+						console.debug(`No mock POST data at ${path}, trying next path...`);
+					}
+				}
 
-				console.info(`[DEV] Using mock data for POST ${endpoint}`);
-				return new Promise((resolve) =>
-					setTimeout(() => resolve(mockModule.default), 500)
-				);
+				throw new Error(`No mock POST data found for ${endpoint}`);
 			} catch (error) {
 				console.warn(
 					`No mock data found for POST ${endpoint}, falling back to API call`
@@ -126,19 +229,20 @@ class ApiClient {
 		}
 
 		// Proceed with actual API call
-		const headers = {
-			...this.defaultHeaders,
-			...this.getAuthHeaders(),
-		};
-
 		try {
-			const response = await fetch(`${this.baseUrl}${endpoint}`, {
-				method: "POST",
-				headers,
-				body: JSON.stringify(data),
-			});
+			const response = await this.client.post(endpoint, data);
 
-			return this.handleResponse<T>(response);
+			// Check if response is HTML instead of JSON
+			if (
+				typeof response.data === "string" &&
+				response.data.includes("<!doctype html>")
+			) {
+				throw new Error(
+					"Received HTML response instead of JSON. Check API server or endpoint URL."
+				);
+			}
+
+			return response.data;
 		} catch (error) {
 			return this.handleError<T>(error);
 		}
@@ -151,19 +255,9 @@ class ApiClient {
 		endpoint: string,
 		data: D
 	): Promise<T> {
-		const headers = {
-			...this.defaultHeaders,
-			...this.getAuthHeaders(),
-		};
-
 		try {
-			const response = await fetch(`${this.baseUrl}${endpoint}`, {
-				method: "PUT",
-				headers,
-				body: JSON.stringify(data),
-			});
-
-			return this.handleResponse<T>(response);
+			const response = await this.client.put(endpoint, data);
+			return response.data;
 		} catch (error) {
 			return this.handleError<T>(error);
 		}
@@ -173,18 +267,9 @@ class ApiClient {
 	 * Make a DELETE request to the API
 	 */
 	async delete<T>(endpoint: string): Promise<T> {
-		const headers = {
-			...this.defaultHeaders,
-			...this.getAuthHeaders(),
-		};
-
 		try {
-			const response = await fetch(`${this.baseUrl}${endpoint}`, {
-				method: "DELETE",
-				headers,
-			});
-
-			return this.handleResponse<T>(response);
+			const response = await this.client.delete(endpoint);
+			return response.data;
 		} catch (error) {
 			return this.handleError<T>(error);
 		}

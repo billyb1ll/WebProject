@@ -5,7 +5,6 @@ import { authMiddleware } from "../middleware/authMiddleware";
 const router = Router();
 const adminController = new AdminController();
 
-// Admin routes with auth middleware
 router.post("/login", adminController.login);
 router.get("/profile", authMiddleware, adminController.getProfile);
 router.put("/profile", authMiddleware, adminController.updateProfile);

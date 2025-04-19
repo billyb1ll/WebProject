@@ -40,7 +40,6 @@ export default function TermDialog({
 	};
 
 	const handleCheckboxChange = (checked: boolean) => {
-		console.log("Checkbox checked:", checked);
 		setInternalChecked(checked);
 
 		if (checked) {
@@ -64,9 +63,15 @@ export default function TermDialog({
 							setTermsAccepted(false);
 						}
 					}}
-					placement={"center"}
+					placement="center"
 					size="lg"
-					motionPreset="scale">
+					motionPreset="scale"
+					scrollBehavior="outside"
+					closeOnEscape={true}
+					closeOnInteractOutside={true}
+					trapFocus={true}
+					role="dialog"
+					aria-label="Terms and Conditions Dialog">
 					<Portal>
 						<Dialog.Backdrop />
 						<Dialog.Positioner>
